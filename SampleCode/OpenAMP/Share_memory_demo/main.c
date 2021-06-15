@@ -61,6 +61,7 @@ int32_t main (void)
 
     printf("\nThis sample code demonstrate OpenAMP share memory function\n");
 
+    MA35D1_OpenAMP_Init(RPMSG_REMOTE, NULL);
     OPENAMP_create_endpoint(&resmgr_ept, "rpmsg-sample", RPMSG_ADDR_ANY, rx_callback, NULL);
 
     while(1)
