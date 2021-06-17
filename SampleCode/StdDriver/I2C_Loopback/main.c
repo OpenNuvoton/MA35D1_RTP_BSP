@@ -236,6 +236,8 @@ void SYS_Init(void)
     CLK_EnableModuleClock(I2C2_MODULE);
     CLK_SetModuleClock(UART16_MODULE, CLK_CLKSEL3_UART16SEL_HXT, CLK_CLKDIV1_UART16(1));
     CLK_EnableModuleClock(UART16_MODULE);
+    CLK_EnableModuleClock(GPB_MODULE);
+    CLK_EnableModuleClock(GPI_MODULE);
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
@@ -249,6 +251,10 @@ void SYS_Init(void)
     /* Set multi-function pins for I2C2 */
     SYS->GPI_MFPL &= ~(SYS_GPI_MFPL_PI0MFP_Msk | SYS_GPI_MFPL_PI1MFP_Msk);
     SYS->GPI_MFPL |= SYS_GPI_MFPL_PI0MFP_I2C2_SDA | SYS_GPI_MFPL_PI1MFP_I2C2_SCL;
+
+    /* I2C pin enable schmitt trigger */
+    PB->SMTEN |= GPIO_SMTEN_SMTEN10_Msk | GPIO_SMTEN_SMTEN11_Msk;
+    PI->SMTEN |= GPIO_SMTEN_SMTEN0_Msk | GPIO_SMTEN_SMTEN1_Msk;
 
     /* Lock protected registers */
     SYS_LockReg();
