@@ -16,7 +16,6 @@
 #include "openamp_conf.h"
 
 
-#define OPENAMP_send  rpmsg_send
 #define OPENAMP_destroy_ept rpmsg_destroy_ept
 
 /* Initialize the openamp framework*/
@@ -34,10 +33,14 @@ int OPENAMP_create_endpoint(struct rpmsg_endpoint *ept, const char *name,
                             rpmsg_ns_unbind_cb unbind_cb);
 
 /* Check for new rpmsg reception */
-void OPENAMP_check_for_message(void);
+void OPENAMP_check_for_message(struct rpmsg_endpoint *ept);
 
 /* Wait loop on endpoint ready ( message dest address is know)*/
 void OPENAMP_Wait_EndPointready(struct rpmsg_endpoint *rp_ept);
+
+int OPENAMP_send_data(struct rpmsg_endpoint *ept, const void *data, int len);
+
+int OPENAMP_check_TxAck(struct rpmsg_endpoint *ept);
 
 #ifdef __cplusplus
 }

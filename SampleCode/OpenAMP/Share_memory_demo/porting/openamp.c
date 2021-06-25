@@ -10,11 +10,13 @@
 #include "rsc_table.h"
 #include "metal/sys.h"
 #include "metal/device.h"
+
 /* Private define ------------------------------------------------------------*/
 
 #define SHM_DEVICE_NAME         "MA35D1_SHM"
 
 /* Globals */
+extern uint32_t WHC0_TX_Flag;
 
 static struct metal_io_region *shm_io;
 static struct metal_io_region *rsc_io;
@@ -150,15 +152,35 @@ int OPENAMP_create_endpoint(struct rpmsg_endpoint *ept, const char *name,
     return rpmsg_create_ept(ept, &rvdev.rdev, name, RPMSG_ADDR_ANY, dest, cb, unbind_cb);
 }
 
-void OPENAMP_check_for_message(void)
+void OPENAMP_check_for_message(struct rpmsg_endpoint *ept)
 {
-    Mbox_Poll(rvdev.vdev);
+    Mbox_Poll(ept);
 }
 
-void OPENAMP_Wait_EndPointready(struct rpmsg_endpoint *rp_ept)
+int OPENAMP_send_data(struct rpmsg_endpoint *ept, const void *data, int len)
 {
-    while(!is_rpmsg_ept_ready(rp_ept))
-    Mbox_Poll(rvdev.vdev);
+    uint32_t u32TX_Length = len;
+    uint32_t au32TxBuf[4];
+
+    if(len > SHM_TX_RX_SIZE)
+        u32TX_Length = SHM_TX_RX_SIZE;
+
+    WHC0_TX_Flag = TX_NO_ACK;
+    memcpy((void *)SHM_TX_START_ADDRESS, data, u32TX_Length);
+
+    au32TxBuf[0] = COMMAND_SEND_MSG_TO_A35;
+    au32TxBuf[1] = u32TX_Length;
+    WHC_Send(WHC0, mbox_ch, au32TxBuf);
+    while((WHC0->TXSTS & 0xf) != 0xf); // wait Tx
+
+    return (int)u32TX_Length;
 }
 
+int OPENAMP_check_TxAck(struct rpmsg_endpoint *ept)
+{
+    if(Mbox_Poll(ept) == TX_ACK)
+        return 1;
+    else
+        return 0;
+}
 
