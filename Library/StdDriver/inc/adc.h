@@ -139,7 +139,7 @@ extern "C"
   */
 #define ADC_SET_INPUT_CHANNEL(adc, u32Mask) do {uint32_t u32Ch = 0, i;\
                                                 for(i = 0; i < ADC_CH_NUM; i++) {\
-                                                    if((u32ChMask) & (1 << i)) {\
+                                                    if((u32Mask) & (1 << i)) {\
                                                         u32Ch = i;\
                                                         break;\
                                                     }\
