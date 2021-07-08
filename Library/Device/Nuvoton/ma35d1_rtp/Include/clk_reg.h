@@ -26,965 +26,1622 @@ typedef struct
 {
 
 
-    /**
-     * @var CLK_T::PWRCTL
-     * Offset: 0x00  System Power-down Control Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[0]     |HXTEN     |HXT Enable Bit (Write Protect)
-     * |        |          |The bit default value is set by flash controller user configuration register CONFIG0 [26]
-     * |        |          |When the default clock source is from HXT, this bit is set to 1 automatically.
-     * |        |          |0 = 4~24 MHz external high speed crystal (HXT) Disabled.
-     * |        |          |1 = 4~24 MHz external high speed crystal (HXT) Enabled.
-     * |        |          |Note: This bit is write protected. Refer to the SYS_REGLCTL register.
-     * |[1]     |LXTEN     |LXT Enable Bit (Write Protect)
-     * |        |          |0 = 32.768 kHz external low speed crystal (LXT) Disabled.
-     * |        |          |1 = 32.768 kHz external low speed crystal (LXT) Enabled.
-     * |        |          |Note: This bit is write protected. Refer to the SYS_REGLCTL register.
-     * |[2]     |HIRCEN    |HIRC Enable Bit (Write Protect)
-     * |        |          |0 = 12 MHz internal high speed RC oscillator (HIRC) Disabled.
-     * |        |          |1 = 12 MHz internal high speed RC oscillator (HIRC) Enabled.
-     * |        |          |Note: This bit is write protected. Refer to the SYS_REGLCTL register.
-     * |[3]     |LIRCEN    |LIRC Enable Bit (Write Protect)
-     * |        |          |0 = 10 kHz internal low speed RC oscillator (LIRC) Disabled.
-     * |        |          |1 = 10 kHz internal low speed RC oscillator (LIRC) Enabled.
-     * |        |          |Note: This bit is write protected. Refer to the SYS_REGLCTL register.
-     * |[4]     |PDWKDLY   |Enable the Wake-up Delay Counter (Write Protect)
-     * |        |          |When the chip wakes up from Power-down mode, the clock control will delay certain clock cycles to wait system clock stable.
-     * |        |          |The delayed clock cycle is 4096 clock cycles when chip works at 4~24 MHz external high speed crystal oscillator (HXT), and 256 clock cycles when chip works at 12 MHz internal high speed RC oscillator (HIRC).
-     * |        |          |0 = Clock cycles delay Disabled.
-     * |        |          |1 = Clock cycles delay Enabled.
-     * |        |          |Note: This bit is write protected. Refer to the SYS_REGLCTL register.
-     * |[5]     |PDWKIEN   |Power-down Mode Wake-up Interrupt Enable Bit (Write Protect)
-     * |        |          |0 = Power-down mode wake-up interrupt Disabled.
-     * |        |          |1 = Power-down mode wake-up interrupt Enabled.
-     * |        |          |Note1: The interrupt will occur when both PDWKIF and PDWKIEN are high.
-     * |        |          |Note2: This bit is write protected. Refer to the SYS_REGLCTL register.
-     * |[6]     |PDWKIF    |Power-down Mode Wake-up Interrupt Status
-     * |        |          |Set by "Power-down wake-up event", it indicates that resume from Power-down mode.
-     * |        |          |The flag is set if any wake-up source is occurred. Refer Power Modes and Wake-up Sources chapter.
-     * |        |          |Note1: Write 1 to clear the bit to 0.
-     * |        |          |Note2: This bit works only if PDWKIEN (CLK_PWRCTL[5]) set to 1.
-     * |[7]     |PDEN      |System Power-down Enable (Write Protect)
-     * |        |          |When this bit is set to 1, Power-down mode is enabled and chip keeps active till the CPU sleep mode is also active and then the chip enters Power-down mode.
-     * |        |          |When chip wakes up from Power-down mode, this bit is auto cleared
-     * |        |          |Users need to set this bit again for next Power-down.
-     * |        |          |In Power-down mode, HXT and the HIRC will be disabled in this mode, but LXT and LIRC are not controlled by Power-down mode.
-     * |        |          |In Power-down mode, the PLL and system clock are disabled, and ignored the clock source selection
-     * |        |          |The clocks of peripheral are not controlled by Power-down mode, if the peripheral clock source is from LXT or LIRC.
-     * |        |          |0 = Chip will not enter Power-down mode after CPU sleep command WFI.
-     * |        |          |1 = Chip enters Power-down mode after CPU sleep command WFI.
-     * |        |          |Note: This bit is write protected. Refer to the SYS_REGLCTL register.
-     * |[11:10] |HXTGAIN   |HXT Gain Control Bit (Write Protect)
-     * |        |          |This is a protected register. Please refer to open lock sequence to program it.
-     * |        |          |Gain control is used to enlarge the gain of crystal to make sure crystal work normally
-     * |        |          |If gain control is enabled, crystal will consume more power than gain control off.
-     * |        |          |00 = HXT frequency is lower than from 8 MHz.
-     * |        |          |01 = HXT frequency is from 8 MHz to 12 MHz.
-     * |        |          |10 = HXT frequency is from 12 MHz to 16 MHz.
-     * |        |          |11 = HXT frequency is higher than 16 MHz.
-     * |        |          |Note: This bit is write protected. Refer to the SYS_REGLCTL register.
-     * |[12]    |HXTSELTYP |HXT Crystal Type Select Bit (Write Protect)
-     * |        |          |This is a protected register. Please refer to open lock sequence to program it.
-     * |        |          |0 = Select INV type.
-     * |        |          |1 = Select GM type.
-     * |        |          |Note: This bit is write protected. Refer to the SYS_REGLCTL register.
-     * |[13]    |HXTTBEN   |HXT Crystal TURBO Mode (Write Protect)
-     * |        |          |This is a protected register. Please refer to open lock sequence to program it.
-     * |        |          |0 = HXT Crystal TURBO mode disabled.
-     * |        |          |1 = HXT Crystal TURBO mode enabled.
-     * |[17:16] |HIRCSTBS  |HIRC Stable Count Select (Write Protect)
-     * |        |          |00 = HIRC stable count is 64 clocks.
-     * |        |          |01 = HIRC stable count is 24 clocks.
-     * |        |          |others = Reserved.
-     * |[18]    |HIRCEN    |HIRC48M Enable Bit (Write Protect)
-     * |        |          |0 = 48 MHz internal high speed RC oscillator (HIRC) Disabled.
-     * |        |          |1 = 48 MHz internal high speed RC oscillator (HIRC) Enabled.
-     * @var CLK_T::AHBCLK
-     * Offset: 0x04  AHB Devices Clock Enable Control Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[1]     |PDMACKEN  |PDMA Controller Clock Enable Bit
-     * |        |          |0 = PDMA peripheral clock Disabled.
-     * |        |          |1 = PDMA peripheral clock Enabled.
-     * |[2]     |ISPCKEN   |Flash ISP Controller Clock Enable Bit
-     * |        |          |0 = Flash ISP peripheral clock Disabled.
-     * |        |          |1 = Flash ISP peripheral clock Enabled.
-     * |[3]     |EBICKEN   |EBI Controller Clock Enable Bit
-     * |        |          |0 = EBI peripheral clock Disabled.
-     * |        |          |1 = EBI peripheral clock Enabled.
-     * |[5]     |EMACCKEN  |Ethernet Controller Clock Enable Bit
-     * |        |          |0 = Ethernet Controller engine clock Disabled.
-     * |        |          |1 = Ethernet Controller engine clock Enabled.
-     * |[6]     |SDH0CKEN  |SD0 Controller Clock Enable Bit
-     * |        |          |0 = SD0 engine clock Disabled.
-     * |        |          |1 = SD0 engine clock Enabled.
-     * |[7]     |CRCCKEN   |CRC Generator Controller Clock Enable Bit
-     * |        |          |0 = CRC peripheral clock Disabled.
-     * |        |          |1 = CRC peripheral clock Enabled.
-     * |[10]    |HSUSBDCKEN|HSUSB Device Clock Enable Bit
-     * |        |          |0 = HSUSB device controller's clock Disabled.
-     * |        |          |1 = HSUSB device controller's clock Enabled.
-     * |[12]    |CRPTCKEN  |Cryptographic Accelerator Clock Enable Bit
-     * |        |          |0 = Cryptographic Accelerator clock Disabled.
-     * |        |          |1 = Cryptographic Accelerator clock Enabled.
-     * |[14]    |SPIMCKEN  |SPIM Controller Clock Enable Bit
-     * |        |          |0 = SPIM controller clock Disabled.
-     * |        |          |1 = SPIM controller clock Enabled.
-     * |[15]    |FMCIDLE   |Flash Memory Controller Clock Enable Bit in IDLE Mode
-     * |        |          |0 = FMC clock Disabled when chip is under IDLE mode.
-     * |        |          |1 = FMC clock Enabled when chip is under IDLE mode.
-     * |[16]    |USBHCKEN  |USB HOST Controller Clock Enable Bit
-     * |        |          |0 = USB HOST peripheral clock Disabled.
-     * |        |          |1 = USB HOST peripheral clock Enabled.
-     * |[17]    |SDH1CKEN  |SD1 Controller Clock Enable Bit
-     * |        |          |0 = SD1 engine clock Disabled.
-     * |        |          |1 = SD1 engine clock Enabled.
-     * @var CLK_T::APBCLK0
-     * Offset: 0x08  APB Devices Clock Enable Control Register 0
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[0]     |WDTCKEN   |Watchdog Timer Clock Enable Bit (Write Protect)
-     * |        |          |0 = Watchdog timer clock Disabled.
-     * |        |          |1 = Watchdog timer clock Enabled.
-     * |        |          |Note: This bit is write protected. Refer to the SYS_REGLCTL register.
-     * |[1]     |RTCCKEN   |Real-time-clock APB Interface Clock Enable Bit
-     * |        |          |This bit is used to control the RTC APB clock only
-     * |        |          |The RTC peripheral clock source is selected from RTCSEL(CLK_CLKSEL3[8])
-     * |        |          |It can be selected to 32.768 kHz external low speed crystal or 10 kHz internal low speed RC oscillator (LIRC).
-     * |        |          |0 = RTC clock Disabled.
-     * |        |          |1 = RTC clock Enabled.
-     * |[2]     |TMR0CKEN  |Timer0 Clock Enable Bit
-     * |        |          |0 = Timer0 clock Disabled.
-     * |        |          |1 = Timer0 clock Enabled.
-     * |[3]     |TMR1CKEN  |Timer1 Clock Enable Bit
-     * |        |          |0 = Timer1 clock Disabled.
-     * |        |          |1 = Timer1 clock Enabled.
-     * |[4]     |TMR2CKEN  |Timer2 Clock Enable Bit
-     * |        |          |0 = Timer2 clock Disabled.
-     * |        |          |1 = Timer2 clock Enabled.
-     * |[5]     |TMR3CKEN  |Timer3 Clock Enable Bit
-     * |        |          |0 = Timer3 clock Disabled.
-     * |        |          |1 = Timer3 clock Enabled.
-     * |[6]     |CLKOCKEN  |CLKO Clock Enable Bit
-     * |        |          |0 = CLKO clock Disabled.
-     * |        |          |1 = CLKO clock Enabled.
-     * |[7]     |ACMP01CKEN|Analog Comparator 0/1 Clock Enable Bit
-     * |        |          |0 = Analog comparator 0/1 clock Disabled.
-     * |        |          |1 = Analog comparator 0/1 clock Enabled.
-     * |[8]     |I2C0CKEN  |I2C0 Clock Enable Bit
-     * |        |          |0 = I2C0 clock Disabled.
-     * |        |          |1 = I2C0 clock Enabled.
-     * |[9]     |I2C1CKEN  |I2C1 Clock Enable Bit
-     * |        |          |0 = I2C1 clock Disabled.
-     * |        |          |1 = I2C1 clock Enabled.
-     * |[10]    |I2C2CKEN  |I2C2 Clock Enable Bit
-     * |        |          |0 = I2C2 clock Disabled.
-     * |        |          |1 = I2C2 clock Enabled.
-     * |[12]    |QSPI0CKEN  |QSPI0 Clock Enable Bit
-     * |        |          |0 = QSPI0 clock Disabled.
-     * |        |          |1 = QSPI0 clock Enabled.
-     * |[13]    |SPI0CKEN  |SPI0 Clock Enable Bit
-     * |        |          |0 = SPI0 clock Disabled.
-     * |        |          |1 = SPI0 clock Enabled.
-     * |[14]    |SPI1CKEN  |SPI1 Clock Enable Bit
-     * |        |          |0 = SPI1 clock Disabled.
-     * |        |          |1 = SPI1 clock Enabled.
-     * |[15]    |SPI2CKEN  |SPI2 Clock Enable Bit
-     * |        |          |0 = SPI2 clock Disabled.
-     * |        |          |1 = SPI2 clock Enabled.
-     * |[16]    |UART0CKEN |UART0 Clock Enable Bit
-     * |        |          |0 = UART0 clock Disabled.
-     * |        |          |1 = UART0 clock Enabled.
-     * |[17]    |UART1CKEN |UART1 Clock Enable Bit
-     * |        |          |0 = UART1 clock Disabled.
-     * |        |          |1 = UART1 clock Enabled.
-     * |[18]    |UART2CKEN |UART2 Clock Enable Bit
-     * |        |          |0 = UART2 clock Disabled.
-     * |        |          |1 = UART2 clock Enabled.
-     * |[19]    |UART3CKEN |UART3 Clock Enable Bit
-     * |        |          |0 = UART3 clock Disabled.
-     * |        |          |1 = UART3 clock Enabled.
-     * |[20]    |UART4CKEN |UART4 Clock Enable Bit
-     * |        |          |0 = UART4 clock Disabled.
-     * |        |          |1 = UART4 clock Enabled.
-     * |[21]    |UART5CKEN |UART5 Clock Enable Bit
-     * |        |          |0 = UART5 clock Disabled.
-     * |        |          |1 = UART5 clock Enabled.
-     * |[24]    |CAN0CKEN  |CAN0 Clock Enable Bit
-     * |        |          |0 = CAN0 clock Disabled.
-     * |        |          |1 = CAN0 clock Enabled.
-     * |[25]    |CAN1CKEN  |CAN1 Clock Enable Bit
-     * |        |          |0 = CAN1 clock Disabled.
-     * |        |          |1 = CAN1 clock Enabled.
-     * |[26]    |OTGCKEN   |USB OTG Clock Enable Bit
-     * |        |          |0 = USB OTG clock Disabled.
-     * |        |          |1 = USB OTG clock Enabled.
-     * |[27]    |USBDCKEN  |USB Device Clock Enable Bit
-     * |        |          |0 = USB Device clock Disabled.
-     * |        |          |1 = USB Device clock Enabled.
-     * |[28]    |EADCCKEN  |Enhanced Analog-digital-converter (EADC) Clock Enable Bit
-     * |        |          |0 = EADC clock Disabled.
-     * |        |          |1 = EADC clock Enabled.
-     * |[29]    |I2S0CKEN  |I2S0 Clock Enable Bit
-     * |        |          |0 = I2S0 Clock Disabled.
-     * |        |          |1 = I2S0 Clock Enabled.
-     * |[30]    |HSOTGCKEN |HSUSB OTG Clock Enable Bit
-     * |        |          |0 = HSUSB OTG clock Disabled.
-     * |        |          |1 = HSUSB OTG clock Enabled.
-     * @var CLK_T::APBCLK1
-     * Offset: 0x0C  APB Devices Clock Enable Control Register 1
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[0]     |SC0CKEN   |SC0 Clock Enable Bit
-     * |        |          |0 = SC0 clock Disabled.
-     * |        |          |1 = SC0 clock Enabled.
-     * |[1]     |SC1CKEN   |SC1 Clock Enable Bit
-     * |        |          |0 = SC1 clock Disabled.
-     * |        |          |1 = SC1 clock Enabled.
-     * |[2]     |SC2CKEN   |SC2 Clock Enable Bit
-     * |        |          |0 = SC2 clock Disabled.
-     * |        |          |1 = SC2 clock Enabled.
-     * |[6]     |SPI3CKEN  |SPI3 Clock Enable Bit
-     * |        |          |0 = SPI3 clock Disabled.
-     * |        |          |1 = SPI3 clock Enabled.
-     * |[8]     |USCI0CKEN |USCI0 Clock Enable Bit
-     * |        |          |0 = USCI0 clock Disabled.
-     * |        |          |1 = USCI0 clock Enabled.
-     * |[9]     |USCI1CKEN |USCI1 Clock Enable Bit
-     * |        |          |0 = USCI1 clock Disabled.
-     * |        |          |1 = USCI1 clock Enabled.
-     * |[12]    |DACCKEN   |DAC Clock Enable Bit
-     * |        |          |0 = DAC clock Disabled.
-     * |        |          |1 = DAC clock Enabled.
-     * |[16]    |EPWM0CKEN |EPWM0 Clock Enable Bit
-     * |        |          |0 = EPWM0 clock Disabled.
-     * |        |          |1 = EPWM0 clock Enabled.
-     * |[17]    |EPWM1CKEN |EPWM1 Clock Enable Bit
-     * |        |          |0 = EPWM1 clock Disabled.
-     * |        |          |1 = EPWM1 clock Enabled.
-     * |[18]    |BPWM0CKEN |BPWM0 Clock Enable Bit
-     * |        |          |0 = BPWM0 clock Disabled.
-     * |        |          |1 = BPWM0 clock Enabled.
-     * |[19]    |BPWM1CKEN |BPWM1 Clock Enable Bit
-     * |        |          |0 = BPWM1 clock Disabled.
-     * |        |          |1 = BPWM1 clock Enabled.
-     * |[22]    |QEI0CKEN  |QEI0 Clock Enable Bit
-     * |        |          |0 = QEI0 clock Disabled.
-     * |        |          |1 = QEI0 clock Enabled.
-     * |[23]    |QEI1CKEN  |QEI1 Clock Enable Bit
-     * |        |          |0 = QEI1 clock Disabled.
-     * |        |          |1 = QEI1 clock Enabled.
-     * |[26]    |ECAP0CKEN |ECAP0 Clock Enable Bit
-     * |        |          |0 = ECAP0 clock Disabled.
-     * |        |          |1 = ECAP0 clock Enabled.
-     * |[27]    |ECAP1CKEN |ECAP1 Clock Enable Bit
-     * |        |          |0 = ECAP1 clock Disabled.
-     * |        |          |1 = ECAP1 clock Enabled.
-     * |[30]    |OPACKEN   |OP Amplifier (OPA) Clock Enable Bit
-     * |        |          |0 = OPA clock Disabled.
-     * |        |          |1 = OPA clock Enabled.
-     * @var CLK_T::CLKSEL0
-     * Offset: 0x10  Clock Source Select Control Register 0
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[2:0]   |HCLKSEL   |HCLK Clock Source Selection (Write Protect)
-     * |        |          |Before clock switching, the related clock sources (both pre-select and new-select) must be turned on.
-     * |        |          |The default value is reloaded from the value of CFOSC (CONFIG0[26]) in user configuration register of Flash controller by any reset
-     * |        |          |Therefore the default value is either 000b or 111b.
-     * |        |          |000 = Clock source from HXT.
-     * |        |          |001 = Clock source from LXT.
-     * |        |          |010 = Clock source from PLL.
-     * |        |          |011 = Clock source from LIRC.
-     * |        |          |111 = Clock source from HIRC.
-     * |        |          |Other = Reserved.
-     * |        |          |Note: This bit is write protected. Refer to the SYS_REGLCTL register.
-     * |[5:3]   |STCLKSEL  |Cortex-M4 SysTick Clock Source Selection (Write Protect)
-     * |        |          |If SYST_CTRL[2]=0, SysTick uses listed clock source below.
-     * |        |          |000 = Clock source from HXT.
-     * |        |          |001 = Clock source from LXT.
-     * |        |          |010 = Clock source from HXT/2.
-     * |        |          |011 = Clock source from HCLK/2.
-     * |        |          |111 = Clock source from HIRC/2.
-     * |        |          |Note: if SysTick clock source is not from HCLK (i.e
-     * |        |          |SYST_CTRL[2] = 0), SysTick clock source must less than or equal to HCLK/2.
-     * |        |          |Note: This bit is write protected. Refer to the SYS_REGLCTL register.
-     * |[8]     |USBSEL    |USB Clock Source Selection (Write Protect)
-     * |        |          |0 = Clock source from RC48M.
-     * |        |          |1 = Clock source from PLL.
-     * |[21:20] |SDH0SEL   |SD0 Engine Clock Source Selection (Write Protect)
-     * |        |          |00 = Clock source from HXT clock.
-     * |        |          |01 = Clock source from PLL clock.
-     * |        |          |10 = Clock source from HCLK.
-     * |        |          |11 = Clock source from HIRC clock.
-     * |[23:22] |SDH1SEL   |SD1 Engine Clock Source Selection (Write Protect)
-     * |        |          |00 = Clock source from HXT clock.
-     * |        |          |01 = Clock source from PLL clock.
-     * |        |          |10 = Clock source from HCLK.
-     * |        |          |11 = Clock source from HIRC clock.
-     * @var CLK_T::CLKSEL1
-     * Offset: 0x14  Clock Source Select Control Register 1
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[1:0]   |WDTSEL    |Watchdog Timer Clock Source Selection (Write Protect)
-     * |        |          |00 = Reserved.
-     * |        |          |01 = Clock source from 32.768 kHz external low speed crystal oscillator (LXT).
-     * |        |          |10 = Clock source from HCLK/2048.
-     * |        |          |11 = Clock source from 10 kHz internal low speed RC oscillator (LIRC).
-     * |        |          |Note: This bit is write protected. Refer to the SYS_REGLCTL register.
-     * |[10:8]  |TMR0SEL   |TIMER0 Clock Source Selection
-     * |        |          |000 = Clock source from 4~24 MHz external high speed crystal oscillator (HXT).
-     * |        |          |001 = Clock source from 32.768 kHz external low speed crystal oscillator (LXT).
-     * |        |          |010 = Clock source from PCLK0.
-     * |        |          |011 = Clock source from external clock TM0 pin.
-     * |        |          |101 = Clock source from 10 kHz internal low speed RC oscillator (LIRC).
-     * |        |          |111 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
-     * |        |          |Others = Reserved.
-     * |[14:12] |TMR1SEL   |TIMER1 Clock Source Selection
-     * |        |          |000 = Clock source from 4~24 MHz external high speed crystal oscillator (HXT).
-     * |        |          |001 = Clock source from 32.768 kHz external low speed crystal oscillator (LXT).
-     * |        |          |010 = Clock source from PCLK0.
-     * |        |          |011 = Clock source from external clock TM1 pin.
-     * |        |          |101 = Clock source from 10 kHz internal low speed RC oscillator (LIRC).
-     * |        |          |111 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
-     * |        |          |Others = Reserved.
-     * |[18:16] |TMR2SEL   |TIMER2 Clock Source Selection
-     * |        |          |000 = Clock source from 4~24 MHz external high speed crystal oscillator (HXT).
-     * |        |          |001 = Clock source from 32.768 kHz external low speed crystal oscillator (LXT).
-     * |        |          |010 = Clock source from PCLK1.
-     * |        |          |011 = Clock source from external clock TM2 pin.
-     * |        |          |101 = Clock source from 10 kHz internal low speed RC oscillator (LIRC).
-     * |        |          |111 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
-     * |        |          |Others = Reserved.
-     * |[22:20] |TMR3SEL   |TIMER3 Clock Source Selection
-     * |        |          |000 = Clock source from 4~24 MHz external high speed crystal oscillator (HXT).
-     * |        |          |001 = Clock source from 32.768 kHz external low speed crystal oscillator (LXT).
-     * |        |          |010 = Clock source from PCLK1.
-     * |        |          |011 = Clock source from external clock TM3 pin.
-     * |        |          |101 = Clock source from 10 kHz internal low speed RC oscillator (LIRC).
-     * |        |          |111 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
-     * |        |          |Others = Reserved.
-     * |[25:24] |UART0SEL  |UART0 Clock Source Selection
-     * |        |          |00 = Clock source from 4~24 MHz external high speed crystal oscillator (HXT).
-     * |        |          |01 = Clock source from PLL.
-     * |        |          |10 = Clock source from 32.768 kHz external low speed crystal oscillator (LXT).
-     * |        |          |11 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
-     * |[27:26] |UART1SEL  |UART1 Clock Source Selection
-     * |        |          |00 = Clock source from 4~24 MHz external high speed crystal oscillator (HXT).
-     * |        |          |01 = Clock source from PLL.
-     * |        |          |10 = Clock source from 32.768 kHz external low speed crystal oscillator (LXT).
-     * |        |          |11 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
-     * |[29:28] |CLKOSEL   |Clock Divider Clock Source Selection
-     * |        |          |00 = Clock source from 4~24 MHz external high speed crystal oscillator (HXT).
-     * |        |          |01 = Clock source from 32.768 kHz external low speed crystal oscillator (LXT).
-     * |        |          |10 = Clock source from HCLK.
-     * |        |          |11 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
-     * |[31:30] |WWDTSEL   |Window Watchdog Timer Clock Source Selection
-     * |        |          |10 = Clock source from HCLK/2048.
-     * |        |          |11 = Clock source from 10 kHz internal low speed RC oscillator (LIRC).
-     * |        |          |Others = Reserved.
-     * @var CLK_T::CLKSEL2
-     * Offset: 0x18  Clock Source Select Control Register 2
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[0]     |EPWM0SEL  |EPWM0 Clock Source Selection
-     * |        |          |The peripheral clock source of EPWM0 is defined by EPWM0SEL.
-     * |        |          |0 = Clock source from PLL.
-     * |        |          |1 = Clock source from PCLK0.
-     * |[1]     |EPWM1SEL  |EPWM1 Clock Source Selection
-     * |        |          |The peripheral clock source of EPWM1 is defined by EPWM1SEL.
-     * |        |          |0 = Clock source from PLL.
-     * |        |          |1 = Clock source from PCLK1.
-     * |[3:2]   |QSPI0SEL   |QSPI0 Clock Source Selection
-     * |        |          |00 = Clock source from 4~24 MHz external high speed crystal oscillator (HXT).
-     * |        |          |01 = Clock source from PLL.
-     * |        |          |10 = Clock source from PCLK0.
-     * |        |          |11 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
-     * |[5:4]   |SPI0SEL   |SPI0 Clock Source Selection
-     * |        |          |00 = Clock source from 4~24 MHz external high speed crystal oscillator (HXT).
-     * |        |          |01 = Clock source from PLL.
-     * |        |          |10 = Clock source from PCLK1.
-     * |        |          |11 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
-     * |[7:6]   |SPI1SEL   |SPI1 Clock Source Selection
-     * |        |          |00 = Clock source from 4~24 MHz external high speed crystal oscillator (HXT).
-     * |        |          |01 = Clock source from PLL.
-     * |        |          |10 = Clock source from PCLK0.
-     * |        |          |11 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
-     * |[8]     |BPWM0SEL  |BPWM0 Clock Source Selection
-     * |        |          |The peripheral clock source of BPWM0 is defined by BPWM0SEL.
-     * |        |          |0 = Clock source from PLL.
-     * |        |          |1 = Clock source from PCLK0.
-     * |[9]     |BPWM1SEL  |BPWM1 Clock Source Selection
-     * |        |          |The peripheral clock source of BPWM1 is defined by BPWM1SEL.
-     * |        |          |0 = Clock source from PLL.
-     * |        |          |1 = Clock source from PCLK1.
-     * |[11:10] |SPI2SEL   |SPI2 Clock Source Selection
-     * |        |          |00 = Clock source from 4~24 MHz external high speed crystal oscillator (HXT).
-     * |        |          |01 = Clock source from PLL.
-     * |        |          |10 = Clock source from PCLK1.
-     * |        |          |11 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
-     * |[13:12] |SPI3SEL   |SPI3 Clock Source Selection
-     * |        |          |00 = Clock source from 4~24 MHz external high speed crystal oscillator (HXT).
-     * |        |          |01 = Clock source from PLL.
-     * |        |          |10 = Clock source from PCLK0.
-     * |        |          |11 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
-     * @var CLK_T::CLKSEL3
-     * Offset: 0x1C  Clock Source Select Control Register 3
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[1:0]   |SC0SEL    |SC0 Clock Source Selection
-     * |        |          |00 = Clock source from 4~24 MHz external high speed crystal oscillator (HXT).
-     * |        |          |01 = Clock source from PLL.
-     * |        |          |10 = Clock source from PCLK0.
-     * |        |          |11 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
-     * |[3:2]   |SC1SEL    |SC0 Clock Source Selection
-     * |        |          |00 = Clock source from 4~24 MHz external high speed crystal oscillator (HXT).
-     * |        |          |01 = Clock source from PLL.
-     * |        |          |10 = Clock source from PCLK1.
-     * |        |          |11 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
-     * |[5:4]   |SC2SEL    |SC2 Clock Source Selection
-     * |        |          |00 = Clock source from 4~24 MHz external high speed crystal oscillator (HXT).
-     * |        |          |01 = Clock source from PLL.
-     * |        |          |10 = Clock source from PCLK0.
-     * |        |          |11 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
-     * |[8]     |RTCSEL    |RTC Clock Source Selection
-     * |        |          |0 = Clock source from 32.768 kHz external low speed crystal oscillator (LXT).
-     * |        |          |1 = Clock source from 10 kHz internal low speed RC oscillator (LIRC).
-     * |[17:16] |I2S0SEL   |I2S0 Clock Source Selection
-     * |        |          |00 = Clock source from HXT clock.
-     * |        |          |01 = Clock source from PLL clock.
-     * |        |          |10 = Clock source from PCLK.
-     * |        |          |11 = Clock source from HIRC clock.
-     * |[25:24] |UART2SEL  |UART2 Clock Source Selection
-     * |        |          |00 = Clock source from 4~24 MHz external high speed crystal oscillator (HXT).
-     * |        |          |01 = Clock source from PLL.
-     * |        |          |10 = Clock source from 32.768 kHz external low speed crystal oscillator (LXT).
-     * |        |          |11 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
-     * |[27:26] |UART3SEL  |UART3 Clock Source Selection
-     * |        |          |00 = Clock source from 4~24 MHz external high speed crystal oscillator (HXT).
-     * |        |          |01 = Clock source from PLL.
-     * |        |          |10 = Clock source from 32.768 kHz external low speed crystal oscillator (LXT).
-     * |        |          |11 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
-     * |[29:28] |UART4SEL  |UART4 Clock Source Selection
-     * |        |          |00 = Clock source from 4~24 MHz external high speed crystal oscillator (HXT).
-     * |        |          |01 = Clock source from PLL.
-     * |        |          |10 = Clock source from 32.768 kHz external low speed crystal oscillator (LXT).
-     * |        |          |11 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
-     * |[31:30] |UART5SEL  |UART5 Clock Source Selection
-     * |        |          |00 = Clock source from 4~24 MHz external high speed crystal oscillator (HXT).
-     * |        |          |01 = Clock source from PLL.
-     * |        |          |10 = Clock source from 32.768 kHz external low speed crystal oscillator (LXT).
-     * |        |          |11 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
-     * @var CLK_T::CLKDIV0
-     * Offset: 0x20  Clock Divider Number Register 0
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[3:0]   |HCLKDIV   |HCLK Clock Divide Number From HCLK Clock Source
-     * |        |          |HCLK clock frequency = (HCLK clock source frequency) / (HCLKDIV + 1).
-     * |[7:4]   |USBDIV    |USB Clock Divide Number From PLL Clock
-     * |        |          |USB clock frequency = (PLL frequency) / (USBDIV + 1).
-     * |[11:8]  |UART0DIV  |UART0 Clock Divide Number From UART0 Clock Source
-     * |        |          |UART0 clock frequency = (UART0 clock source frequency) / (UART0DIV + 1).
-     * |[15:12] |UART1DIV  |UART1 Clock Divide Number From UART1 Clock Source
-     * |        |          |UART1 clock frequency = (UART1 clock source frequency) / (UART1DIV + 1).
-     * |[23:16] |EADCDIV   |EADC Clock Divide Number From EADC Clock Source
-     * |        |          |EADC clock frequency = (EADC clock source frequency) / (EADCDIV + 1).
-     * |[31:24] |SDH0DIV   |SD0 Clock Divide Number From SD0 Clock Source
-     * |        |          |SD0 clock frequency = (SD0 clock source frequency) / (SDH0DIV + 1).
-     * @var CLK_T::CLKDIV1
-     * Offset: 0x24  Clock Divider Number Register 1
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[7:0]   |SC0DIV    |SC0 Clock Divide Number From SC0 Clock Source
-     * |        |          |SC0 clock frequency = (SC0 clock source frequency ) / (SC0DIV + 1).
-     * |[15:8]  |SC1DIV    |SC1 Clock Divide Number From SC1 Clock Source
-     * |        |          |SC1 clock frequency = (SC1 clock source frequency ) / (SC1DIV + 1).
-     * |[23:16] |SC2DIV    |SC2 Clock Divide Number From SC2 Clock Source
-     * |        |          |SC2 clock frequency = (SC2 clock source frequency ) / (SC2DIV + 1).
-     * @var CLK_T::CLKDIV3
-     * Offset: 0x2C  Clock Divider Number Register 3
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[23:16] |EMACDIV   |Ethernet Clock Divide Number Form HCLK
-     * |        |          |EMAC MDCLK clock frequency = (HCLK) / (EMACDIV + 1).
-     * |[31:24] |SDH1DIV   |SD1 Clock Divide Number From SD1 Clock Source
-     * |        |          |SD1 clock frequency = (SD1 clock source frequency) / (SDH1DIV + 1).
-     * @var CLK_T::CLKDIV4
-     * Offset: 0x30  Clock Divider Number Register 4
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[3:0]   |UART2DIV  |UART2 Clock Divide Number From UART2 Clock Source
-     * |        |          |UART2 clock frequency = (UART2 clock source frequency) / (UART2DIV + 1).
-     * |[7:4]   |UART3DIV  |UART3 Clock Divide Number From UART3 Clock Source
-     * |        |          |UART3 clock frequency = (UART3 clock source frequency) / (UART3DIV + 1).
-     * |[11:8]  |UART4DIV  |UART4 Clock Divide Number From UART4 Clock Source
-     * |        |          |UART4 clock frequency = (UART4 clock source frequency) / (UART4DIV + 1).
-     * |[15:12] |UART5DIV  |UART5 Clock Divide Number From UART5 Clock Source
-     * |        |          |UART5 clock frequency = (UART5 clock source frequency) / (UART5DIV + 1).
-     * @var CLK_T::PCLKDIV
-     * Offset: 0x34  APB Clock Divider Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[2:0]   |APB0DIV   |APB0 Clock Divider
-     * |        |          |APB0 clock can be divided from HCLK
-     * |        |          |000: PCLK0 = HCLK.
-     * |        |          |001: PCLK0 = 1/2 HCLK.
-     * |        |          |010: PCLK0 = 1/4 HCLK.
-     * |        |          |011: PCLK0 = 1/8 HCLK.
-     * |        |          |100: PCLK0 = 1/16 HCLK.
-     * |        |          |Others: Reserved.
-     * |[6:4]   |APB1DIV   |APB1 Clock Divider
-     * |        |          |APB1 clock can be divided from HCLK
-     * |        |          |000: PCLK1 = HCLK.
-     * |        |          |001: PCLK1 = 1/2 HCLK.
-     * |        |          |010: PCLK1 = 1/4 HCLK.
-     * |        |          |011: PCLK1 = 1/8 HCLK.
-     * |        |          |100: PCLK1 = 1/16 HCLK.
-     * |        |          |Others: Reserved.
-     * @var CLK_T::PLLCTL
-     * Offset: 0x40  PLL Control Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[8:0]   |FBDIV     |PLL Feedback Divider Control (Write Protect)
-     * |        |          |Refer to the formulas below the table.
-     * |        |          |Note: This bit is write protected. Refer to the SYS_REGLCTL register.
-     * |[13:9]  |INDIV     |PLL Input Divider Control (Write Protect)
-     * |        |          |Refer to the formulas below the table.
-     * |        |          |Note: This bit is write protected. Refer to the SYS_REGLCTL register.
-     * |[15:14] |OUTDIV    |PLL Output Divider Control (Write Protect)
-     * |        |          |Refer to the formulas below the table.
-     * |        |          |Note: This bit is write protected. Refer to the SYS_REGLCTL register.
-     * |[16]    |PD        |Power-down Mode (Write Protect)
-     * |        |          |If set the PDEN bit to 1 in CLK_PWRCTL register, the PLL will enter Power-down mode, too.
-     * |        |          |0 = PLL is in normal mode.
-     * |        |          |1 = PLL is in Power-down mode (default).
-     * |        |          |Note: This bit is write protected. Refer to the SYS_REGLCTL register.
-     * |[17]    |BP        |PLL Bypass Control (Write Protect)
-     * |        |          |0 = PLL is in normal mode (default).
-     * |        |          |1 = PLL clock output is same as PLL input clock FIN.
-     * |        |          |Note: This bit is write protected. Refer to the SYS_REGLCTL register.
-     * |[18]    |OE        |PLL OE (FOUT Enable) Pin Control (Write Protect)
-     * |        |          |0 = PLL FOUT Enabled.
-     * |        |          |1 = PLL FOUT is fixed low.
-     * |        |          |Note: This bit is write protected. Refer to the SYS_REGLCTL register.
-     * |[19]    |PLLSRC    |PLL Source Clock Selection (Write Protect)
-     * |        |          |0 = PLL source clock from 4~24 MHz external high-speed crystal oscillator (HXT).
-     * |        |          |1 = PLL source clock from 12 MHz internal high-speed oscillator (HIRC).
-     * |        |          |Note: This bit is write protected. Refer to the SYS_REGLCTL register.
-     * |[23]    |STBSEL    |PLL Stable Counter Selection (Write Protect)
-     * |        |          |0 = PLL stable time is 6144 PLL source clock (suitable for source clock is equal to or less than 12 MHz).
-     * |        |          |1 = PLL stable time is 12288 PLL source clock (suitable for source clock is larger than 12 MHz).
-     * |        |          |Note: This bit is write protected. Refer to the SYS_REGLCTL register.
-     * @var CLK_T::STATUS
-     * Offset: 0x50  Clock Status Monitor Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[0]     |HXTSTB    |HXT Clock Source Stable Flag (Read Only)
-     * |        |          |0 = 4~24 MHz external high speed crystal oscillator (HXT) clock is not stable or disabled.
-     * |        |          |1 = 4~24 MHz external high speed crystal oscillator (HXT) clock is stable and enabled.
-     * |[1]     |LXTSTB    |LXT Clock Source Stable Flag (Read Only)
-     * |        |          |0 = 32.768 kHz external low speed crystal oscillator (LXT) clock is not stable or disabled.
-     * |        |          |1 = 32.768 kHz external low speed crystal oscillator (LXT) clock is stabled and enabled.
-     * |[2]     |PLLSTB    |Internal PLL Clock Source Stable Flag (Read Only)
-     * |        |          |0 = Internal PLL clock is not stable or disabled.
-     * |        |          |1 = Internal PLL clock is stable and enabled.
-     * |[3]     |LIRCSTB   |LIRC Clock Source Stable Flag (Read Only)
-     * |        |          |0 = 10 kHz internal low speed RC oscillator (LIRC) clock is not stable or disabled.
-     * |        |          |1 = 10 kHz internal low speed RC oscillator (LIRC) clock is stable and enabled.
-     * |[4]     |HIRCSTB   |HIRC Clock Source Stable Flag (Read Only)
-     * |        |          |0 = 12 MHz internal high speed RC oscillator (HIRC) clock is not stable or disabled.
-     * |        |          |1 = 12 MHz internal high speed RC oscillator (HIRC) clock is stable and enabled.
-     * |        |          |Note: This bit is read only.
-     * |[6]     |HIRC48MSTB|HIRC 48MHz Clock Source Stable Flag (Read Only)
-     * |        |          |0 = 48 MHz internal high speed RC oscillator (HIRC) clock is not stable or disabled.
-     * |        |          |1 = 48 MHz internal high speed RC oscillator (HIRC) clock is stable and enabled.
-     * |        |          |Note: This bit is read only.
-     * |[7]     |CLKSFAIL  |Clock Switching Fail Flag (Read Only)
-     * |        |          |This bit is updated when software switches system clock source
-     * |        |          |If switch target clock is stable, this bit will be set to 0
-     * |        |          |If switch target clock is not stable, this bit will be set to 1.
-     * |        |          |0 = Clock switching success.
-     * |        |          |1 = Clock switching failure.
-     * |        |          |Note: Write 1 to clear the bit to 0.
-     * @var CLK_T::CLKOCTL
-     * Offset: 0x60  Clock Output Control Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[3:0]   |FREQSEL   |Clock Output Frequency Selection
-     * |        |          |The formula of output frequency is
-     * |        |          |Fout = Fin/2(N+1).
-     * |        |          |Fin is the input clock frequency.
-     * |        |          |Fout is the frequency of divider output clock.
-     * |        |          |N is the 4-bit value of FREQSEL[3:0].
-     * |[4]     |CLKOEN    |Clock Output Enable Bit
-     * |        |          |0 = Clock Output function Disabled.
-     * |        |          |1 = Clock Output function Enabled.
-     * |[5]     |DIV1EN    |Clock Output Divide One Enable Bit
-     * |        |          |0 = Clock Output will output clock with source frequency divided by FREQSEL.
-     * |        |          |1 = Clock Output will output clock with source frequency.
-     * |[6]     |CLK1HZEN  |Clock Output 1Hz Enable Bit
-     * |        |          |0 = 1 Hz clock output for 32.768 kHz frequency compensation Disabled.
-     * |        |          |1 = 1 Hz clock output for 32.768 kHz frequency compensation Enabled.
-     * @var CLK_T::CLKDCTL
-     * Offset: 0x70  Clock Fail Detector Control Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[4]     |HXTFDEN   |HXT Clock Fail Detector Enable Bit
-     * |        |          |0 = 4~24 MHz external high speed crystal oscillator (HXT) clock fail detector Disabled.
-     * |        |          |1 = 4~24 MHz external high speed crystal oscillator (HXT) clock fail detector Enabled.
-     * |[5]     |HXTFIEN   |HXT Clock Fail Interrupt Enable Bit
-     * |        |          |0 = 4~24 MHz external high speed crystal oscillator (HXT) clock fail interrupt Disabled.
-     * |        |          |1 = 4~24 MHz external high speed crystal oscillator (HXT) clock fail interrupt Enabled.
-     * |[12]    |LXTFDEN   |LXT Clock Fail Detector Enable Bit
-     * |        |          |0 = 32.768 kHz external low speed crystal oscillator (LXT) clock fail detector Disabled.
-     * |        |          |1 = 32.768 kHz external low speed crystal oscillator (LXT) clock fail detector Enabled.
-     * |[13]    |LXTFIEN   |LXT Clock Fail Interrupt Enable Bit
-     * |        |          |0 = 32.768 kHz external low speed crystal oscillator (LXT) clock fail interrupt Disabled.
-     * |        |          |1 = 32.768 kHz external low speed crystal oscillator (LXT) clock fail interrupt Enabled.
-     * |[16]    |HXTFQDEN  |HXT Clock Frequency Range Detector Enable Bit
-     * |        |          |0 = 4~24 MHz external high speed crystal oscillator (HXT) clock frequency range detector Disabled.
-     * |        |          |1 = 4~24 MHz external high speed crystal oscillator (HXT) clock frequency range detector Enabled.
-     * |[17]    |HXTFQIEN  |HXT Clock Frequency Range Detector Interrupt Enable Bit
-     * |        |          |0 = 4~24 MHz external high speed crystal oscillator (HXT) clock frequency range detector fail interrupt Disabled.
-     * |        |          |1 = 4~24 MHz external high speed crystal oscillator (HXT) clock frequency range detector fail interrupt Enabled.
-     * @var CLK_T::CLKDSTS
-     * Offset: 0x74  Clock Fail Detector Status Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[0]     |HXTFIF    |HXT Clock Fail Interrupt Flag
-     * |        |          |0 = 4~24 MHz external high speed crystal oscillator (HXT) clock is normal.
-     * |        |          |1 = 4~24 MHz external high speed crystal oscillator (HXT) clock stops.
-     * |        |          |Note: Write 1 to clear the bit to 0.
-     * |[1]     |LXTFIF    |LXT Clock Fail Interrupt Flag
-     * |        |          |0 = 32.768 kHz external low speed crystal oscillator (LXT) clock is normal.
-     * |        |          |1 = 32.768 kHz external low speed crystal oscillator (LXT) stops.
-     * |        |          |Note: Write 1 to clear the bit to 0.
-     * |[8]     |HXTFQIF   |HXT Clock Frequency Range Detector Interrupt Flag
-     * |        |          |0 = 4~24 MHz external high speed crystal oscillator (HXT) clock frequency is normal.
-     * |        |          |1 = 4~24 MHz external high speed crystal oscillator (HXT) clock frequency is abnormal.
-     * |        |          |Note: Write 1 to clear the bit to 0.
-     * @var CLK_T::CDUPB
-     * Offset: 0x78  Clock Frequency Range Detector Upper Boundary Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[9:0]   |UPERBD    |HXT Clock Frequency Range Detector Upper Boundary Value
-     * |        |          |The bits define the maximum value of frequency range detector window.
-     * |        |          |When HXT frequency higher than this maximum frequency value, the HXT Clock Frequency Range Detector Interrupt Flag will set to 1.
-     * @var CLK_T::CDLOWB
-     * Offset: 0x7C  Clock Frequency Range Detector Lower Boundary Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[9:0]   |LOWERBD   |HXT Clock Frequency Range Detector Lower Boundary Value
-     * |        |          |The bits define the minimum value of frequency range detector window.
-     * |        |          |When HXT frequency lower than this minimum frequency value, the HXT Clock Frequency Range Detector Interrupt Flag will set to 1.
-     * @var CLK_T::PMUCTL
-     * Offset: 0x90  Power Manager Control Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[2:0]   |PDMSEL    |Power-down Mode Selection (Write Protect)
-     * |        |          |This is a protected register. Please refer to open lock sequence to program it.
-     * |        |          |These bits control chip power-down mode grade selection when CPU execute WFI/WFE instruction.
-     * |        |          |000 = Power-down mode is selected. (PD)
-     * |        |          |001 = Low leakage Power-down mode is selected (LLPD).
-     * |        |          |010 =Fast wake-up Power-down mode is selected (FWPD).
-     * |        |          |011 = Reserved.
-     * |        |          |100 = Standby Power-down mode 0 is selected (SPD0) (SRAM retention).
-     * |        |          |101 = Standby Power-down mode 1 is selected (SPD1).
-     * |        |          |110 = Deep Power-down mode is selected (DPD).
-     * |        |          |111 = Reserved.
-     * |        |          |Note: This bit is write protected. Refer to the SYS_REGLCTL register.
-     * |[3]     |DPDHOLDEN |Deep-Power-Down Mode GPIO Hold Enable
-     * |        |          |0 = When GPIO enters deep power-down mode, all I/O status are tri-state.
-     * |        |          |1 = When GPIO enters deep power-down mode, all I/O status are hold to keep normal operating status.
-     * |        |          |    After chip was waked up from deep power-down mode, the I/O are still keep hold status until user set CLK_IOPDCTL[0]
-     * |        |          |    to release I/O hold status.
-     * |[8]     |WKTMREN   |Wake-up Timer Enable (Write Protect)
-     * |        |          |This is a protected register. Please refer to open lock sequence to program it.
-     * |        |          |0 = Wake-up timer disable at DPD/SPD mode.
-     * |        |          |1 = Wake-up timer enabled at DPD/SPD mode.
-     * |        |          |Note: This bit is write protected. Refer to the SYS_REGLCTL register.
-     * |[11:9]  |WKTMRIS   |Wake-up Timer Time-out Interval Select (Write Protect)
-     * |        |          |This is a protected register. Please refer to open lock sequence to program it.
-     * |        |          |These bits control wake-up timer time-out interval when chip at DPD/SPD mode.
-     * |        |          |000 = Time-out interval is 128 OSC10K clocks (12.8 ms).
-     * |        |          |001 = Time-out interval is 256 OSC10K clocks (25.6 ms).
-     * |        |          |010 = Time-out interval is 512 OSC10K clocks (51.2 ms).
-     * |        |          |011 = Time-out interval is 1024 OSC10K clocks (102.4ms).
-     * |        |          |100 = Time-out interval is 4096 OSC10K clocks (409.6ms).
-     * |        |          |101 = Time-out interval is 8192 OSC10K clocks (819.2ms).
-     * |        |          |110 = Time-out interval is 16384 OSC10K clocks (1638.4ms).
-     * |        |          |111 = Time-out interval is 65536 OSC10K clocks (6553.6ms).
-     * |        |          |Note: This bit is write protected. Refer to the SYS_REGLCTL register.
-     * |[17:16] |WKPINEN   |Wake-up Pin Enable (Write Protect)
-     * |        |          |This is a protected register. Please refer to open lock sequence to program it.
-     * |        |          |00 = Wake-up pin disable at Deep Power-down mode.
-     * |        |          |01 = Wake-up pin rising edge enabled at Deep Power-down mode.
-     * |        |          |10 = Wake-up pin falling edge enabled at Deep Power-down mode.
-     * |        |          |11 = Wake-up pin both edge enabled at Deep Power-down mode.
-     * |        |          |Note: This bit is write protected. Refer to the SYS_REGLCTL register.
-     * |[18]    |ACMPSPWK  |ACMP Standby Power-down Mode Wake-up Enable (Write Protect)
-     * |        |          |This is a protected register. Please refer to open lock sequence to program it.
-     * |        |          |0 = ACMP wake-up disable at Standby Power-down mode.
-     * |        |          |1 = ACMP wake-up enabled at Standby Power-down mode.
-     * |        |          |Note: This bit is write protected. Refer to the SYS_REGLCTL register.
-     * |[23]    |RTCWKEN   |RTC Wake-up Enable (Write Protect)
-     * |        |          |This is a protected register. Please refer to open lock sequence to program it.
-     * |        |          |0 = RTC wake-up disable at Deep Power-down mode or Standby Power-down mode.
-     * |        |          |1 = RTC wake-up enabled at Deep Power-down mode or Standby Power-down mode.
-     * |        |          |Note: This bit is write protected. Refer to the SYS_REGLCTL register.
-     * @var CLK_T::PMUSTS
-     * Offset: 0x94  Power Manager Status Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[0]     |PINWK     |Pin Wake-up Flag (Read Only)
-     * |        |          |This flag indicates that wake-up of chip from Deep Power-down mode was requested by a transition of the WAKEUP pin (GPC.0)
-     * |        |          |This flag is cleared when DPD mode is entered.
-     * |[1]     |TMRWK     |Timer Wake-up Flag (Read Only)
-     * |        |          |This flag indicates that wake-up of chip from Deep Power-down mode (DPD) or Standby Power-down (SPD) mode was requested by wakeup timer time-out
-     * |        |          |This flag is cleared when DPD or SPD mode is entered.
-     * |[2]     |RTCWK     |RTC Wake-up Flag (Read Only)
-     * |        |          |This flag indicates that wakeup of device from Deep Power-down mode (DPD) or Standby Power-down (SPD) mode was requested with a RTC alarm, tick time or tamper happened
-     * |        |          |This flag is cleared when DPD or SPD mode is entered.
-     * |[8]     |GPAWK     |GPA Wake-up Flag (Read Only)
-     * |        |          |This flag indicates that wake-up of chip from Standby Power-down mode was requested by a transition of selected one GPA group pins
-     * |        |          |This flag is cleared when SPD mode is entered.
-     * |[9]     |GPBWK     |GPB Wake-up Flag (Read Only)
-     * |        |          |This flag indicates that wake-up of chip from Standby Power-down mode was requested by a transition of selected one GPB group pins
-     * |        |          |This flag is cleared when SPD mode is entered.
-     * |[10]    |GPCWK     |GPC Wake-up Flag (Read Only)
-     * |        |          |This flag indicates that wake-up of chip from Standby Power-down mode was requested by a transition of selected one GPC group pins
-     * |        |          |This flag is cleared when SPD mode is entered.
-     * |[11]    |GPDWK     |GPD Wake-up Flag (Read Only)
-     * |        |          |This flag indicates that wake-up of chip from Standby Power-down mode was requested by a transition of selected one GPD group pins
-     * |        |          |This flag is cleared when SPD mode is entered.
-     * |[12]    |LVRWK     |LVR Wake-up Flag (Read Only)
-     * |        |          |This flag indicates that wakeup of device from Standby Power-down mode was requested with a LVR happened
-     * |        |          |This flag is cleared when SPD mode is entered.
-     * |[13]    |BODWK     |BOD Wake-up Flag (Read Only)
-     * |        |          |This flag indicates that wakeup of device from Standby Power-down mode (SPD) was requested with a BOD happened
-     * |        |          |This flag is cleared when SPD mode is entered.
-     * |[14]    |ACMPWK    |ACMP Wake-up Flag (Read Only)
-     * |        |          |This flag indicates that wakeup of device from Standby Power-down mode (SPD) was requested with a ACMP transition
-     * |        |          |This flag is cleared when SPD mode is entered.
-     * |[31]    |CLRWK     |Clear Wake-up Flag
-     * |        |          |0 = No clear.
-     * |        |          |1 = Clear all wake-up flag.
-     * @var CLK_T::LDOCTL
-     * Offset: 0x98  LDO Control Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[18]    |PDBIASEN  |Power-down Bias Enable Bit
-     * |        |          |0 = Reserved.
-     * |        |          |1 = Power-down bias enabled.
-     * |        |          |Note: This bit should set to 1 before chip enter power-down mode.
-     * @var CLK_T::SWKDBCTL
-     * Offset: 0x9C  Standby Power-down Wake-up De-bounce Control Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[3:0]   |SWKDBCLKSEL|Standby Power-down Wake-up De-bounce Sampling Cycle Selection
-     * |        |          |0000 = Sample wake-up input once per 1 clocks.
-     * |        |          |0001 = Sample wake-up input once per 2 clocks.
-     * |        |          |0010 = Sample wake-up input once per 4 clocks.
-     * |        |          |0011 = Sample wake-up input once per 8 clocks.
-     * |        |          |0100 = Sample wake-up input once per 16 clocks.
-     * |        |          |0101 = Sample wake-up input once per 32 clocks.
-     * |        |          |0110 = Sample wake-up input once per 64 clocks.
-     * |        |          |0111 = Sample wake-up input once per 128 clocks.
-     * |        |          |1000 = Sample wake-up input once per 256 clocks.
-     * |        |          |1001 = Sample wake-up input once per 2*256 clocks.
-     * |        |          |1010 = Sample wake-up input once per 4*256 clocks.
-     * |        |          |1011 = Sample wake-up input once per 8*256 clocks.
-     * |        |          |1100 = Sample wake-up input once per 16*256 clocks.
-     * |        |          |1101 = Sample wake-up input once per 32*256 clocks.
-     * |        |          |1110 = Sample wake-up input once per 64*256 clocks.
-     * |        |          |1111 = Sample wake-up input once per 128*256 clocks.
-     * |        |          |Note: De-bounce counter clock source is the 10 kHz internal low speed RC oscillator (LIRC).
-     * @var CLK_T::PASWKCTL
-     * Offset: 0xA0  GPA Standby Power-down Wake-up Control Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[0]     |WKEN      |Standby Power-down Pin Wake-up Enable Bit
-     * |        |          |0 = GPA group pin wake-up function disabled.
-     * |        |          |1 = GPA group pin wake-up function enabled.
-     * |[1]     |PRWKEN    |Pin Rising Edge Wake-up Enable Bit
-     * |        |          |0 = GPA group pin rising edge wake-up function disabled.
-     * |        |          |1 = GPA group pin rising edge wake-up function enabled.
-     * |[2]     |PFWKEN    |Pin Falling Edge Wake-up Enable Bit
-     * |        |          |0 = GPA group pin falling edge wake-up function disabled.
-     * |        |          |1 = GPA group pin falling edge wake-up function enabled.
-     * |[7:4]   |WKPSEL    |GPA Standby Power-down Wake-up Pin Select
-     * |        |          |0000 = GPA.0 wake-up function enabled.
-     * |        |          |0001 = GPA.1 wake-up function enabled.
-     * |        |          |0010 = GPA.2 wake-up function enabled.
-     * |        |          |0011 = GPA.3 wake-up function enabled.
-     * |        |          |0100 = GPA.4 wake-up function enabled.
-     * |        |          |0101 = GPA.5 wake-up function enabled.
-     * |        |          |0110 = GPA.6 wake-up function enabled.
-     * |        |          |0111 = GPA.7 wake-up function enabled.
-     * |        |          |1000 = GPA.8 wake-up function enabled.
-     * |        |          |1001 = GPA.9 wake-up function enabled.
-     * |        |          |1010 = GPA.10 wake-up function enabled.
-     * |        |          |1011 = GPA.11 wake-up function enabled.
-     * |        |          |1100 = GPA.12 wake-up function enabled.
-     * |        |          |1101 = GPA.13 wake-up function enabled.
-     * |        |          |1110 = GPA.14 wake-up function enabled.
-     * |        |          |1111 = GPA.15 wake-up function enabled.
-     * |[8]     |DBEN      |GPA Input Signal De-bounce Enable Bit
-     * |        |          |The DBEN bit is used to enable the de-bounce function for each corresponding IO
-     * |        |          |If the input signal pulse width cannot be sampled by continuous two de-bounce sample cycle, the input signal transition is seen as the signal bounce and will not trigger the wake-up
-     * |        |          |The de-bounce clock source is the 10 kHz internal low speed RC oscillator.
-     * |        |          |0 = Standby power-down wake-up pin De-bounce function disable.
-     * |        |          |1 = Standby power-down wake-up pin De-bounce function enable.
-     * |        |          |The de-bounce function is valid only for edge triggered.
-     * @var CLK_T::PBSWKCTL
-     * Offset: 0xA4  GPB Standby Power-down Wake-up Control Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[0]     |WKEN      |Standby Power-down Pin Wake-up Enable Bit
-     * |        |          |0 = GPB group pin wake-up function disabled.
-     * |        |          |1 = GPB group pin wake-up function enabled.
-     * |[1]     |PRWKEN    |Pin Rising Edge Wake-up Enable Bit
-     * |        |          |0 = GPB group pin rising edge wake-up function disabled.
-     * |        |          |1 = GPB group pin rising edge wake-up function enabled.
-     * |[2]     |PFWKEN    |Pin Falling Edge Wake-up Enable Bit
-     * |        |          |0 = GPB group pin falling edge wake-up function disabled.
-     * |        |          |1 = GPB group pin falling edge wake-up function enabled.
-     * |[7:4]   |WKPSEL    |GPB Standby Power-down Wake-up Pin Select
-     * |        |          |0000 = GPB.0 wake-up function enabled.
-     * |        |          |0001 = GPB.1 wake-up function enabled.
-     * |        |          |0010 = GPB.2 wake-up function enabled.
-     * |        |          |0011 = GPB.3 wake-up function enabled.
-     * |        |          |0100 = GPB.4 wake-up function enabled.
-     * |        |          |0101 = GPB.5 wake-up function enabled.
-     * |        |          |0110 = GPB.6 wake-up function enabled.
-     * |        |          |0111 = GPB.7 wake-up function enabled.
-     * |        |          |1000 = GPB.8 wake-up function enabled.
-     * |        |          |1001 = GPB.9 wake-up function enabled.
-     * |        |          |1010 = GPB.10 wake-up function enabled.
-     * |        |          |1011 = GPB.11 wake-up function enabled.
-     * |        |          |1100 = GPB.12 wake-up function enabled.
-     * |        |          |1101 = GPB.13 wake-up function enabled.
-     * |        |          |1110 = GPB.14 wake-up function enabled.
-     * |        |          |1111 = GPB.15 wake-up function enabled.
-     * |[8]     |DBEN      |GPB Input Signal De-bounce Enable Bit
-     * |        |          |The DBEN bit is used to enable the de-bounce function for each corresponding IO
-     * |        |          |If the input signal pulse width cannot be sampled by continuous two de-bounce sample cycle, the input signal transition is seen as the signal bounce and will not trigger the wake-up
-     * |        |          |The de-bounce clock source is the 10 kHz internal low speed RC oscillator.
-     * |        |          |0 = Standby power-down wake-up pin De-bounce function disable.
-     * |        |          |1 = Standby power-down wake-up pin De-bounce function enable.
-     * |        |          |The de-bounce function is valid only for edge triggered.
-     * @var CLK_T::PCSWKCTL
-     * Offset: 0xA8  GPC Standby Power-down Wake-up Control Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[0]     |WKEN      |Standby Power-down Pin Wake-up Enable Bit
-     * |        |          |0 = GPC group pin wake-up function disabled.
-     * |        |          |1 = GPC group pin wake-up function enabled.
-     * |[1]     |PRWKEN    |Pin Rising Edge Wake-up Enable Bit
-     * |        |          |0 = GPC group pin rising edge wake-up function disabled.
-     * |        |          |1 = GPC group pin rising edge wake-up function enabled.
-     * |[2]     |PFWKEN    |Pin Falling Edge Wake-up Enable Bit
-     * |        |          |0 = GPC group pin falling edge wake-up function disabled.
-     * |        |          |1 = GPC group pin falling edge wake-up function enabled.
-     * |[7:4]   |WKPSEL    |GPC Standby Power-down Wake-up Pin Select
-     * |        |          |0000 = GPC.0 wake-up function enabled.
-     * |        |          |0001 = GPC.1 wake-up function enabled.
-     * |        |          |0010 = GPC.2 wake-up function enabled.
-     * |        |          |0011 = GPC.3 wake-up function enabled.
-     * |        |          |0100 = GPC.4 wake-up function enabled.
-     * |        |          |0101 = GPC.5 wake-up function enabled.
-     * |        |          |0110 = GPC.6 wake-up function enabled.
-     * |        |          |0111 = GPC.7 wake-up function enabled.
-     * |        |          |1000 = GPC.8 wake-up function enabled.
-     * |        |          |1001 = GPC.9 wake-up function enabled.
-     * |        |          |1010 = GPC.10 wake-up function enabled.
-     * |        |          |1011 = GPC.11 wake-up function enabled.
-     * |        |          |1100 = GPC.12 wake-up function enabled.
-     * |        |          |1101 = GPC.13 wake-up function enabled.
-     * |        |          |1110 = GPC.14 wake-up function enabled.
-     * |        |          |1111 = GPC.15 wake-up function enabled.
-     * |[8]     |DBEN      |GPC Input Signal De-bounce Enable Bit
-     * |        |          |The DBEN bit is used to enable the de-bounce function for each corresponding IO
-     * |        |          |If the input signal pulse width cannot be sampled by continuous two de-bounce sample cycle, the input signal transition is seen as the signal bounce and will not trigger the wake-up
-     * |        |          |The de-bounce clock source is the 10 kHz internal low speed RC oscillator.
-     * |        |          |0 = Standby power-down wake-up pin De-bounce function disable.
-     * |        |          |1 = Standby power-down wake-up pin De-bounce function enable.
-     * |        |          |The de-bounce function is valid only for edge triggered.
-     * @var CLK_T::PDSWKCTL
-     * Offset: 0xAC  GPD Standby Power-down Wake-up Control Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[0]     |WKEN      |Standby Power-down Pin Wake-up Enable Bit
-     * |        |          |0 = GPD group pin wake-up function disabled.
-     * |        |          |1 = GPD group pin wake-up function enabled.
-     * |[1]     |PRWKEN    |Pin Rising Edge Wake-up Enable Bit
-     * |        |          |0 = GPD group pin rising edge wake-up function disabled.
-     * |        |          |1 = GPD group pin rising edge wake-up function enabled.
-     * |[2]     |PFWKEN    |Pin Falling Edge Wake-up Enable Bit
-     * |        |          |0 = GPD group pin falling edge wake-up function disabled.
-     * |        |          |1 = GPD group pin falling edge wake-up function enabled.
-     * |[7:4]   |WKPSEL    |GPD Standby Power-down Wake-up Pin Select
-     * |        |          |0000 = GPD.0 wake-up function enabled.
-     * |        |          |0001 = GPD.1 wake-up function enabled.
-     * |        |          |0010 = GPD.2 wake-up function enabled.
-     * |        |          |0011 = GPD.3 wake-up function enabled.
-     * |        |          |0100 = GPD.4 wake-up function enabled.
-     * |        |          |0101 = GPD.5 wake-up function enabled.
-     * |        |          |0110 = GPD.6 wake-up function enabled.
-     * |        |          |0111 = GPD.7 wake-up function enabled.
-     * |        |          |1000 = GPD.8 wake-up function enabled.
-     * |        |          |1001 = GPD.9 wake-up function enabled.
-     * |        |          |1010 = GPD.10 wake-up function enabled.
-     * |        |          |1011 = GPD.11 wake-up function enabled.
-     * |        |          |1100 = GPD.12 wake-up function enabled.
-     * |        |          |1101 = GPD.13 wake-up function enabled.
-     * |        |          |1110 = GPD.14 wake-up function enabled.
-     * |        |          |1111 = GPD.15 wake-up function enabled.
-     * |[8]     |DBEN      |GPD Input Signal De-bounce Enable Bit
-     * |        |          |The DBEN bit is used to enable the de-bounce function for each corresponding IO
-     * |        |          |If the input signal pulse width cannot be sampled by continuous two de-bounce sample cycle, the input signal transition is seen as the signal bounce and will not trigger the wake-up
-     * |        |          |The de-bounce clock source is the 10 kHz internal low speed RC oscillator.
-     * |        |          |0 = Standby power-down wake-up pin De-bounce function disable.
-     * |        |          |1 = Standby power-down wake-up pin De-bounce function enable.
-     * |        |          |The de-bounce function is valid only for edge triggered.
-     * @var CLK_T::IOPDCTL
-     * Offset: 0xB0  GPIO Standby Power-down Control Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[0]     |IOHR      |GPIO Hold Release
-     * |        |          |When GPIO enter standby power-down mode, all I/O status are hold to keep normal operating status
-     * |        |          |After chip was waked up from standby power-down mode, the I/O are still keep hold status until user set this bit to release I/O hold status.
-     * |        |          |This bit is auto cleared by hardware.
-     */
+/**
+ * @var CLK_T::PWRCTL
+ * Offset: 0x00  System Power-down Control Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[0]     |HXTEN     |HXT Enable Bit (Write Protect)
+ * |        |          |0 = 24 MHz external high speed crystal (HXT) Disabled.
+ * |        |          |1 = 24 MHz external high speed crystal (HXT) Enabled.
+ * |        |          |Note 1: This bit is write protected. Refer to the SYS_RLKTZS register.
+ * |        |          |Note 2: HXT cannot be disabled and HXTEN will always read as 1 if HCLK clock source is selected from HXT or PLL (clock source from HXT).
+ * |[1]     |LXTEN     |LXT Enable Bit (Write Protect)
+ * |        |          |0 = 32.768 kHz external low speed crystal (external LXT) Disabled.
+ * |        |          |1 = 32.768 kHz external low speed crystal (external LXT) Enabled.
+ * |        |          |Note 1: This bit is write protected. Refer to the SYS_RLKTZS register.
+ * |        |          |Note 2: LXT cannot be disabled and LXTEN will always read as 1 if HCLK clock source is selected from LXT when the LXT clock source is selected as external LXT by setting C32KS(RTC_LXTCTL[6]) to 1.
+ * |[2]     |HIRCEN    |HIRC Enable Bit (Write Protect)
+ * |        |          |The HCLK default clock source is from HIRC and this bit default value is 1.
+ * |        |          |0 = 12 MHz internal high speed RC oscillator (HIRC) Disabled.
+ * |        |          |1 = 12 MHz internal high speed RC oscillator (HIRC) Enabled.
+ * |        |          |Note 1: This bit is write protected. Refer to the SYS_RLKTZS register.
+ * |        |          |Note 2: HIRC cannot be disabled and HIRCEN will always read as 1 if HXTFQIEN or is set.
+ * |[3]     |LIRCEN    |LIRC Enable Bit (Write Protect)
+ * |        |          |0 = 32 kHz internal low speed RC oscillator (LIRC) Disabled.
+ * |        |          |1 = 32 kHz internal low speed RC oscillator (LIRC) Enabled.
+ * |        |          |Note 1: This bit is write protected. Refer to the SYS_RLKTZS register.
+ * |[10]    |HXTDS     |HXT Drive Current Strength (Write Protect)
+ * |        |          |0 = Lower power consumption requirement for 2.5V~3.3V I/O power application.
+ * |        |          |1 = higher noise immunity requirement for 2.5V~3.3V I/O power application.(default)
+ * |        |          |Note: This bit is write protected. Refer to the SYS_RLKTZS register.
+ * |[11]    |SYSPLLAPD |SYSPLL Auto Power Down Option when CA35 & RTP-M4 are Power Down (Write Protect)
+ * |        |          |0 = When CA35 and RTP-M4 are both in WFI, the PD pin of SYS-PLL is the same as CLK_PLL2CTL1[0].
+ * |        |          |1 = When CA35 and RTP-M4 are both in WFI, set the PD pin of SYS-PLL to high automatically.
+ * |        |          |Note 1: This bit is write protected. Refer to the SYS_RLKTZS register.
+ * |        |          |Note 2: This bit only works when the CA35 and RTP-M4 are not both in Power-down mode
+ * |        |          |If one of RTP-M4 and CA35 is not in Power-down mode, the PLL PD pin status is the controlled by CLK_PLL1CTL1[0].
+ * |[12]    |CAPLLAPD  |CAPLL Auto Power Down Option when CA35 is Power Gating (Write Protect)
+ * |        |          |0 = When CA35 core power is not ready, the PD pin of CA-PLL is the same as CLK_PLL0CTL1[0].
+ * |        |          |1 = When CA35 core power is not ready, set the PD pin of CA-PLL to high automatically.
+ * |        |          |Note 1: This bit is write protected. Refer to the SYS_RLKTZS register.
+ * |        |          |Note 2: This bit only works when the CA35 core power is not ready
+ * |        |          |If CA35 core power is ready, the PLL PD pin status is the controlled by CLK_PLL0CTL1[0].
+ * |[13]    |DDRPLLAPD |DDRPLL Auto Power Down Option when CA35 is Power Gating (Write Protect)
+ * |        |          |0 = When CA35 core power is not ready, the PD pin of DDR-PLL is the same as CLK_PLL2CTL1[0].
+ * |        |          |1 = When CA35 core power is not ready, set the PD pin of DDR-PLL to high automatically.
+ * |        |          |Note 1: This bit is write protected. Refer to the SYS_RLKTZS register.
+ * |        |          |Note 2: This bit only works when the CA35 core power is not ready
+ * |        |          |If CA35 core power is ready, the PLL PD pin status is the controlled by CLK_PLL2CTL1[0].
+ * |[14]    |HXTAOFF   |HXT Auto Off Option when CA35 is Power Gating (Write Protect)
+ * |        |          |0 = When CA35 core power is not ready, the HXT enable bit is the same as CLK_PWRCTL[0].
+ * |        |          |1 = When CA35 core power is not ready, switch the HXT enable bit to low automatically.
+ * |        |          |Note 1: This bit is write protected. Refer to the SYS_RLKTZS register.
+ * |        |          |Note 2: This bit only works when the CA35 core power is not ready
+ * |        |          |If CA35 core power is ready, the HXT enable bit is the controlled by CLK_PWRCTL[0].
+ * |[15]    |HIRCAOFF  |HIRC Auto Off Option when CA35 is Power Gating (Write Protect)
+ * |        |          |0 = When CA35 core power is not ready, the HIRC enable bit is the same as CLK_PWRCTL[2].
+ * |        |          |1 = When CA35 core power is not ready, switch the HIRC enable bit to low automatically.
+ * |        |          |Note 1: This bit is write protected. Refer to the SYS_RLKTZS register.
+ * |        |          |Note 2: This bit only works when the CA35 core power is not ready
+ * |        |          |If CA35 core power is ready, the HIRC enable bit is the controlled by CLK_PWRCTL[2].
+ * |[17:16] |LXTSTBS   |LXT Stable Count Select (Write Protect)
+ * |        |          |00 = LXT stable count = 16384 clocks.
+ * |        |          |01 = LXT stable count = 65536 clocks.
+ * |        |          |10 = LXT stable count = 131072 clocks.
+ * |        |          |11 = LXT stable count = 327680 clocks.
+ * |        |          |Note: These bits are write protected. Refer to the SYS_RLKTZS register.
+ * |[21]    |GICAOFF   |GIC CLK Auto Off Option when CA35 is Power Gating (Write Protect)
+ * |        |          |0 = When CA35 core power is not ready, the GIC CLK will not be gated.
+ * |        |          |1 = When CA35 core power is not ready, the GIC CLK will be gated.
+ * |        |          |Note 1: This bit is write protected. Refer to the SYS_RLKTZS register.
+ * |        |          |Note 2: This bit only works when the CA35 core power is not ready
+ * |        |          |If CA35 core power is ready, the HIRC enable bit is the controlled by CLK_PWRCTL[2].
+ * |[22]    |HXTAPD    |HXT Auto Off Option when CA35 is Power Down (Write Protect)
+ * |        |          |0 = When CA35 cores are in WFI, the HXT enable bit is the same as CLK_PWRCTL[0].
+ * |        |          |1 = When CA35 cores are in WFI, switch the HXT enable bit to low automatically.
+ * |        |          |Note 1: This bit is write protected. Refer to the SYS_RLKTZS register.
+ * |        |          |Note 2: This bit only works when the CA35 cores are in the WFI
+ * |        |          |If CA35 cores are not in WFI, the HXT enable bit is the controlled by CLK_PWRCTL[0].
+ * |[23]    |HIRCAPD   |HIRC Auto Off Option when CA35 is Power Down (Write Protect)
+ * |        |          |0 = When CA35 cores are in WFI, the HIRC enable bit is the same as CLK_PWRCTL[2].
+ * |        |          |1 = When CA35 cores are in WFI, switch the HIRC enable bit to low automatically.
+ * |        |          |Note 1: This bit is write protected. Refer to the SYS_RLKTZS register.
+ * |        |          |Note 2: This bit only works when the CA35 cores are in the WFI
+ * |        |          |If CA35 cores are not in WFI, the HIRC enable bit is the controlled by CLK_PWRCTL[2].
+ * @var CLK_T::SYSCLK0
+ * Offset: 0x04  AXI and AHB Device Clock Enable Control Register 0
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[1]     |RTPEN     |CPU RTP CortexM4 AHB Clock Enable Bit (Write Protect)
+ * |        |          |0 = Cortex M4 AHB clock Disabled.
+ * |        |          |1 = Cortex M4 AHB clock Enabled.
+ * |        |          |Note: This bit is write protected. Refer to the SYS_RLKTZS register.
+ * |[2]     |TAHBCKEN  |TSI AHB HCLK Clock Enable Bit (Write Protect)
+ * |        |          |0 = TSI AHB HCLK Disabled.
+ * |        |          |1 = TSI AHB HCLK Enabled.
+ * |        |          |Note: This bit is write protected. Refer to the SYS_RLKTZS register.
+ * |[3]     |LVRDBEN   |LVR Debounce Clock Enable Bit (Write Protect)
+ * |        |          |0 = LVR Debounce clock Disabled.
+ * |        |          |1 = LVR Debounce clock Enabled.
+ * |        |          |Note: This bit is write protected. Refer to the SYS_RLKTZS register.
+ * |[4]     |DDR0CKEN  |DDR Port0 Clock Enable Bit (Write Protect)
+ * |        |          |0 = DDR Port0 peripheral clock Disabled.
+ * |        |          |1 = DDR Port0 peripheral clock Enabled.
+ * |        |          |Note 1: This bit is write protected. Refer to the SYS_RLKTZS register.
+ * |        |          |Note 2: The peripheral clock of DDR Port 1, DDR Port 2, DDR Port 3, DDR Port 4, DDR Port5, DDR Port7 are enabled automatically by the peripheral clock enable bit of the IP on the corresponding bus.
+ * |[5]     |DDR6CKEN  |DDR Port6 Clock Enable Bit (Write Protect)
+ * |        |          |0 = DDR Port6 peripheral clock Disabled.
+ * |        |          |1 = DDR Port6 peripheral clock Enabled.
+ * |        |          |Note 1: This bit is write protected. Refer to the SYS_RLKTZS register.
+ * |        |          |Note 2: The peripheral clock of DDR Port 1, DDR Port 2, DDR Port 3, DDR Port 4, DDR Port5, DDR Port7 are enabled automatically by the peripheral clock enable bit of the IP on the corresponding bus.
+ * |[8]     |CANFD0CKEN|CANFD0 Clock Enable Bit
+ * |        |          |0 = CANFD0 clock Disabled.
+ * |        |          |1 = CANFD0 clock Enabled.
+ * |[9]     |CANFD1CKEN|CANFD1 Clock Enable Bit
+ * |        |          |0 = CANFD1 clock Disabled.
+ * |        |          |1 = CANFD1 clock Enabled.
+ * |[10]    |CANFD2CKEN|CANFD2 Clock Enable Bit
+ * |        |          |0 = CANFD2 clock Disabled.
+ * |        |          |1 = CANFD2 clock Enabled.
+ * |[11]    |CANFD3CKEN|CANFD3 Clock Enable Bit
+ * |        |          |0 = CANFD3 clock Disabled.
+ * |        |          |1 = CANFD3 clock Enabled.
+ * |[16]    |SDH0EN    |SD0 Host Controller AHB clock Enable Bit
+ * |        |          |0 = SDH0 controller AHB clock Disabled.
+ * |        |          |1 = SDH0 controller AHB clock Enabled.
+ * |[17]    |SDH1EN    |SD1 Host Controller AHB clock Enable Bit
+ * |        |          |0 = SDH1 controller AHB clock Disabled.
+ * |        |          |1 = SDH1 controller AHB clock Enabled.
+ * |[18]    |NANDEN    |NAND Controller Clock Enable Bit
+ * |        |          |0 = NAND controller clock Disabled.
+ * |        |          |1 = NAND controller clock Enabled.
+ * |[19]    |USBDEN    |USBD Clock Enable Bit
+ * |        |          |0 = USBD clock Disabled.
+ * |        |          |1 = USBD clock Enabled.
+ * |[20]    |USBHEN    |USBH Clock Enable Bit (TZNS)
+ * |        |          |0 = USBH clock Disabled.
+ * |        |          |1 = USBH clock Enabled.
+ * |[21]    |HUSBH0EN  |High Speed USBH Clock Enable Bit (TZNS)
+ * |        |          |0 = HUSBH0 clock Disabled.
+ * |        |          |1 = HUSBH0 clock Enabled.
+ * |[22]    |HUSBH1EN  |High Speed USBH Clock Enable Bit (TZNS)
+ * |        |          |0 = HUSBH1 clock Disabled.
+ * |        |          |1 = HUSBH1 clock Enabled.
+ * |[24]    |GFXEN     |GFX Clock Enable Bit (TZNS)
+ * |        |          |0 = GFX clock Disabled.
+ * |        |          |1 = GFX clock Enabled.
+ * |[25]    |VDECEN    |VC8000 Clock Enable Bit (TZNS)
+ * |        |          |0 = VC8000 clock Disabled.
+ * |        |          |1 = VC8000 clock Enabled.
+ * |[26]    |DCUEN     |DC Ultra Clock Enable Bit (TZNS)
+ * |        |          |0 = DC Ultra clock Disabled.
+ * |        |          |1 = DC Ultra clock Enabled.
+ * |[27]    |GMAC0EN   |Gigabit Ethernet MAC 0 AXI Clock Enable Bit (TZNS)
+ * |        |          |0 = Gigabit Ethernet MAC 0 AXI clock Disabled.
+ * |        |          |1 = Gigabit Ethernet MAC 0 AXI clock Enabled.
+ * |[28]    |GMAC1EN   |Gigabit Ethernet MAC 1 AXI Clock Enable Bit (TZNS)
+ * |        |          |0 = Gigabit Ethernet MAC 1 AXI clock Disabled.
+ * |        |          |1 = Gigabit Ethernet MAC 1 AXI clock Enabled.
+ * |[29]    |CCAP0EN   |CCAP0 Clock Enable Bit (TZNS)
+ * |        |          |0 = CCAP0 clock Disabled.
+ * |        |          |1 = CCAP0 clock Enabled.
+ * |[30]    |CCAP1EN   |CCAP1 Clock Enable Bit (TZNS)
+ * |        |          |0 = CCAP1 clock Disabled.
+ * |        |          |1 = CCAP1 clock Enabled.
+ * @var CLK_T::SYSCLK1
+ * Offset: 0x08  AXI and AHB Device Clock Enable Control Register 1
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[0]     |PDMA0EN   |PDMA0 Controller Clock Enable Bit
+ * |        |          |0 = PDMA0 peripheral clock Disabled.
+ * |        |          |1 = PDMA0 peripheral clock Enabled.
+ * |[1]     |PDMA1EN   |PDMA1 Controller Clock Enable Bit
+ * |        |          |0 = PDMA1 peripheral clock Disabled.
+ * |        |          |1 = PDMA1 peripheral clock Enabled.
+ * |[2]     |PDMA2EN   |PDMA2 Controller Clock Enable Bit
+ * |        |          |0 = PDMA2 peripheral clock Disabled.
+ * |        |          |1 = PDMA2 peripheral clock Enabled.
+ * |[3]     |PDMA3EN   |PDMA3 Controller Clock Enable Bit
+ * |        |          |0 = PDMA3 peripheral clock Disabled.
+ * |        |          |1 = PDMA3 peripheral clock Enabled.
+ * |[4]     |WH0CKEN   |Wormhole 0 Peripheral Clock Enable Bit (Write Protect, TZNS)
+ * |        |          |0 = Wormhole 0 clock Disabled.
+ * |        |          |1 = Wormhole 0 clock Enabled.
+ * |        |          |Note: This bit is write protected. Refer to the SYS_RLKTZNS register.
+ * |[5]     |WH1CKEN   |Wormhole 1 Peripheral Clock Enable Bit (Write Protect)
+ * |        |          |0 = Wormhole 1 clock Disabled.
+ * |        |          |1 = Wormhole 1 clock Enabled.
+ * |        |          |Note: This bit is write protected. Refer to the SYS_RLKTZS register.
+ * |[6]     |HWSCKEN   |Hardware Semaphore Clock Enable Bit (Write Protect, TZNS)
+ * |        |          |0 = Hardware Semaphore peripheral clock Disabled.
+ * |        |          |1 = Hardware Semaphore clock Enabled.
+ * |        |          |Note: This bit is write protected. Refer to the SYS_RLKTZNS register.
+ * |[7]     |EBICKEN   |EBI Controller Clock Enable Bit
+ * |        |          |0 = EBI peripheral clock Disabled.
+ * |        |          |1 = EBI peripheral clock Enabled.
+ * |[8]     |SRAM0CKEN |SRAM Bank0 Controller Clock Enable Bit (Write Protect)
+ * |        |          |0 = SRAM bank0 clock Disabled.
+ * |        |          |1 = SRAM bank0 clock Enabled.
+ * |        |          |Note: This bit is write protected. Refer to the SYS_RLKTZS register.
+ * |[9]     |SRAM1CKEN |SRAM Bank1 Controller Clock Enable Bit (Write Protect)
+ * |        |          |0 = SRAM bank1 clock Disabled.
+ * |        |          |1 = SRAM bank1 clock Enabled.
+ * |        |          |Note: This bit is write protected. Refer to the SYS_RLKTZS register.
+ * |[10]    |ROMCKEN   |ROM AHB Clock Enable Bit (Write Protect)
+ * |        |          |0 = ROM AHB clock Disabled.
+ * |        |          |1 = ROM AHB clock Enabled.
+ * |        |          |Note: This bit is write protected. Refer to the SYS_RLKTZS register.
+ * |[11]    |TRACKEN   |Coresight Trace Clock Enable Bit (Write Protect)
+ * |        |          |0 = Coresight trace clock Disabled.
+ * |        |          |1 = Coresight trace clock Enabled.
+ * |        |          |Note: This bit is write protected. Refer to the SYS_RLKTZS register.
+ * |[12]    |DBGCKEN   |Coresight Debug Clock Enable Bit (Write Protect)
+ * |        |          |0 = Coresight debug clock Disabled.
+ * |        |          |1 = Coresight debug clock Enabled.
+ * |        |          |Note: This bit is write protected. Refer to the SYS_RLKTZS register.
+ * |[13]    |CLKOCKEN  |CLKO Clock Enable Bit (Write Protect)
+ * |        |          |0 = CLKO clock Disabled.
+ * |        |          |1 = CLKO clock Enabled.
+ * |        |          |Note: This bit is write protected. Refer to the SYS_RLKTZS register.
+ * |[14]    |GTMRCKEN  |Cortex A35 Generic Timer Clock Enable Bit (Write Protect)
+ * |        |          |0 = Cortex A35 Generic timer clock Disabled.
+ * |        |          |1 = Cortex A35 Generic timer clock Enabled.
+ * |        |          |Note: This bit is write protected. Refer to the SYS_RLKTZS register.
+ * |[16]    |GPACKEN   |GPIOA AHB Clock Enable Bit
+ * |        |          |0 = GPIOA port clock Disabled.
+ * |        |          |1 = GPIOA port clock Enabled.
+ * |[17]    |GPBCKEN   |GPIOB AHB Clock Enable Bit
+ * |        |          |0 = GPIOB port clock Disabled.
+ * |        |          |1 = GPIOB port clock Enabled.
+ * |[18]    |GPCCKEN   |GPIOC AHB Clock Enable Bit
+ * |        |          |0 = GPIOC port clock Disabled.
+ * |        |          |1 = GPIOC port clock Enabled.
+ * |[19]    |GPDCKEN   |GPIOD AHB Clock Enable Bit
+ * |        |          |0 = GPIOD port clock Disabled.
+ * |        |          |1 = GPIOD port clock Enabled.
+ * |[20]    |GPECKEN   |GPIOE AHB Clock Enable Bit
+ * |        |          |0 = GPIOE port clock Disabled.
+ * |        |          |1 = GPIOE port clock Enabled.
+ * |[21]    |GPFCKEN   |GPIOF AHB Clock Enable Bit
+ * |        |          |0 = GPIOF port clock Disabled.
+ * |        |          |1 = GPIOF port clock Enabled.
+ * |[22]    |GPGCKEN   |GPIOG AHB Clock Enable Bit
+ * |        |          |0 = GPIOG port clock Disabled.
+ * |        |          |1 = GPIOG port clock Enabled.
+ * |[23]    |GPHCKEN   |GPIOH AHB Clock Enable Bit
+ * |        |          |0 = GPIOH port clock Disabled.
+ * |        |          |1 = GPIOH port clock Enabled.
+ * |[24]    |GPICKEN   |GPIOI AHB Clock Enable Bit
+ * |        |          |0 = GPIOI port clock Disabled.
+ * |        |          |1 = GPIOI port clock Enabled.
+ * |[25]    |GPJCKEN   |GPIOJ AHB Clock Enable Bit
+ * |        |          |0 = GPIOJ port clock Disabled.
+ * |        |          |1 = GPIOJ port clock Enabled.
+ * |[26]    |GPKCKEN   |GPIOK AHB Clock Enable Bit
+ * |        |          |0 = GPIOK port clock Disabled.
+ * |        |          |1 = GPIOK port clock Enabled.
+ * |[27]    |GPLCKEN   |GPIOL AHB Clock Enable Bit
+ * |        |          |0 = GPIOL port clock Disabled.
+ * |        |          |1 = GPIOL port clock Enabled.
+ * |[28]    |GPMCKEN   |GPIOM AHB Clock Enable Bit
+ * |        |          |0 = GPIOM port clock Disabled.
+ * |        |          |1 = GPIOM port clock Enabled.
+ * |[29]    |GPNCKEN   |GPION AHB Clock Enable Bit
+ * |        |          |0 = GPION port clock Disabled.
+ * |        |          |1 = GPION port clock Enabled.
+ * @var CLK_T::APBCLK0
+ * Offset: 0x0C  APB Devices Clock Enable Control Register 0
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[0]     |TMR0CKEN  |Timer0 Clock Enable Bit
+ * |        |          |0 = Timer0 clock Disabled.
+ * |        |          |1 = Timer0 clock Enabled.
+ * |[1]     |TMR1CKEN  |Timer1 Clock Enable Bit
+ * |        |          |0 = Timer1 clock Disabled.
+ * |        |          |1 = Timer1 clock Enabled.
+ * |[2]     |TMR2CKEN  |Timer2 Clock Enable Bit
+ * |        |          |0 = Timer2 clock Disabled.
+ * |        |          |1 = Timer2 clock Enabled.
+ * |[3]     |TMR3CKEN  |Timer3 Clock Enable Bit
+ * |        |          |0 = Timer3 clock Disabled.
+ * |        |          |1 = Timer3 clock Enabled.
+ * |[4]     |TMR4CKEN  |Timer4 Clock Enable Bit
+ * |        |          |0 = Timer4 clock Disabled.
+ * |        |          |1 = Timer4 clock Enabled.
+ * |[5]     |TMR5CKEN  |Timer5 Clock Enable Bit
+ * |        |          |0 = Timer5 clock Disabled.
+ * |        |          |1 = Timer5 clock Enabled.
+ * |[6]     |TMR6CKEN  |Timer6 Clock Enable Bit
+ * |        |          |0 = Timer6 clock Disabled.
+ * |        |          |1 = Timer6 clock Enabled.
+ * |[7]     |TMR7CKEN  |Timer7 Clock Enable Bit
+ * |        |          |0 = Timer7 clock Disabled.
+ * |        |          |1 = Timer7 clock Enabled.
+ * |[8]     |TMR8CKEN  |Timer8 Clock Enable Bit
+ * |        |          |0 = Timer8 clock Disabled.
+ * |        |          |1 = Timer8 clock Enabled.
+ * |[9]     |TMR9CKEN  |Timer9 Clock Enable Bit
+ * |        |          |0 = Timer9 clock Disabled.
+ * |        |          |1 = Timer9 clock Enabled.
+ * |[10]    |TMR10CKEN |Timer10 Clock Enable Bit
+ * |        |          |0 = Timer10 clock Disabled.
+ * |        |          |1 = Timer10 clock Enabled.
+ * |[11]    |TMR11CKEN |Timer11 Clock Enable Bit
+ * |        |          |0 = Timer11 clock Disabled.
+ * |        |          |1 = Timer11 clock Enabled.
+ * |[12]    |UART0CKEN |UART0 Clock Enable Bit
+ * |        |          |0 = UART0 clock Disabled.
+ * |        |          |1 = UART0 clock Enabled.
+ * |[13]    |UART1CKEN |UART1 Clock Enable Bit
+ * |        |          |0 = UART1 clock Disabled.
+ * |        |          |1 = UART1 clock Enabled.
+ * |[14]    |UART2CKEN |UART2 Clock Enable Bit
+ * |        |          |0 = UART2 clock Disabled.
+ * |        |          |1 = UART2 clock Enabled.
+ * |[15]    |UART3CKEN |UART3 Clock Enable Bit
+ * |        |          |0 = UART3 clock Disabled.
+ * |        |          |1 = UART3 clock Enabled.
+ * |[16]    |UART4CKEN |UART4 Clock Enable Bit
+ * |        |          |0 = UART4 clock Disabled.
+ * |        |          |1 = UART4 clock Enabled.
+ * |[17]    |UART5CKEN |UART5 Clock Enable Bit
+ * |        |          |0 = UART5 clock Disabled.
+ * |        |          |1 = UART5 clock Enabled.
+ * |[18]    |UART6CKEN |UART6 Clock Enable Bit
+ * |        |          |0 = UART6 clock Disabled.
+ * |        |          |1 = UART6 clock Enabled.
+ * |[19]    |UART7CKEN |UART7 Clock Enable Bit
+ * |        |          |0 = UART7 clock Disabled.
+ * |        |          |1 = UART7 clock Enabled.
+ * |[20]    |UART8CKEN |UART8 Clock Enable Bit
+ * |        |          |0 = UART8 clock Disabled.
+ * |        |          |1 = UART8 clock Enabled.
+ * |[21]    |UART9CKEN |UART9 Clock Enable Bit
+ * |        |          |0 = UART9 clock Disabled.
+ * |        |          |1 = UART9 clock Enabled.
+ * |[22]    |UART10CKEN|UART10 Clock Enable Bit
+ * |        |          |0 = UART10 clock Disabled.
+ * |        |          |1 = UART10 clock Enabled.
+ * |[23]    |UART11CKEN|UART11 Clock Enable Bit
+ * |        |          |0 = UART11 clock Disabled.
+ * |        |          |1 = UART11 clock Enabled.
+ * |[24]    |UART12CKEN|UART12 Clock Enable Bit
+ * |        |          |0 = UART12 clock Disabled.
+ * |        |          |1 = UART12 clock Enabled.
+ * |[25]    |UART13CKEN|UART13 Clock Enable Bit
+ * |        |          |0 = UART13 clock Disabled.
+ * |        |          |1 = UART13 clock Enabled.
+ * |[26]    |UART14CKEN|UART14 Clock Enable Bit
+ * |        |          |0 = UART14 clock Disabled.
+ * |        |          |1 = UART14 clock Enabled.
+ * |[27]    |UART15CKEN|UART15 Clock Enable Bit
+ * |        |          |0 = UART15 clock Disabled.
+ * |        |          |1 = UART15 clock Enabled.
+ * |[28]    |UART16CKEN|UART16 Clock Enable Bit
+ * |        |          |0 = UART16 clock Disabled.
+ * |        |          |1 = UART16 clock Enabled.
+ * |[29]    |RTCCKEN   |RTC Clock Enable Bit (Shared)
+ * |        |          |0 = RTC Clock Disabled.
+ * |        |          |1 = RTC Clock Enabled.
+ * |        |          |Note: This bit is write protected. Refer to the SYS_RLKTZS register.
+ * |[30]    |DDRPCKEN  |DDR PHY Utility Block Clock Enable Bit
+ * |        |          |0 = DDR PHY utility clock Disabled.
+ * |        |          |1 = DDR PHY utility clock Enabled.
+ * |[31]    |KPICKEN   |Keypad Interface Clock Enable Bit
+ * |        |          |0 = Keypad interface clock Disabled.
+ * |        |          |1 = Keypad interface clock Enabled.
+ * @var CLK_T::APBCLK1
+ * Offset: 0x10  APB Devices Clock Enable Control Register 1
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[0]     |I2C0CKEN  |I2C0 Clock Enable Bit
+ * |        |          |0 = I2C0 clock Disabled.
+ * |        |          |1 = I2C0 clock Enabled.
+ * |[1]     |I2C1CKEN  |I2C1 Clock Enable Bit
+ * |        |          |0 = I2C1 clock Disabled.
+ * |        |          |1 = I2C1 clock Enabled.
+ * |[2]     |I2C2CKEN  |I2C2 Clock Enable Bit
+ * |        |          |0 = I2C2 clock Disabled.
+ * |        |          |1 = I2C2 clock Enabled.
+ * |[3]     |I2C3CKEN  |I2C3 Clock Enable Bit
+ * |        |          |0 = I2C3 clock Disabled.
+ * |        |          |1 = I2C3 clock Enabled.
+ * |[4]     |I2C4CKEN  |I2C4 Clock Enable Bit
+ * |        |          |0 = I2C4 clock Disabled.
+ * |        |          |1 = I2C4 clock Enabled.
+ * |[5]     |I2C5CKEN  |I2C5 Clock Enable Bit
+ * |        |          |0 = I2C5 clock Disabled.
+ * |        |          |1 = I2C5 clock Enabled.
+ * |[6]     |QSPI0CKEN |QSPI0 Clock Enable Bit
+ * |        |          |0 = QSPI0 clock Disabled.
+ * |        |          |1 = QSPI0 clock Enabled.
+ * |[7]     |QSPI1CKEN |QSPI1 Clock Enable Bit
+ * |        |          |0 = QSPI1 clock Disabled.
+ * |        |          |1 = QSPI1 clock Enabled.
+ * |[12]    |SC0CKEN   |SC0 Clock Enable Bit
+ * |        |          |0 = SC0 clock Disabled.
+ * |        |          |1 = SC0 clock Enabled.
+ * |[13]    |SC1CKEN   |SC1 Clock Enable Bit
+ * |        |          |0 = SC1 clock Disabled.
+ * |        |          |1 = SC1 clock Enabled.
+ * |[16]    |WDT0CKEN  |Watchdog Timer 0 Clock Enable Bit (Write Protect)
+ * |        |          |0 = Watchdog timer 0 clock Disabled.
+ * |        |          |1 = Watchdog timer 0 clock Enabled.
+ * |        |          |Note: This bit is write protected. Refer to the SYS_RLKTZS register.
+ * |[17]    |WDT1CKEN  |Watchdog Timer 1 Clock Enable Bit (Write Protect)
+ * |        |          |0 = Watchdog timer 1 clock Disabled.
+ * |        |          |1 = Watchdog timer 1 clock Enabled.
+ * |        |          |Note: This bit is write protected. Refer to the SYS_RLKTZS register or SYS_RLKTZNS register. 
+ * |[18]    |WDT2CKEN  |Watchdog Timer 2 Clock Enable Bit (Write Protect, SUBM)
+ * |        |          |0 = Watchdog timer 2 clock Disabled.
+ * |        |          |1 = Watchdog timer 2 clock Enabled.
+ * |        |          |Note: This bit is write protected. Refer to the SYS_RLKSUBM register.
+ * |[24]    |EPWM0CKEN |EPWM0 Clock Enable Bit
+ * |        |          |0 = EPWM0 clock Disabled.
+ * |        |          |1 = EPWM0 clock Enabled.
+ * |[25]    |EPWM1CKEN |EPWM1 Clock Enable Bit
+ * |        |          |0 = EPWM1 clock Disabled.
+ * |        |          |1 = EPWM1 clock Enabled.
+ * |[26]    |EPWM2CKEN |EPWM2 Clock Enable Bit
+ * |        |          |0 = EPWM2 clock Disabled.
+ * |        |          |1 = EPWM2 clock Enabled.
+ * @var CLK_T::APBCLK2
+ * Offset: 0x14  APB Devices Clock Enable Control Register 2
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[0]     |I2S0CKEN  |I2S0 Clock Enable Bit
+ * |        |          |0 = I2S0 Clock Disabled.
+ * |        |          |1 = I2S0 Clock Enabled.
+ * |[1]     |I2S1CKEN  |I2S1 Clock Enable Bit
+ * |        |          |0 = I2S1 Clock Disabled.
+ * |        |          |1 = I2S1 Clock Enabled.
+ * |[2]     |SSMCCEN   |SSMCC Clock Enable Bit (Write Protect)
+ * |        |          |0 = SSMCC clock Disabled.
+ * |        |          |1 = SSMCC clock Enabled.
+ * |        |          |Note: This bit is write protected. Refer to the SYS_RLKTZS register.
+ * |[3]     |SSPCCEN   |SSPCC Clock Enable Bit (Write Protect)
+ * |        |          |0 = SSPCC clock Disabled.
+ * |        |          |1 = SSPCC clock Enabled.
+ * |        |          |Note: This bit is write protected. Refer to the SYS_RLKTZS register.
+ * |[4]     |SPI0CKEN  |SPI0 Clock Enable Bit
+ * |        |          |0 = SPI0 clock Disabled.
+ * |        |          |1 = SPI0 clock Enabled.
+ * |[5]     |SPI1CKEN  |SPI1 Clock Enable Bit
+ * |        |          |0 = SPI1 clock Disabled.
+ * |        |          |1 = SPI1 clock Enabled.
+ * |[6]     |SPI2CKEN  |SPI2 Clock Enable Bit
+ * |        |          |0 = SPI2 clock Disabled.
+ * |        |          |1 = SPI2 clock Enabled.
+ * |[7]     |SPI3CKEN  |SPI3 Clock Enable Bit
+ * |        |          |0 = SPI3 clock Disabled.
+ * |        |          |1 = SPI3 clock Enabled.
+ * |[8]     |ECAP0CKEN |ECAP0 Clock Enable Bit
+ * |        |          |0 = ECAP0 clock Disabled.
+ * |        |          |1 = ECAP0 clock Enabled.
+ * |[9]     |ECAP1CKEN |ECAP1 Clock Enable Bit
+ * |        |          |0 = ECAP1 clock Disabled.
+ * |        |          |1 = ECAP1 clock Enabled.
+ * |[10]    |ECAP2CKEN |ECAP2 Clock Enable Bit
+ * |        |          |0 = ECAP2 clock Disabled.
+ * |        |          |1 = ECAP2 clock Enabled.
+ * |[12]    |QEI0CKEN  |QEI0 Clock Enable Bit
+ * |        |          |0 = QEI0 clock Disabled.
+ * |        |          |1 = QEI0 clock Enabled.
+ * |[13]    |QEI1CKEN  |QEI1 Clock Enable Bit
+ * |        |          |0 = QEI1 clock Disabled.
+ * |        |          |1 = QEI1 clock Enabled.
+ * |[14]    |QEI2CKEN  |QEI2 Clock Enable Bit
+ * |        |          |0 = QEI2 clock Disabled.
+ * |        |          |1 = QEI2 clock Enabled.
+ * |[24]    |ADCCKEN   |ADC Clock Enable Bit
+ * |        |          |0 = ADC clock Disabled.
+ * |        |          |1 = ADC clock Enabled.
+ * |[25]    |EADCCKEN  |EADC Clock Enable Bit
+ * |        |          |0 = EADC clock Disabled.
+ * |        |          |1 = EADC clock Enabled.
+ * @var CLK_T::CLKSEL0
+ * Offset: 0x18  Clock Source Select Control Register 0
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[1:0]   |CA35CKSEL |Cortex A35 CPU Clock Source Selection (Write Protect)
+ * |        |          |Before clock switching, the related clock sources (both pre-select and new-select) must be turned on.
+ * |        |          |00 = Clock source from HXT.
+ * |        |          |01 = Clock source from CA-PLL.
+ * |        |          |10 = Clock source from EPLL.
+ * |        |          |11 = Clock source from APLL.
+ * |        |          |Note 2: These bits are write protected. Refer to the SYS_RLKTZS register.
+ * |[2]     |SYSCK0SEL |System Clock Source Selection (Write Protect)
+ * |        |          |Before clock switching, the related clock sources (both pre-select and new-select) must be turned on.
+ * |        |          |0 = Clock source from EPLL/2.
+ * |        |          |1 = Clock source from SYS-PLL.
+ * |        |          |Note: These bits are write protected. Refer to the SYS_RLKTZS register.
+ * |[3]     |LVRDBSEL  |LVR Debounce Clock Selection (Write Protect)
+ * |        |          |Before clock switching, the related clock sources (both pre-select and new-select) must be turned on.
+ * |        |          |0 = Clock source from LIRC.
+ * |        |          |1 = Clock source from HIRC.
+ * |        |          |Note: These bits are write protected. Refer to the SYS_RLKTZS register.
+ * |[5:4]   |SYSCK1SEL |System Clock Source Selection (Write Protect)
+ * |        |          |Before clock switching, the related clock sources (both pre-select and new-select) must be turned on.
+ * |        |          |00 = Clock source from HXT.
+ * |        |          |01 = Clock source from SYS-PLL.
+ * |        |          |10 = Clock source from APLL.
+ * |        |          |11 = Clock source from APLL.
+ * |        |          |Note: These bits are write protected. Refer to the SYS_RLKTZS register.
+ * |[10:8]  |RTPSTSEL  |RTP CortexM4 SysTick Clock Source Selection (Write Protect, SUBM)
+ * |        |          |If SYST_CTRL[2]=0, SysTick uses listed clock source below.
+ * |        |          |000 = Clock source from HXT.
+ * |        |          |001 = Clock source from LXT.
+ * |        |          |010 = Clock source from HXT/2.
+ * |        |          |011 = Clock source from SYSCLK1/2.
+ * |        |          |Others = Clock source from HIRC.
+ * |        |          |Note 1: if SysTick clock source is not from HCLK (i.e
+ * |        |          |SYST_CTRL[2] = 0), SysTick need clock frequency must less than or equal to HCLK/2.
+ * |        |          |Note 2: These bits are write protected. Refer to the SYS_RLKSUBM register.
+ * |[13:12] |CCAP0SEL  |CCAP0 Sensor Clock Source Selection (TZNS)
+ * |        |          |Before clock switching, the related clock sources (both pre-select and new-select) must be turned on.
+ * |        |          |00 = Clock source from HXT.
+ * |        |          |01 = Clock source from VPLL.
+ * |        |          |10 = Clock source from APLL.
+ * |        |          |11 = Clock source from SYS-PLL.
+ * |[15:14] |CCAP1SEL  |CCAP1 Sensor Clock Source Selection (TZNS)
+ * |        |          |Before clock switching, the related clock sources (both pre-select and new-select) must be turned on.
+ * |        |          |00 = Clock source from HXT.
+ * |        |          |01 = Clock source from VPLL.
+ * |        |          |10 = Clock source from APLL.
+ * |        |          |11 = Clock source from SYS-PLL.
+ * |[17:16] |SD0SEL    |SD HOST0 Controller Core Logic Clock Source Selection
+ * |        |          |Before clock switching, the related clock sources (both pre-select and new-select) must be turned on.
+ * |        |          |00 = Clock source from APLL.
+ * |        |          |01 = Clock source from VPLL.
+ * |        |          |10 = Clock source from SYS-PLL.
+ * |        |          |11 = Clock source from SYS-PLL.
+ * |[19:18] |SD1SEL    |SD HOST1 Controller Core Logic Clock Source Selection
+ * |        |          |Before clock switching, the related clock sources (both pre-select and new-select) must be turned on.
+ * |        |          |00 = Clock source from APLL.
+ * |        |          |01 = Clock source from VPLL.
+ * |        |          |10 = Clock source from SYS-PLL.
+ * |        |          |11 = Clock source from SYS-PLL.
+ * |[24]    |DCUSEL    |Display Controller Ultra Core Clock Source Selection (TZNS)
+ * |        |          |Before clock switching, the related clock sources (both pre-select and new-select) must be turned on.
+ * |        |          |0 = Clock source from EPLL/2.
+ * |        |          |1 = Clock source from SYS-PLL.
+ * |[25]    |DCUPSEL   |Display Controller Ultra Pixel Clock Source Selection (TZNS)
+ * |        |          |Before clock switching, the related clock sources (both pre-select and new-select) must be turned on.
+ * |        |          |0 = Clock source from VPLL.
+ * |        |          |1 = Clock source from APLL.
+ * |[26]    |GFXSEL    |GFX Core Clock Source Selection (TZNS)
+ * |        |          |Before clock switching, the related clock sources (both pre-select and new-select) must be turned on.
+ * |        |          |0 = Clock source from EPLL.
+ * |        |          |1 = Clock source from SYS-PLL.
+ * |[27]    |DBGSEL    |Coresight DBG Clock Source Selection (Write Protect)
+ * |        |          |Before clock switching, the related clock sources (both pre-select and new-select) must be turned on.
+ * |        |          |0 = Clock source from HIRC.1.
+ * |        |          |1 = Clock source from SYS-PLL.
+ * |        |          |Note: This bit is write protected. Refer to the SYS_RLKTZS register.
+ * @var CLK_T::CLKSEL1
+ * Offset: 0x1C  Clock Source Select Control Register 1
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[2:0]   |TMR0SEL   |TIMER0 Clock Source Selection
+ * |        |          |000 = Clock source from 24 MHz external high speed crystal oscillator (HXT).
+ * |        |          |001 = Clock source from 32.768 kHz external low speed crystal oscillator (LXT).
+ * |        |          |010 = Clock source from PCLK0.
+ * |        |          |011 = Clock source from external clock TM0 pin.
+ * |        |          |101 = Clock source from 32 kHz internal low speed RC oscillator (LIRC).
+ * |        |          |111 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
+ * |        |          |Others = Reserved.
+ * |[6:4]   |TMR1SEL   |TIMER1 Clock Source Selection
+ * |        |          |000 = Clock source from 24 MHz external high speed crystal oscillator (HXT).
+ * |        |          |001 = Clock source from 32.768 kHz external low speed crystal oscillator (LXT).
+ * |        |          |010 = Clock source from PCLK0.
+ * |        |          |011 = Clock source from external clock TM1 pin.
+ * |        |          |101 = Clock source from 32 kHz internal low speed RC oscillator (LIRC).
+ * |        |          |111 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
+ * |        |          |Others = Reserved.
+ * |[10:8]  |TMR2SEL   |TIMER2 Clock Source Selection
+ * |        |          |000 = Clock source from 24 MHz external high speed crystal oscillator (HXT).
+ * |        |          |001 = Clock source from 32.768 kHz external low speed crystal oscillator (LXT).
+ * |        |          |010 = Clock source from PCLK1.
+ * |        |          |011 = Clock source from external clock TM2 pin.
+ * |        |          |101 = Clock source from 32 kHz internal low speed RC oscillator (LIRC).
+ * |        |          |111 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
+ * |        |          |Others = Reserved.
+ * |[14:12] |TMR3SEL   |TIMER3 Clock Source Selection
+ * |        |          |000 = Clock source from 24 MHz external high speed crystal oscillator (HXT).
+ * |        |          |001 = Clock source from 32.768 kHz external low speed crystal oscillator (LXT).
+ * |        |          |010 = Clock source from PCLK1.
+ * |        |          |011 = Clock source from external clock TM3 pin.
+ * |        |          |101 = Clock source from 32 kHz internal low speed RC oscillator (LIRC).
+ * |        |          |111 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
+ * |        |          |Others = Reserved.
+ * |[18:16] |TMR4SEL   |TIMER4 Clock Source Selection
+ * |        |          |000 = Clock source from 24 MHz external high speed crystal oscillator (HXT).
+ * |        |          |001 = Clock source from 32.768 kHz external low speed crystal oscillator (LXT).
+ * |        |          |010 = Clock source from PCLK2.
+ * |        |          |011 = Clock source from external clock TM4 pin.
+ * |        |          |101 = Clock source from 32 kHz internal low speed RC oscillator (LIRC).
+ * |        |          |111 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
+ * |        |          |Others = Reserved.
+ * |[22:20] |TMR5SEL   |TIMER5 Clock Source Selection
+ * |        |          |000 = Clock source from 24 MHz external high speed crystal oscillator (HXT).
+ * |        |          |001 = Clock source from 32.768 kHz external low speed crystal oscillator (LXT).
+ * |        |          |010 = Clock source from PCLK2.
+ * |        |          |011 = Clock source from external clock TM5 pin.
+ * |        |          |101 = Clock source from 32 kHz internal low speed RC oscillator (LIRC).
+ * |        |          |111 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
+ * |        |          |Others = Reserved.
+ * |[26:24] |TMR6SEL   |TIMER6 Clock Source Selection
+ * |        |          |000 = Clock source from 24 MHz external high speed crystal oscillator (HXT).
+ * |        |          |001 = Clock source from 32.768 kHz external low speed crystal oscillator (LXT).
+ * |        |          |010 = Clock source from PCLK0.
+ * |        |          |011 = Clock source from external clock TM6 pin.
+ * |        |          |101 = Clock source from 32 kHz internal low speed RC oscillator (LIRC).
+ * |        |          |111 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
+ * |        |          |Others = Reserved.
+ * |[30:28] |TMR7SEL   |TIMER7 Clock Source Selection
+ * |        |          |000 = Clock source from 24 MHz external high speed crystal oscillator (HXT).
+ * |        |          |001 = Clock source from 32.768 kHz external low speed crystal oscillator (LXT).
+ * |        |          |010 = Clock source from PCLK0.
+ * |        |          |011 = Clock source from external clock TM7 pin.
+ * |        |          |101 = Clock source from 32 kHz internal low speed RC oscillator (LIRC).
+ * |        |          |111 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
+ * |        |          |Others = Reserved.
+ * @var CLK_T::CLKSEL2
+ * Offset: 0x20  Clock Source Select Control Register 2
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[2:0]   |TMR8SEL   |TIMER8 Clock Source Selection
+ * |        |          |000 = Clock source from 24 MHz external high speed crystal oscillator (HXT).
+ * |        |          |001 = Clock source from 32.768 kHz external low speed crystal oscillator (LXT).
+ * |        |          |010 = Clock source from PCLK1.
+ * |        |          |011 = Clock source from external clock TM8 pin.
+ * |        |          |101 = Clock source from 32 kHz internal low speed RC oscillator (LIRC).
+ * |        |          |111 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
+ * |        |          |Others = Reserved.
+ * |[6:4]   |TMR9SEL   |TIMER9 Clock Source Selection
+ * |        |          |000 = Clock source from 24 MHz external high speed crystal oscillator (HXT).
+ * |        |          |001 = Clock source from 32.768 kHz external low speed crystal oscillator (LXT).
+ * |        |          |010 = Clock source from PCLK1.
+ * |        |          |011 = Clock source from external clock TM9 pin.
+ * |        |          |101 = Clock source from 32 kHz internal low speed RC oscillator (LIRC).
+ * |        |          |111 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
+ * |        |          |Others = Reserved.
+ * |[10:8]  |TMR10SEL  |TIMER10 Clock Source Selection
+ * |        |          |000 = Clock source from 24 MHz external high speed crystal oscillator (HXT).
+ * |        |          |001 = Clock source from 32.768 kHz external low speed crystal oscillator (LXT).
+ * |        |          |010 = Clock source from PCLK2.
+ * |        |          |011 = Clock source from external clock TM10 pin.
+ * |        |          |101 = Clock source from 32 kHz internal low speed RC oscillator (LIRC).
+ * |        |          |111 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
+ * |        |          |Others = Reserved.
+ * |[14:12] |TMR11SEL  |TIMER11 Clock Source Selection
+ * |        |          |000 = Clock source from 24 MHz external high speed crystal oscillator (HXT).
+ * |        |          |001 = Clock source from 32.768 kHz external low speed crystal oscillator (LXT).
+ * |        |          |010 = Clock source from PCLK2.
+ * |        |          |011 = Clock source from external clock TM11 pin.
+ * |        |          |101 = Clock source from 32 kHz internal low speed RC oscillator (LIRC).
+ * |        |          |111 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
+ * |        |          |Others = Reserved.
+ * |[17:16] |UART0SEL  |UART0 Clock Source Selection
+ * |        |          |00 = Clock source from 24 MHz external high speed crystal oscillator (HXT).
+ * |        |          |01 = Clock source from SYSCLK1/2.
+ * |        |          |10 = Clock source from 32.768 kHz external low speed crystal oscillator (LXT).
+ * |        |          |11 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
+ * |[19:18] |UART1SEL  |UART1 Clock Source Selection
+ * |        |          |00 = Clock source from 24 MHz external high speed crystal oscillator (HXT).
+ * |        |          |01 = Clock source from SYSCLK1/2.
+ * |        |          |10 = Clock source from 32.768 kHz external low speed crystal oscillator (LXT).
+ * |        |          |11 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
+ * |[21:20] |UART2SEL  |UART2 Clock Source Selection
+ * |        |          |00 = Clock source from 24 MHz external high speed crystal oscillator (HXT).
+ * |        |          |01 = Clock source from SYSCLK1/2.
+ * |        |          |10 = Clock source from 32.768 kHz external low speed crystal oscillator (LXT).
+ * |        |          |11 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
+ * |[23:22] |UART3SEL  |UART3 Clock Source Selection
+ * |        |          |00 = Clock source from 24 MHz external high speed crystal oscillator (HXT).
+ * |        |          |01 = Clock source from SYSCLK1/2.
+ * |        |          |10 = Clock source from 32.768 kHz external low speed crystal oscillator (LXT).
+ * |        |          |11 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
+ * |[25:24] |UART4SEL  |UART4 Clock Source Selection
+ * |        |          |00 = Clock source from 24 MHz external high speed crystal oscillator (HXT).
+ * |        |          |01 = Clock source from SYSCLK1/2.
+ * |        |          |10 = Clock source from 32.768 kHz external low speed crystal oscillator (LXT).
+ * |        |          |11 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
+ * |[27:26] |UART5SEL  |UART5 Clock Source Selection
+ * |        |          |00 = Clock source from 24 MHz external high speed crystal oscillator (HXT).
+ * |        |          |01 = Clock source from SYSCLK1/2.
+ * |        |          |10 = Clock source from 32.768 kHz external low speed crystal oscillator (LXT).
+ * |        |          |11 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
+ * |[29:28] |UART6SEL  |UART6 Clock Source Selection
+ * |        |          |00 = Clock source from 24 MHz external high speed crystal oscillator (HXT).
+ * |        |          |01 = Clock source from SYSCLK1/2.
+ * |        |          |10 = Clock source from 32.768 kHz external low speed crystal oscillator (LXT).
+ * |        |          |11 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
+ * |[31:30] |UART7SEL  |UART7 Clock Source Selection
+ * |        |          |00 = Clock source from 24 MHz external high speed crystal oscillator (HXT).
+ * |        |          |01 = Clock source from SYSCLK1/2.
+ * |        |          |10 = Clock source from 32.768 kHz external low speed crystal oscillator (LXT).
+ * |        |          |11 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
+ * @var CLK_T::CLKSEL3
+ * Offset: 0x24  Clock Source Select Control Register 3
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[1:0]   |UART8SEL  |UART8 Clock Source Selection
+ * |        |          |00 = Clock source from 24 MHz external high speed crystal oscillator (HXT).
+ * |        |          |01 = Clock source from SYSCLK1/2.
+ * |        |          |10 = Clock source from 32.768 kHz external low speed crystal oscillator (LXT).
+ * |        |          |11 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
+ * |[3:2]   |UART9SEL  |UART6 Clock Source Selection
+ * |        |          |00 = Clock source from 24 MHz external high speed crystal oscillator (HXT).
+ * |        |          |01 = Clock source from SYSCLK1/2.
+ * |        |          |10 = Clock source from 32.768 kHz external low speed crystal oscillator (LXT).
+ * |        |          |11 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
+ * |[5:4]   |UART10SEL |UART10 Clock Source Selection
+ * |        |          |00 = Clock source from 24 MHz external high speed crystal oscillator (HXT).
+ * |        |          |01 = Clock source from SYSCLK1/2.
+ * |        |          |10 = Clock source from 32.768 kHz external low speed crystal oscillator (LXT).
+ * |        |          |11 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
+ * |[7:6]   |UART11SEL |UART11 Clock Source Selection
+ * |        |          |00 = Clock source from 24 MHz external high speed crystal oscillator (HXT).
+ * |        |          |01 = Clock source from SYSCLK1/2.
+ * |        |          |10 = Clock source from 32.768 kHz external low speed crystal oscillator (LXT).
+ * |        |          |11 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
+ * |[9:8]   |UART12SEL |UART12 Clock Source Selection
+ * |        |          |00 = Clock source from 24 MHz external high speed crystal oscillator (HXT).
+ * |        |          |01 = Clock source from SYSCLK1/2.
+ * |        |          |10 = Clock source from 32.768 kHz external low speed crystal oscillator (LXT).
+ * |        |          |11 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
+ * |[11:10] |UART13SEL |UART13 Clock Source Selection
+ * |        |          |00 = Clock source from 24 MHz external high speed crystal oscillator (HXT).
+ * |        |          |01 = Clock source from SYSCLK1/2.
+ * |        |          |10 = Clock source from 32.768 kHz external low speed crystal oscillator (LXT).
+ * |        |          |11 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
+ * |[13:12] |UART14SEL |UART14 Clock Source Selection
+ * |        |          |00 = Clock source from 24 MHz external high speed crystal oscillator (HXT).
+ * |        |          |01 = Clock source from SYSCLK1/2.
+ * |        |          |10 = Clock source from 32.768 kHz external low speed crystal oscillator (LXT).
+ * |        |          |11 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
+ * |[15:14] |UART15SEL |UART15 Clock Source Selection
+ * |        |          |00 = Clock source from 24 MHz external high speed crystal oscillator (HXT).
+ * |        |          |01 = Clock source from SYSCLK1/2.
+ * |        |          |10 = Clock source from 32.768 kHz external low speed crystal oscillator (LXT).
+ * |        |          |11 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
+ * |[17:16] |UART16SEL |UART16 Clock Source Selection
+ * |        |          |00 = Clock source from 24 MHz external high speed crystal oscillator (HXT).
+ * |        |          |01 = Clock source from SYSCLK1/2.
+ * |        |          |10 = Clock source from 32.768 kHz external low speed crystal oscillator (LXT).
+ * |        |          |11 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
+ * |[21:20] |WDT0SEL   |Watchdog Timer Clock Source Selection (Write Protect)
+ * |        |          |01 = Clock source from 32.768 kHz external low speed crystal oscillator (LXT).
+ * |        |          |10 = Clock source from PCLK3/4096.
+ * |        |          |11 = Clock source from 32 kHz internal low speed RC oscillator (LIRC).
+ * |        |          |Others = Reserved.
+ * |        |          |Note: These bits are write protected. Refer to the SYS_RLKTZS register.
+ * |[23:22] |WWDT0SEL  |Window Watchdog Timer Clock Source Selection (Write Protect)
+ * |        |          |10 = Clock source from PCLK3/4096.
+ * |        |          |11 = Clock source from 32 kHz internal low speed RC oscillator (LIRC).
+ * |        |          |Others = Reserved.
+ * |        |          |Note: These bits are write protected. Refer to the SYS_RLKTZS register.
+ * |[25:24] |WDT1SEL   |Watchdog Timer Clock Source Selection (Write Protect)
+ * |        |          |01 = Clock source from 32.768 kHz external low speed crystal oscillator (LXT).
+ * |        |          |10 = Clock source from PCLK3/4096.
+ * |        |          |11 = Clock source from 32 kHz internal low speed RC oscillator (LIRC).
+ * |        |          |Others = Reserved.
+ * |        |          |Note: These bits are write protected. Refer to the SYS_RLKTZNS register or SYS_RLKTZS register.
+ * |[27:26] |WWDT1SEL  |Window Watchdog Timer Clock Source Selection (Write Protect)
+ * |        |          |10 = Clock source from PCLK3/4096.
+ * |        |          |11 = Clock source from 32 kHz internal low speed RC oscillator (LIRC).
+ * |        |          |Others = Reserved.
+ * |        |          |Note: These bits are write protected. Refer to the SYS_RLKTZNS register or SYS_RLKTZS register.
+ * |[29:28] |WDT2SEL   |Watchdog Timer Clock Source Selection (Write Protect, SUBM)
+ * |        |          |01 = Clock source from 32.768 kHz external low speed crystal oscillator (LXT).
+ * |        |          |10 = Clock source from PCLK4/4096.
+ * |        |          |11 = Clock source from 32 kHz internal low speed RC oscillator (LIRC).
+ * |        |          |Others = Reserved.
+ * |        |          |Note: These bits are write protected. Refer to the SYS_RLKTZNS register.
+ * |[31:30] |WWDT2SEL  |Window Watchdog Timer Clock Source Selection (Write Protect, SUBM)
+ * |        |          |10 = Clock source from PCLK4/4096.
+ * |        |          |11 = Clock source from 32 kHz internal low speed RC oscillator (LIRC).
+ * |        |          |Others = Reserved.
+ * |        |          |Note: These bits are write protected. Refer to the SYS_RLKTZNS register.
+ * @var CLK_T::CLKSEL4
+ * Offset: 0x28  Clock Source Select Control Register 4
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[1:0]   |SPI0SEL   |SPI3 Clock Source Selection
+ * |        |          |00 = Clock source from 24 MHz external high speed crystal oscillator (HXT).
+ * |        |          |01 = Clock source from EPLL/4.
+ * |        |          |10 = Clock source from PCLK1.
+ * |        |          |11 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
+ * |[3:2]   |SPI1SEL   |SPI1 Clock Source Selection
+ * |        |          |00 = Clock source from 24 MHz external high speed crystal oscillator (HXT).
+ * |        |          |01 = Clock source from EPLL/4.
+ * |        |          |10 = Clock source from PCLK2.
+ * |        |          |11 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
+ * |[5:4]   |SPI2SEL   |SPI2 Clock Source Selection
+ * |        |          |00 = Clock source from 24 MHz external high speed crystal oscillator (HXT).
+ * |        |          |01 = Clock source from EPLL/4.
+ * |        |          |10 = Clock source from PCLK1.
+ * |        |          |11 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
+ * |[7:6]   |SPI3SEL   |SPI3 Clock Source Selection
+ * |        |          |00 = Clock source from 24 MHz external high speed crystal oscillator (HXT).
+ * |        |          |01 = Clock source from EPLL/4.
+ * |        |          |10 = Clock source from PCLK2.
+ * |        |          |11 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
+ * |[9:8]   |QSPI0SEL  |QSPI0 Clock Source Selection
+ * |        |          |00 = Clock source from 24 MHz external high speed crystal oscillator (HXT).
+ * |        |          |01 = Clock source from EPLL/4.
+ * |        |          |10 = Clock source from PCLK0.
+ * |        |          |11 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
+ * |[11:10] |QSPI1SEL  |QSPI1 Clock Source Selection
+ * |        |          |00 = Clock source from 24 MHz external high speed crystal oscillator (HXT).
+ * |        |          |01 = Clock source from EPLL/4.
+ * |        |          |10 = Clock source from PCLK0.
+ * |        |          |11 = Clock source from 12 MHz internal high speed RC oscillator (HIRC).
+ * |[13:12] |I2S0SEL   |I2S0 Clock Source Selection
+ * |        |          |00 = Clock source from HXT clock.
+ * |        |          |01 = Clock source from APLL clock.
+ * |        |          |10 = Clock source from PCLK0.
+ * |        |          |11 = Clock source from HIRC clock.
+ * |[15:14] |I2S1SEL   |I2S1 Clock Source Selection
+ * |        |          |00 = Clock source from HXT clock.
+ * |        |          |01 = Clock source from APLL clock.
+ * |        |          |10 = Clock source from PCLK2.
+ * |        |          |11 = Clock source from HIRC clock.
+ * |[16]    |CANFD0SEL |CANFD0 Clock Source Selection
+ * |        |          |0 = Clock source from APLL clock.
+ * |        |          |1 = Clock source from VPLL clock.
+ * |[17]    |CANFD1SEL |CANFD1 Clock Source Selection
+ * |        |          |0 = Clock source from APLL clock.
+ * |        |          |1 = Clock source from VPLL clock.
+ * |[18]    |CANFD2SEL |CANFD2 Clock Source Selection
+ * |        |          |0 = Clock source from APLL clock.
+ * |        |          |1 = Clock source from VPLL clock.
+ * |[19]    |CANFD3SEL |CANFD3 Clock Source Selection
+ * |        |          |0 = Clock source from APLL clock.
+ * |        |          |1 = Clock source from VPLL clock.
+ * |[27:24] |CKOSEL    |Reference Clock Our Source Selection
+ * |        |          |This field selects which clock is used to be the source of reference clock output
+ * |        |          |0000 = Clock source from HXT.
+ * |        |          |0001 = Clock source from LXT.
+ * |        |          |0010 = Clock source from HIRC.
+ * |        |          |0011 = Clock source from LIRC.
+ * |        |          |0100 = Reserved..
+ * |        |          |0101 = Clock source from SYS-PLL.
+ * |        |          |0110 = Clock source from DDR core CLK.
+ * |        |          |0111 = Clock source from EPLL/4.
+ * |        |          |1000 = Clock source from APLL.
+ * |        |          |1001 = Clock source from VPLL.
+ * |        |          |1010 = Clock source from CA CLK.
+ * |        |          |1011 = Clock source from AXI0 ACLK.
+ * |        |          |1100 = Clock source from SYSCLK0.
+ * |        |          |1101 = Clock source from SYSCLK1.
+ * |        |          |1110 = Clock source from PCLK3.
+ * |        |          |1111 = Clock source from PCLK4.
+ * |        |          |Others = Reserved.
+ * |[28]    |SC0SEL    |Smart Card 0 Clock Source Selection
+ * |        |          |0 = Clock source from 4~24 MHz external high speed crystal oscillator (HXT).
+ * |        |          |1 = Clock source from PCLK4.
+ * |[29]    |SC1SEL    |Smart Card 1 Clock Source Selection
+ * |        |          |0 = Clock source from 4~24 MHz external high speed crystal oscillator (HXT).
+ * |        |          |1 = Clock source from PCLK4.
+ * |[30]    |KPISEL    |Key Pad Interface Clock Source Selection
+ * |        |          |0 = Clock source from 4~24 MHz external high speed crystal oscillator (HXT).
+ * |        |          |1 = Clock source from 32.768 kHz external low speed crystal oscillator (LXT).
+ * @var CLK_T::CLKDIV0
+ * Offset: 0x2C  Clock Divider Number Register 0
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[1:0]   |CANFD0DIV |CANFD0 Clock Divide Number From CANFD0 Clock Source
+ * |        |          |00 = Clock source from CANFD0 Clock Source /2.
+ * |        |          |01 = Clock source from CANFD0 Clock Source /4.
+ * |        |          |10 = Clock source from CANFD0 Clock Source /8.
+ * |        |          |11 = Clock source from CANFD0 Clock Source /16.
+ * |[3:2]   |CANFD1DIV |CANFD1 Clock Divide Number From CANFD1 Clock Source
+ * |        |          |00 = Clock source from CANFD1 Clock Source /2.
+ * |        |          |01 = Clock source from CANFD1 Clock Source /4.
+ * |        |          |10 = Clock source from CANFD1 Clock Source /8.
+ * |        |          |11 = Clock source from CANFD1 Clock Source /16.
+ * |[5:4]   |CANFD2DIV |CANFD2 Clock Divide Number From CANFD2 Clock Source
+ * |        |          |00 = Clock source from CANFD2 Clock Source /2.
+ * |        |          |01 = Clock source from CANFD2 Clock Source /4.
+ * |        |          |10 = Clock source from CANFD2 Clock Source /8.
+ * |        |          |11 = Clock source from CANFD2 Clock Source /16.
+ * |[7:6]   |CANFD3DIV |CANFD3 Clock Divide Number From CANFD3 Clock Source
+ * |        |          |00 = Clock source from CANFD3 Clock Source /2.
+ * |        |          |01 = Clock source from CANFD3 Clock Source /4.
+ * |        |          |10 = Clock source from CANFD3 Clock Source /8.
+ * |        |          |11 = Clock source from CANFD3 Clock Source /16.
+ * |[25:24] |DCUPDIV   |Display Controller Ultra Pixel Divided Clock Source (Read Only)
+ * |        |          |00 = Clock source from Display Controller Ultra Pixel Clock Source /2.
+ * |        |          |01 = Clock source from Display Controller Ultra Pixel Clock Source /4.
+ * |        |          |10 = Clock source from Display Controller Ultra Pixel Clock Source /8.
+ * |        |          |11 = Clock source from Display Controller Ultra Pixel Clock Source /16.
+ * |[26]    |ACLK0DIV  |AXI0 Bus Clock Divide Number From CA-PLL Clock Source (Write Protect)
+ * |        |          |0 = Clock source from CA-PLL /2.
+ * |        |          |1 = Clock source from CA-PLL /4.
+ * |        |          |Note: This bit is write protected. Refer to the SYS_RLKTZS register.
+ * |[29:28] |EMAC0DIV  |EMAC0 TX Clock Divide Selection From EPLL Clock Source (Read Only)
+ * |        |          |00 = Clock source from EPLL /2.(RGMII).
+ * |        |          |01 = Clock source from EPLL /2.(RGMII).
+ * |        |          |10 = Clock source from EPLL /100 (RGMII).
+ * |        |          |11 = Clock source from EPLL /10 (RGMII).
+ * |        |          |X0 = Clock source from RMII reference clock /20 (RMII).
+ * |        |          |X1 = Clock source from RMII reference clock /2 (RMII).
+ * |        |          |Others = Reserved.
+ * |        |          |Note: This field definition depends on the Ethernet mac is RMII or not.
+ * |[31:30] |EMAC1DIV  |EMAC1 TX Clock Divide Selection From EPLL Clock Source (Read Only)
+ * |        |          |00 = Clock source from EPLL /2.(RGMII).
+ * |        |          |01 = Clock source from EPLL /2.(RGMII).
+ * |        |          |10 = Clock source from EPLL /100 (RGMII).
+ * |        |          |11 = Clock source from EPLL /10 (RGMII).
+ * |        |          |X0 = Clock source from RMII reference clock /20 (RMII).
+ * |        |          |X1 = Clock source from RMII reference clock /2 (RMII).
+ * |        |          |Others = Reserved.
+ * |        |          |Note: This field definition depends on the Ethernet mac is RMII or not.
+ * @var CLK_T::CLKDIV1
+ * Offset: 0x30  Clock Divider Number Register 1
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[3:0]   |SC0DIV    |Smart Card 0 Clock Divide Number From SC0 Clock Source
+ * |        |          |SC0 clock frequency = (SC0 clock source frequency) / (SC0DIV + 1).
+ * |[7:4]   |SC1DIV    |Smart Card 1 Clock Divide Number From SC1 Clock Source
+ * |        |          |SC1 clock frequency = (SC1 clock source frequency) / (SC1DIV + 1).
+ * |[11:8]  |CCAP0DIV  |CCAP0 Clock Divide Number From CCAP0 Clock Source (TZNS)
+ * |        |          |CCAP0 clock frequency = (CCAP0 clock source frequency) / (CCAP0DIV + 1).
+ * |[15:12] |CCAP1DIV  |CCAP1 Clock Divide Number From CCAP1 Clock Source (TZNS)
+ * |        |          |CCAP1 clock frequency = (CCAP1 clock source frequency) / (CCAP1DIV + 1).
+ * |[19:16] |UART0DIV  |UART0 Clock Divide Number From UART0 Clock Source
+ * |        |          |UART0 clock frequency = (UART0 clock source frequency) / (UART0DIV + 1).
+ * |[23:20] |UART1DIV  |UART1 Clock Divide Number From UART1 Clock Source
+ * |        |          |UART1 clock frequency = (UART1 clock source frequency) / (UART1DIV + 1).
+ * |[27:24] |UART2DIV  |UART2 Clock Divide Number From UART2 Clock Source
+ * |        |          |UART2 clock frequency = (UART2 clock source frequency) / (UART2DIV + 1).
+ * |[31:28] |UART3DIV  |UART3 Clock Divide Number From UART3 Clock Source
+ * |        |          |UART3 clock frequency = (UART3 clock source frequency) / (UART3DIV + 1).
+ * @var CLK_T::CLKDIV2
+ * Offset: 0x34  Clock Divider Number Register 2
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[3:0]   |UART4DIV  |UART4 Clock Divide Number From UART4 Clock Source
+ * |        |          |UART4 clock frequency = (UART4 clock source frequency) / (UART4DIV + 1).
+ * |[7:4]   |UART5DIV  |UART5 Clock Divide Number From UART5 Clock Source
+ * |        |          |UART5 clock frequency = (UART5 clock source frequency) / (UART5DIV + 1).
+ * |[11:8]  |UART6DIV  |UART6 Clock Divide Number From UART6 Clock Source
+ * |        |          |UART6 clock frequency = (UART6 clock source frequency) / (UART6DIV + 1).
+ * |[15:12] |UART7DIV  |UART7 Clock Divide Number From UART7 Clock Source
+ * |        |          |UART7 clock frequency = (UART7 clock source frequency) / (UART7DIV + 1).
+ * |[19:16] |UART8DIV  |UART8 Clock Divide Number From UART8 Clock Source
+ * |        |          |UART8 clock frequency = (UART8 clock source frequency) / (UART8DIV + 1).
+ * |[23:20] |UART9DIV  |UART9 Clock Divide Number From UART9 Clock Source
+ * |        |          |UART9 clock frequency = (UART9 clock source frequency) / (UART9DIV + 1).
+ * |[27:24] |UART10DIV |UART10 Clock Divide Number From UART10 Clock Source
+ * |        |          |UART10 clock frequency = (UART10 clock source frequency) / (UART10DIV + 1).
+ * |[31:28] |UART11DIV |UART11 Clock Divide Number From UART11 Clock Source
+ * |        |          |UART11 clock frequency = (UART11 clock source frequency) / (UART11DIV + 1).
+ * @var CLK_T::CLKDIV3
+ * Offset: 0x38  Clock Divider Number Register 3
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[3:0]   |UART12DIV |UART12 Clock Divide Number From UART12 Clock Source
+ * |        |          |UART12 clock frequency = (UART12 clock source frequency) / (UART12DIV + 1).
+ * |[7:4]   |UART13DIV |UART13 Clock Divide Number From UART13 Clock Source
+ * |        |          |UART13 clock frequency = (UART13 clock source frequency) / (UART13DIV + 1).
+ * |[11:8]  |UART14DIV |UART14 Clock Divide Number From UART14 Clock Source
+ * |        |          |UART14 clock frequency = (UART14 clock source frequency) / (UART14DIV + 1).
+ * |[15:12] |UART15DIV |UART15 Clock Divide Number From UART15 Clock Source
+ * |        |          |UART15 clock frequency = (UART15 clock source frequency) / (UART15DIV + 1).
+ * |[19:16] |UART16DIV |UART16 Clock Divide Number From UART16 Clock Source
+ * |        |          |UART16 clock frequency = (UART16 clock source frequency) / (UART16DIV + 1).
+ * @var CLK_T::CLKDIV4
+ * Offset: 0x3C  Clock Divider Number Register 4
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[3:0]   |EADCDIV   |EADC Clock Divide Number From EADC Clock Source
+ * |        |          |EADC clock frequency = (EADC clock source frequency) / (EADCDIV + 1).
+ * |[20:4]  |ADCDIV    |ADC Clock Divide Number From ADC Clock Source
+ * |        |          |ADC clock frequency = (ADC clock source frequency) / (ADCDIV + 1).
+ * |[31:24] |KPIDIV    |Keypad Interface Clock Divide Number From KPI Clock Source
+ * |        |          |KPI clock frequency = (KPI clock source frequency) / (KPIDIV + 1).
+ * @var CLK_T::CLKOCTL
+ * Offset: 0x40  Clock Output Control Register (Write Protect)
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[3:0]   |FREQSEL   |Clock Output Frequency Selection
+ * |        |          |The formula of output frequency is
+ * |        |          |Fout = Fin/2(N+1).
+ * |        |          |Fin is the input clock frequency.
+ * |        |          |Fout is the frequency of divider output clock.
+ * |        |          |N is the 4-bit value of FREQSEL [3:0].
+ * |[4]     |CLKOEN    |Clock Output Enable Bit
+ * |        |          |0 = Clock Output function Disabled.
+ * |        |          |1 = Clock Output function Enabled.
+ * |[5]     |DIV1EN    |Clock Output Divide One Enable Bit
+ * |        |          |0 = Clock Output will output clock with source frequency divided by FREQSEL.
+ * |        |          |1 = Clock Output will output clock with source frequency.
+ * @var CLK_T::STATUS
+ * Offset: 0x50  Clock Status Monitor Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[0]     |HXTSTB    |HXT Clock Source Stable Flag (Read Only)
+ * |        |          |0 = 24 MHz external high speed crystal oscillator (HXT) clock is not stable or disabled.
+ * |        |          |1 = 24 MHz external high speed crystal oscillator (HXT) clock is stable and enabled. 
+ * |[1]     |LXTSTB    |LXT Clock Source Stable Flag (Read Only)
+ * |        |          |LXT clock source can be selected as external LXT or LIRC32 by setting C32KS(RTC_LXTCTL[6])
+ * |        |          |IfC32KS is set to 0 the LXT stable flag is set when external LXT clock source is stable
+ * |        |          |IfC32KS is set to 1 the LXT stable flag is set when LIRC32 clock source is stable.
+ * |        |          |0 = 32.768 kHz external low speed crystal oscillator (LXT) clock is not stable or disabled.
+ * |        |          |1 = 32.768 kHz external low speed crystal oscillator (LXT) clock is stabled and enabled.
+ * |[2]     |SYSPLLSTB |SYS-PLL Clock Source Stable Flag (Read Only)
+ * |        |          |0 = SYS-PLL clock is not stable or disabled.
+ * |        |          |1 = SYS-PLL clock is stable and enabled.
+ * |[3]     |LIRCSTB   |LIRC Clock Source Stable Flag (Read Only)
+ * |        |          |0 = 32 kHz internal low speed RC oscillator (LIRC) clock is not stable or disabled.
+ * |        |          |1 = 32 kHz internal low speed RC oscillator (LIRC) clock is stable and enabled.
+ * |[4]     |HIRCSTB   |HIRC Clock Source Stable Flag (Read Only)
+ * |        |          |0 = 12 MHz internal high speed RC oscillator (HIRC) clock is not stable or disabled.
+ * |        |          |1 = 12 MHz internal high speed RC oscillator (HIRC) clock is stable and enabled.
+ * |[6]     |CAPLLSTB  |Cortex35 PLL Clock Source Stable Flag (Read Only)
+ * |        |          |0 = CA-PLL clock is not stable or disabled.
+ * |        |          |1 = CA-PLL clock is stable and enabled.
+ * |[8]     |DDRPLLSTB |DDR-PLL Clock Source Stable Flag (Read Only)
+ * |        |          |0 = DDR-PLL clock is not stable or disabled.
+ * |        |          |1 = DDR-PLL clock is stable and enabled.
+ * |[9]     |EPLLSTB   |EPLL Clock Source Stable Flag (Read Only)
+ * |        |          |0 = EPLL clock is not stable or disabled.
+ * |        |          |1 = EPLL clock is stable and enabled.
+ * |[10]    |APLLSTB   |APLL Clock Source Stable Flag (Read Only)
+ * |        |          |0 = APLL clock is not stable or disabled.
+ * |        |          |1 = APLL clock is stable and enabled.
+ * |[11]    |VPLLSTB   |VPLL Clock Source Stable Flag (Read Only)
+ * |        |          |0 = VPLL clock is not stable or disabled.
+ * |        |          |1 = VPLL clock is stable and enabled.
+ * @var CLK_T::PLL0CTL0
+ * Offset: 0x60  CA-PLL Control Register 0(Write Protect)
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[10:0]  |FBDIV     |PLL Feedback Divider Control (Write Protect)
+ * |        |          |Set the feedback divider factor (N) from 16 to 2047.
+ * |        |          |The N = FBDIV[10:0].
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * |[17:12] |INDIV     |PLL Reference Input Divider Control (Write Protect)
+ * |        |          |Set the reference divider factor (M) from 1 to 63.
+ * |        |          |The M = INDIV[5:0].
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * |[19:18] |MODE      |Operation Mode Selection(Write Protect)
+ * |        |          |00 = Integer mode.
+ * |        |          |In this mode, the rising edges of the two clocks at the input of PFD are phase aligned
+ * |        |          |And the output clock frequency is at multiples of the input clock frequency contingent on the configuration of OUTDIV, INDIV and FBDIV.
+ * |        |          |01 = Fractional mode.
+ * |        |          |This mode is suitable for applications which need small output frequency steps, like 20 kHz
+ * |        |          |The jitter performance in this mode may be worse than in Integer Mode.
+ * |        |          |In this mode, the output clock frequency is at the fractional multiples of the input clock frequency
+ * |        |          |By setting the control pins FRAC [23:0], a small output frequency step is achieved..
+ * |        |          |10 = Spread Spectrum Mode.
+ * |        |          |This mode is suitable for In this mode the output frequency of PLL will be modulated by triangle wave
+ * |        |          |It is for EMI consideration.
+ * |        |          |By setting SSRATE [10:0] and SLOPE [23:0], the modulation index and the modulation frequency can be programmed.
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * |[30:20] |SSRATE    |Spreading Frequency Control (Write Protect)
+ * |        |          |Set the spread step factor SSRATE from 0 to 2047,
+ * |        |          |SSRATE = SSRATE [10:0].
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * @var CLK_T::PLL0CTL1
+ * Offset: 0x64  CA-PLL Control Register 1(Write Protect)
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[0]     |PD        |Power-down Mode (Write Protect)
+ * |        |          |0 = PLL is enable (in normal mode).
+ * |        |          |1 = PLL is disable (in Power-down mode) (default).
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * |[1]     |BP        |PLL Bypass Control (Write Protect)
+ * |        |          |0 = PLL is in normal mode (default).
+ * |        |          |1 = PLL clock output is same as PLL input clock Fref.
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * |[6:4]   |OUTDIV    |PLL Output Divider Control (Write Protect)
+ * |        |          |Set the output divider factor (P) from 1 to 7.
+ * |        |          |P = OUTDIV[2:0].
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * |[31:8]  |FRAC      |PLL Fractional Portion of DN Value (Write Protect)
+ * |        |          |Set the fraction part (X) of Fractional Portion of DN Value factor.
+ * |        |          |The X = FRAC[23:0] / 224.
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * @var CLK_T::PLL0CTL2
+ * Offset: 0x68  CA-PLL Control Register 2(Write Protect)
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[23:0]  |SLOPE     |PLL Stable Counter Selection (Write Protect)
+ * |        |          |Set the spread step factor SLOPE from 0 to 16777215,
+ * |        |          |SLOPE = SLOPE[23:0].
+ * |        |          |Note 1: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * @var CLK_T::PLL1CTL0
+ * Offset: 0x70  SYS-PLL Control Register 0(Write Protect)
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[10:0]  |FBDIV     |PLL Feedback Divider Control (Write Protect)
+ * |        |          |Set the feedback divider factor (N) from 16 to 2047.
+ * |        |          |The N = FBDIV[10:0].
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * |[17:12] |INDIV     |PLL Reference Input Divider Control (Write Protect)
+ * |        |          |Set the reference divider factor (M) from 1 to 63.
+ * |        |          |The M = INDIV[5:0].
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * |[19:18] |MODE      |Operation Mode Selection(Write Protect)
+ * |        |          |00 = Integer mode.
+ * |        |          |In this mode, the rising edges of the two clocks at the input of PFD are phase aligned
+ * |        |          |And the output clock frequency is at multiples of the input clock frequency contingent on the configuration of OUTDIV, INDIV and FBDIV.
+ * |        |          |01 = Fractional mode.
+ * |        |          |This mode is suitable for applications which need small output frequency steps, like 20 kHz
+ * |        |          |The jitter performance in this mode may be worse than in Integer Mode.
+ * |        |          |In this mode, the output clock frequency is at the fractional multiples of the input clock frequency
+ * |        |          |By setting the control pins FRAC [23:0], a small output frequency step is achieved..
+ * |        |          |10 = Spread Spectrum Mode.
+ * |        |          |This mode is suitable for In this mode the output frequency of PLL will be modulated by triangle wave
+ * |        |          |It is for EMI consideration.
+ * |        |          |By setting SSRATE [10:0] and SLOPE [23:0], the modulation index and the modulation frequency can be programmed.
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * |[30:20] |SSRATE    |Spreading Frequency Control (Write Protect)
+ * |        |          |Set the spread step factor SSRATE from 0 to 2047,
+ * |        |          |SSRATE = SSRATE [10:0].
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * @var CLK_T::PLL1CTL1
+ * Offset: 0x74  SYS-PLL Control Register 1(Write Protect)
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[0]     |PD        |Power-down Mode (Write Protect)
+ * |        |          |0 = PLL is enable (in normal mode).
+ * |        |          |1 = PLL is disable (in Power-down mode) (default).
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * |[1]     |BP        |PLL Bypass Control (Write Protect)
+ * |        |          |0 = PLL is in normal mode (default).
+ * |        |          |1 = PLL clock output is same as PLL input clock Fref.
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * |[6:4]   |OUTDIV    |PLL Output Divider Control (Write Protect)
+ * |        |          |Set the output divider factor (P) from 1 to 7.
+ * |        |          |P = OUTDIV[2:0].
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * |[31:8]  |FRAC      |PLL Fractional Portion of DN Value (Write Protect)
+ * |        |          |Set the fraction part (X) of Fractional Portion of DN Value factor.
+ * |        |          |The X = FRAC[23:0] / 224.
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * @var CLK_T::PLL1CTL2
+ * Offset: 0x78  SYS-PLL Control Register 2(Write Protect)
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[23:0]  |SLOPE     |PLL Stable Counter Selection (Write Protect)
+ * |        |          |Set the spread step factor SLOPE from 0 to 16777215,
+ * |        |          |SLOPE = SLOPE[23:0].
+ * |        |          |Note 1: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * @var CLK_T::PLL2CTL0
+ * Offset: 0x80  DDR-PLL Control Register 0(Write Protect)
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[10:0]  |FBDIV     |PLL Feedback Divider Control (Write Protect)
+ * |        |          |Set the feedback divider factor (N) from 16 to 2047.
+ * |        |          |The N = FBDIV[10:0].
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * |[17:12] |INDIV     |PLL Reference Input Divider Control (Write Protect)
+ * |        |          |Set the reference divider factor (M) from 1 to 63.
+ * |        |          |The M = INDIV[5:0].
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * |[19:18] |MODE      |Operation Mode Selection(Write Protect)
+ * |        |          |00 = Integer mode.
+ * |        |          |In this mode, the rising edges of the two clocks at the input of PFD are phase aligned
+ * |        |          |And the output clock frequency is at multiples of the input clock frequency contingent on the configuration of OUTDIV, INDIV and FBDIV.
+ * |        |          |01 = Fractional mode.
+ * |        |          |This mode is suitable for applications which need small output frequency steps, like 20 kHz
+ * |        |          |The jitter performance in this mode may be worse than in Integer Mode.
+ * |        |          |In this mode, the output clock frequency is at the fractional multiples of the input clock frequency
+ * |        |          |By setting the control pins FRAC [23:0], a small output frequency step is achieved..
+ * |        |          |10 = Spread Spectrum Mode.
+ * |        |          |This mode is suitable for In this mode the output frequency of PLL will be modulated by triangle wave
+ * |        |          |It is for EMI consideration.
+ * |        |          |By setting SSRATE [10:0] and SLOPE [23:0], the modulation index and the modulation frequency can be programmed.
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * |[30:20] |SSRATE    |Spreading Frequency Control (Write Protect)
+ * |        |          |Set the spread step factor SSRATE from 0 to 2047,
+ * |        |          |SSRATE = SSRATE [10:0].
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * @var CLK_T::PLL2CTL1
+ * Offset: 0x84  DDR-PLL Control Register 1(Write Protect)
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[0]     |PD        |Power-down Mode (Write Protect)
+ * |        |          |0 = PLL is enable (in normal mode).
+ * |        |          |1 = PLL is disable (in Power-down mode) (default).
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * |[1]     |BP        |PLL Bypass Control (Write Protect)
+ * |        |          |0 = PLL is in normal mode (default).
+ * |        |          |1 = PLL clock output is same as PLL input clock Fref.
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * |[6:4]   |OUTDIV    |PLL Output Divider Control (Write Protect)
+ * |        |          |Set the output divider factor (P) from 1 to 7.
+ * |        |          |P = OUTDIV[2:0].
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * |[31:8]  |FRAC      |PLL Fractional Portion of DN Value (Write Protect)
+ * |        |          |Set the fraction part (X) of Fractional Portion of DN Value factor.
+ * |        |          |The X = FRAC[23:0] / 224.
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * @var CLK_T::PLL2CTL2
+ * Offset: 0x88  DDR-PLL Control Register 2(Write Protect)
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[23:0]  |SLOPE     |PLL Stable Counter Selection (Write Protect)
+ * |        |          |Set the spread step factor SLOPE from 0 to 16777215,
+ * |        |          |SLOPE = SLOPE[23:0].
+ * |        |          |Note 1: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * @var CLK_T::PLL3CTL0
+ * Offset: 0x90  APLL Control Register 0(Write Protect)
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[10:0]  |FBDIV     |PLL Feedback Divider Control (Write Protect)
+ * |        |          |Set the feedback divider factor (N) from 16 to 2047.
+ * |        |          |The N = FBDIV[10:0].
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * |[17:12] |INDIV     |PLL Reference Input Divider Control (Write Protect)
+ * |        |          |Set the reference divider factor (M) from 1 to 63.
+ * |        |          |The M = INDIV[5:0].
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * |[19:18] |MODE      |Operation Mode Selection(Write Protect)
+ * |        |          |00 = Integer mode.
+ * |        |          |In this mode, the rising edges of the two clocks at the input of PFD are phase aligned
+ * |        |          |And the output clock frequency is at multiples of the input clock frequency contingent on the configuration of OUTDIV, INDIV and FBDIV.
+ * |        |          |01 = Fractional mode.
+ * |        |          |This mode is suitable for applications which need small output frequency steps, like 20 kHz
+ * |        |          |The jitter performance in this mode may be worse than in Integer Mode.
+ * |        |          |In this mode, the output clock frequency is at the fractional multiples of the input clock frequency
+ * |        |          |By setting the control pins FRAC [23:0], a small output frequency step is achieved..
+ * |        |          |10 = Spread Spectrum Mode.
+ * |        |          |This mode is suitable for In this mode the output frequency of PLL will be modulated by triangle wave
+ * |        |          |It is for EMI consideration.
+ * |        |          |By setting SSRATE [10:0] and SLOPE [23:0], the modulation index and the modulation frequency can be programmed.
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * |[30:20] |SSRATE    |Spreading Frequency Control (Write Protect)
+ * |        |          |Set the spread step factor SSRATE from 0 to 2047,
+ * |        |          |SSRATE = SSRATE [10:0].
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * @var CLK_T::PLL3CTL1
+ * Offset: 0x94  APLL Control Register 1(Write Protect)
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[0]     |PD        |Power-down Mode (Write Protect)
+ * |        |          |0 = PLL is enable (in normal mode).
+ * |        |          |1 = PLL is disable (in Power-down mode) (default).
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * |[1]     |BP        |PLL Bypass Control (Write Protect)
+ * |        |          |0 = PLL is in normal mode (default).
+ * |        |          |1 = PLL clock output is same as PLL input clock Fref.
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * |[6:4]   |OUTDIV    |PLL Output Divider Control (Write Protect)
+ * |        |          |Set the output divider factor (P) from 1 to 7.
+ * |        |          |P = OUTDIV[2:0].
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * |[31:8]  |FRAC      |PLL Fractional Portion of DN Value (Write Protect)
+ * |        |          |Set the fraction part (X) of Fractional Portion of DN Value factor.
+ * |        |          |The X = FRAC[23:0] / 224.
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * @var CLK_T::PLL3CTL2
+ * Offset: 0x98  APLL Control Register 2(Write Protect)
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[23:0]  |SLOPE     |PLL Stable Counter Selection (Write Protect)
+ * |        |          |Set the spread step factor SLOPE from 0 to 16777215,
+ * |        |          |SLOPE = SLOPE[23:0].
+ * |        |          |Note 1: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * @var CLK_T::PLL4CTL0
+ * Offset: 0xA0  EPLL Control Register 0(Write Protect)
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[10:0]  |FBDIV     |PLL Feedback Divider Control (Write Protect)
+ * |        |          |Set the feedback divider factor (N) from 16 to 2047.
+ * |        |          |The N = FBDIV[10:0].
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * |[17:12] |INDIV     |PLL Reference Input Divider Control (Write Protect)
+ * |        |          |Set the reference divider factor (M) from 1 to 63.
+ * |        |          |The M = INDIV[5:0].
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * |[19:18] |MODE      |Operation Mode Selection(Write Protect)
+ * |        |          |00 = Integer mode.
+ * |        |          |In this mode, the rising edges of the two clocks at the input of PFD are phase aligned
+ * |        |          |And the output clock frequency is at multiples of the input clock frequency contingent on the configuration of OUTDIV, INDIV and FBDIV.
+ * |        |          |01 = Fractional mode.
+ * |        |          |This mode is suitable for applications which need small output frequency steps, like 20 kHz
+ * |        |          |The jitter performance in this mode may be worse than in Integer Mode.
+ * |        |          |In this mode, the output clock frequency is at the fractional multiples of the input clock frequency
+ * |        |          |By setting the control pins FRAC [23:0], a small output frequency step is achieved..
+ * |        |          |10 = Spread Spectrum Mode.
+ * |        |          |This mode is suitable for In this mode the output frequency of PLL will be modulated by triangle wave
+ * |        |          |It is for EMI consideration.
+ * |        |          |By setting SSRATE [10:0] and SLOPE [23:0], the modulation index and the modulation frequency can be programmed.
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * |[30:20] |SSRATE    |Spreading Frequency Control (Write Protect)
+ * |        |          |Set the spread step factor SSRATE from 0 to 2047,
+ * |        |          |SSRATE = SSRATE [10:0].
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * @var CLK_T::PLL4CTL1
+ * Offset: 0xA4  EPLL Control Register 1(Write Protect)
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[0]     |PD        |Power-down Mode (Write Protect)
+ * |        |          |0 = PLL is enable (in normal mode).
+ * |        |          |1 = PLL is disable (in Power-down mode) (default).
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * |[1]     |BP        |PLL Bypass Control (Write Protect)
+ * |        |          |0 = PLL is in normal mode (default).
+ * |        |          |1 = PLL clock output is same as PLL input clock Fref.
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * |[6:4]   |OUTDIV    |PLL Output Divider Control (Write Protect)
+ * |        |          |Set the output divider factor (P) from 1 to 7.
+ * |        |          |P = OUTDIV[2:0].
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * |[31:8]  |FRAC      |PLL Fractional Portion of DN Value (Write Protect)
+ * |        |          |Set the fraction part (X) of Fractional Portion of DN Value factor.
+ * |        |          |The X = FRAC[23:0] / 224.
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * @var CLK_T::PLL4CTL2
+ * Offset: 0xA8  EPLL Control Register 2(Write Protect)
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[23:0]  |SLOPE     |PLL Stable Counter Selection (Write Protect)
+ * |        |          |Set the spread step factor SLOPE from 0 to 16777215,
+ * |        |          |SLOPE = SLOPE[23:0].
+ * |        |          |Note 1: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * @var CLK_T::PLL5CTL0
+ * Offset: 0xB0  VPLL Control Register 0(Write Protect)
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[10:0]  |FBDIV     |PLL Feedback Divider Control (Write Protect)
+ * |        |          |Set the feedback divider factor (N) from 16 to 2047.
+ * |        |          |The N = FBDIV[10:0].
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * |[17:12] |INDIV     |PLL Reference Input Divider Control (Write Protect)
+ * |        |          |Set the reference divider factor (M) from 1 to 63.
+ * |        |          |The M = INDIV[5:0].
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * |[19:18] |MODE      |Operation Mode Selection(Write Protect)
+ * |        |          |00 = Integer mode.
+ * |        |          |In this mode, the rising edges of the two clocks at the input of PFD are phase aligned
+ * |        |          |And the output clock frequency is at multiples of the input clock frequency contingent on the configuration of OUTDIV, INDIV and FBDIV.
+ * |        |          |01 = Fractional mode.
+ * |        |          |This mode is suitable for applications which need small output frequency steps, like 20 kHz
+ * |        |          |The jitter performance in this mode may be worse than in Integer Mode.
+ * |        |          |In this mode, the output clock frequency is at the fractional multiples of the input clock frequency
+ * |        |          |By setting the control pins FRAC [23:0], a small output frequency step is achieved..
+ * |        |          |10 = Spread Spectrum Mode.
+ * |        |          |This mode is suitable for In this mode the output frequency of PLL will be modulated by triangle wave
+ * |        |          |It is for EMI consideration.
+ * |        |          |By setting SSRATE [10:0] and SLOPE [23:0], the modulation index and the modulation frequency can be programmed.
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * |[30:20] |SSRATE    |Spreading Frequency Control (Write Protect)
+ * |        |          |Set the spread step factor SSRATE from 0 to 2047,
+ * |        |          |SSRATE = SSRATE [10:0].
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * @var CLK_T::PLL5CTL1
+ * Offset: 0xB4  VPLL Control Register 1(Write Protect)
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[0]     |PD        |Power-down Mode (Write Protect)
+ * |        |          |0 = PLL is enable (in normal mode).
+ * |        |          |1 = PLL is disable (in Power-down mode) (default).
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * |[1]     |BP        |PLL Bypass Control (Write Protect)
+ * |        |          |0 = PLL is in normal mode (default).
+ * |        |          |1 = PLL clock output is same as PLL input clock Fref.
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * |[6:4]   |OUTDIV    |PLL Output Divider Control (Write Protect)
+ * |        |          |Set the output divider factor (P) from 1 to 7.
+ * |        |          |P = OUTDIV[2:0].
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * |[31:8]  |FRAC      |PLL Fractional Portion of DN Value (Write Protect)
+ * |        |          |Set the fraction part (X) of Fractional Portion of DN Value factor.
+ * |        |          |The X = FRAC[23:0] / 224.
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * @var CLK_T::PLL5CTL2
+ * Offset: 0xB8  VPLL Control Register 2(Write Protect)
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[23:0]  |SLOPE     |PLL Stable Counter Selection (Write Protect)
+ * |        |          |Set the spread step factor SLOPE from 0 to 16777215,
+ * |        |          |SLOPE = SLOPE[23:0].
+ * |        |          |Note 1: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register
+ * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+ * @var CLK_T::CLKDCTL
+ * Offset: 0xC0  Clock Fail Detector Control Register(Write Protect)
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[4]     |HXTFDEN   |HXT Clock Fail Detector Enable Bit
+ * |        |          |0 = 24 MHz external high speed crystal oscillator (HXT) clock fail detector Disabled.
+ * |        |          |1 = 24 MHz external high speed crystal oscillator (HXT) clock fail detector Enabled.
+ * |[5]     |HXTFIEN   |HXT Clock Fail Interrupt Enable Bit
+ * |        |          |0 = 24 MHz external high speed crystal oscillator (HXT) clock fail interrupt Disabled.
+ * |        |          |1 = 24 MHz external high speed crystal oscillator (HXT) clock fail interrupt Enabled.
+ * |[12]    |LXTFDEN   |LXT Clock Fail Detector Enable Bit
+ * |        |          |0 = 32.768 kHz external low speed crystal oscillator (LXT) clock fail detector Disabled.
+ * |        |          |1 = 32.768 kHz external low speed crystal oscillator (LXT) clock fail detector Enabled.
+ * |[13]    |LXTFIEN   |LXT Clock Fail Interrupt Enable Bit
+ * |        |          |0 = 32.768 kHz external low speed crystal oscillator (LXT) clock fail interrupt Disabled.
+ * |        |          |1 = 32.768 kHz external low speed crystal oscillator (LXT) clock fail interrupt Enabled.
+ * |[16]    |HXTFQDEN  |HXT Clock Frequency Monitor Enable Bit
+ * |        |          |0 = 24 MHz external high speed crystal oscillator (HXT) clock frequency monitor Disabled.
+ * |        |          |1 = 24 MHz external high speed crystal oscillator (HXT) clock frequency monitor Enabled.
+ * |[17]    |HXTFQIEN  |HXT Clock Frequency Monitor Interrupt Enable Bit
+ * |        |          |0 = 24 MHz external high speed crystal oscillator (HXT) clock frequency monitor fail interrupt Disabled.
+ * |        |          |1 = 24 MHz external high speed crystal oscillator (HXT) clock frequency monitor fail interrupt Enabled.
+ * @var CLK_T::CLKDSTS
+ * Offset: 0xC4  Clock Fail Detector Status Register(Write Protect)
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[0]     |HXTFIF    |HXT Clock Fail Interrupt Flag (Write Protect, Write 1 to Clear)
+ * |        |          |0 = 24 MHz external high speed crystal oscillator (HXT) clock is normal.
+ * |        |          |1 = 24 MHz external high speed crystal oscillator (HXT) clock stops.
+ * |        |          |Note 1: Write 1 to clear the bit to 0.
+ * |        |          |Note 2: This bit is write protected. Refer to the SYS_RLKTZS register.
+ * |[1]     |LXTFIF    |LXT Clock Fail Interrupt Flag (Write Protect, Write 1 to Clear)
+ * |        |          |0 = 32.768 kHz external low speed crystal oscillator (LXT) clock is normal.
+ * |        |          |1 = 32.768 kHz external low speed crystal oscillator (LXT) stops.
+ * |        |          |Note 1: Write 1 to clear the bit to 0.
+ * |        |          |Note 2: This bit is write protected. Refer to the SYS_RLKTZS register.
+ * |[8]     |HXTFQIF   |HXT Clock Frequency Monitor Interrupt Flag (Write Protect, Write 1 to Clear)
+ * |        |          |0 = 24 MHz external high speed crystal oscillator (HXT) clock is normal.
+ * |        |          |1 = 24 MHz external high speed crystal oscillator (HXT) clock frequency is abnormal.
+ * |        |          |Note 1: Write 1 to clear the bit to 0.
+ * |        |          |Note 2: This bit is write protected. Refer to the SYS_RLKTZS register.
+ * @var CLK_T::CDUPB
+ * Offset: 0xC8  Clock Frequency Detector Upper Boundary Register(Write Protect)
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[9:0]   |UPERBD    |HXT Clock Frequency Detector Upper Boundary
+ * |        |          |The bits define the high value of frequency monitor window.
+ * |        |          |When HXT frequency monitor value higher than this register, the HXT frequency detect fail interrupt flag will set to 1.
+ * @var CLK_T::CDLOWB
+ * Offset: 0xCC  Clock Frequency Detector Lower Boundary Register(Write Protect)
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[9:0]   |LOWERBD   |HXT Clock Frequency Detector Lower Boundary
+ * |        |          |The bits define the low value of frequency monitor window.
+ * |        |          |When HXT frequency monitor value lower than this register, the HXT frequency detect fail interrupt flag will set to 1.
+ * @var CLK_T::CKFLTRCTL
+ * Offset: 0xD0  Clock Filter Control Register (Write Protect)
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[0]     |HXTFLTREN |HXT Clock Filter Enable Control Bit (Write Protect)
+ * |        |          |0 = HXT clock filter function Disabled.
+ * |        |          |1 = HXT clock filter function Enabled.
+ * |        |          |Note: This bit is write protected. Refer to the SYS_RLKTZS register.
+ * |[1]     |HXTFLTRSEL|HXT Clock Filter Frequency Select
+ * |        |          |0 = HXT frequency is > 24 MHz.
+ * |        |          |1 = HXT frequency is <= 24 MHz.
+ * |        |          |Note: This bit is write protected. Refer to the SYS_RLKTZS register.
+ * |[4]     |HXTGTEN   |HXT Clock Gating Enable Control Bit (Write Protect)
+ * |        |          |0 = HXT clock filter function Disabled.
+ * |        |          |1 = HXT clock filter function Enabled.
+ * |        |          |Note: This bit is write protected. Refer to the SYS_RLKTZS register.
+ * |[5]     |HXTBYPSEN |HXT Clock Bypass Enable Control Bit (Write Protect)
+ * |        |          |0 = HXT clock filter function Disabled.
+ * |        |          |1 = HXT clock filter function Enabled.
+ * |        |          |Note: This bit is write protected. Refer to the SYS_RLKTZS register.
+ * |[8]     |HIRCFLTREN|HIRC Clock Filter Enable Control Bit (Write Protect)
+ * |        |          |0 = HIRC clock filter function Disabled.
+ * |        |          |1 = HIRC clock filter function Enabled.
+ * |        |          |Note: This bit is write protected. Refer to the SYS_RLKTZS register.
+ * |[9]     |HIRCFLTRSEL|HIRC Clock Filter Frequency Select
+ * |        |          |0 = HIRC frequency is > 12 MHz.
+ * |        |          |1 = HIRC frequency is <= 12 MHz.
+ * |        |          |Note: This bit is write protected. Refer to the SYS_RLKTZS register.
+ * |[12]    |HIRCGTEN  |HIRC Clock Gating Enable Control Bit (Write Protect)
+ * |        |          |0 = HIRC clock filter function Disabled.
+ * |        |          |1 = HIRC clock filter function Enabled.
+ * |        |          |Note: This bit is write protected. Refer to the SYS_RLKTZS register.
+ */
     __IO uint32_t PWRCTL;                /*!< [0x0000] System Power-down Control Register                               */
     __IO uint32_t SYSCLK0;               /*!< [0x0004] AXI and AHB Device Clock Enable Control Register 0               */
     __IO uint32_t SYSCLK1;               /*!< [0x0008] AXI and AHB Device Clock Enable Control Register 1               */
@@ -1001,55 +1658,39 @@ typedef struct
     __IO uint32_t CLKDIV2;               /*!< [0x0034] Clock Divider Number Register 2                                  */
     __IO uint32_t CLKDIV3;               /*!< [0x0038] Clock Divider Number Register 3                                  */
     __IO uint32_t CLKDIV4;               /*!< [0x003c] Clock Divider Number Register 4                                  */
-    __IO uint32_t CLKOCTL;               /*!< [0x0040] Clock Output Control Register                                    */
-    /** @cond HIDDEN_SYMBOLS */
-    __I  uint32_t RESERVE1[3];
-    /** @endcond */
+    __IO uint32_t CLKOCTL;               /*!< [0x0040] Clock Output Control Register (Write Protect)                    */
+    __I  uint32_t RESERVE0[3];
     __I  uint32_t STATUS;                /*!< [0x0050] Clock Status Monitor Register                                    */
-    /** @cond HIDDEN_SYMBOLS */
-    __I  uint32_t RESERVE2[3];
-    /** @endcond */
-    __IO uint32_t PLL0CTL0;              /*!< [0x0060] CA-PLL Control Register 0                                        */
-    __IO uint32_t PLL0CTL1;              /*!< [0x0064] CA-PLL Control Register 1                                        */
-    __IO uint32_t PLL0CTL2;              /*!< [0x0068] CA-PLL Control Register 2                                        */
-    /** @cond HIDDEN_SYMBOLS */
-    __I  uint32_t RESERVE3;
-    /** @endcond */
-    __IO uint32_t PLL1CTL0;              /*!< [0x0070] SYS-PLL Control Register 0                                       */
-    __IO uint32_t PLL1CTL1;              /*!< [0x0074] SYS-PLL Control Register 1                                       */
-    __IO uint32_t PLL1CTL2;              /*!< [0x0078] SYS-PLL Control Register 2                                       */
-    /** @cond HIDDEN_SYMBOLS */
-    __I  uint32_t RESERVE4;
-    /** @endcond */
-    __IO uint32_t PLL2CTL0;              /*!< [0x0080] DDR-PLL Control Register 0                                       */
-    __IO uint32_t PLL2CTL1;              /*!< [0x0084] DDR-PLL Control Register 1                                       */
-    __IO uint32_t PLL2CTL2;              /*!< [0x0088] DDR-PLL Control Register 2                                       */
-    /** @cond HIDDEN_SYMBOLS */
-    __I  uint32_t RESERVE5;
-    /** @endcond */
-    __IO uint32_t PLL3CTL0;              /*!< [0x0090] APLL Control Register 0              	                        */
-    __IO uint32_t PLL3CTL1;              /*!< [0x0094] APLL Control Register 1              	                        */
-    __IO uint32_t PLL3CTL2;              /*!< [0x0098] APLL Control Register 2              	                        */
-    /** @cond HIDDEN_SYMBOLS */
-    __I  uint32_t RESERVE6;
-    /** @endcond */
-    __IO uint32_t PLL4CTL0;              /*!< [0x00A0] EPLL Control Register 0                                          */
-    __IO uint32_t PLL4CTL1;              /*!< [0x00A4] EPLL Control Register 1                                          */
-    __IO uint32_t PLL4CTL2;              /*!< [0x00A8] EPLL Control Register 2                                          */
-    /** @cond HIDDEN_SYMBOLS */
-    __I  uint32_t RESERVE7;
-    /** @endcond */
-    __IO uint32_t PLL5CTL0;              /*!< [0x00B0] VPLL Control Register 0                                          */
-    __IO uint32_t PLL5CTL1;              /*!< [0x00B4] VPLL Control Register 1                                          */
-    __IO uint32_t PLL5CTL2;              /*!< [0x00B8] VPLL Control Register 2                                          */
-    /** @cond HIDDEN_SYMBOLS */
-    __I  uint32_t RESERVE8;
-    /** @endcond */
-    __IO uint32_t CLKDCTL;               /*!< [0x00C0] Clock Fail Detector Control Register                             */
-    __IO uint32_t CLKDSTS;               /*!< [0x00C4] Clock Fail Detector Status Register                              */
-    __IO uint32_t CDUPB;                 /*!< [0x00C8] Clock Frequency Range Detector Upper Boundary Register           */
-    __IO uint32_t CDLOWB;                /*!< [0x00CC] Clock Frequency Range Detector Lower Boundary Register           */
-    __IO uint32_t HXTFSEL;               /*!< [0x00D0] HXT Filter Select Control Register                               */
+    __I  uint32_t RESERVE1[3];
+    __IO uint32_t PLL0CTL0;              /*!< [0x0060] CA-PLL Control Register 0(Write Protect)                         */
+    __IO uint32_t PLL0CTL1;              /*!< [0x0064] CA-PLL Control Register 1(Write Protect)                         */
+    __IO uint32_t PLL0CTL2;              /*!< [0x0068] CA-PLL Control Register 2(Write Protect)                         */
+    __I  uint32_t RESERVE2[1];
+    __IO uint32_t PLL1CTL0;              /*!< [0x0070] SYS-PLL Control Register 0(Write Protect)                        */
+    __IO uint32_t PLL1CTL1;              /*!< [0x0074] SYS-PLL Control Register 1(Write Protect)                        */
+    __IO uint32_t PLL1CTL2;              /*!< [0x0078] SYS-PLL Control Register 2(Write Protect)                        */
+    __I  uint32_t RESERVE3[1];
+    __IO uint32_t PLL2CTL0;              /*!< [0x0080] DDR-PLL Control Register 0(Write Protect)                        */
+    __IO uint32_t PLL2CTL1;              /*!< [0x0084] DDR-PLL Control Register 1(Write Protect)                        */
+    __IO uint32_t PLL2CTL2;              /*!< [0x0088] DDR-PLL Control Register 2(Write Protect)                        */
+    __I  uint32_t RESERVE4[1];
+    __IO uint32_t PLL3CTL0;              /*!< [0x0090] APLL Control Register 0(Write Protect)                           */
+    __IO uint32_t PLL3CTL1;              /*!< [0x0094] APLL Control Register 1(Write Protect)                           */
+    __IO uint32_t PLL3CTL2;              /*!< [0x0098] APLL Control Register 2(Write Protect)                           */
+    __I  uint32_t RESERVE5[1];
+    __IO uint32_t PLL4CTL0;              /*!< [0x00a0] EPLL Control Register 0(Write Protect)                           */
+    __IO uint32_t PLL4CTL1;              /*!< [0x00a4] EPLL Control Register 1(Write Protect)                           */
+    __IO uint32_t PLL4CTL2;              /*!< [0x00a8] EPLL Control Register 2(Write Protect)                           */
+    __I  uint32_t RESERVE6[1];
+    __IO uint32_t PLL5CTL0;              /*!< [0x00b0] VPLL Control Register 0(Write Protect)                           */
+    __IO uint32_t PLL5CTL1;              /*!< [0x00b4] VPLL Control Register 1(Write Protect)                           */
+    __IO uint32_t PLL5CTL2;              /*!< [0x00b8] VPLL Control Register 2(Write Protect)                           */
+    __I  uint32_t RESERVE7[1];
+    __IO uint32_t CLKDCTL;               /*!< [0x00c0] Clock Fail Detector Control Register(Write Protect)              */
+    __IO uint32_t CLKDSTS;               /*!< [0x00c4] Clock Fail Detector Status Register(Write Protect)               */
+    __IO uint32_t CDUPB;                 /*!< [0x00c8] Clock Frequency Detector Upper Boundary Register(Write Protect)  */
+    __IO uint32_t CDLOWB;                /*!< [0x00cc] Clock Frequency Detector Lower Boundary Register(Write Protect)  */
+    __IO uint32_t CKFLTRCTL;             /*!< [0x00d0] Clock Filter Control Register (Write Protect)                    */
 
 } CLK_T;
 
@@ -1070,35 +1711,44 @@ typedef struct
 #define CLK_PWRCTL_LIRCEN_Pos            (3)                                               /*!< CLK_T::PWRCTL: LIRCEN Position         */
 #define CLK_PWRCTL_LIRCEN_Msk            (0x1ul << CLK_PWRCTL_LIRCEN_Pos)                  /*!< CLK_T::PWRCTL: LIRCEN Mask             */
 
-#define CLK_PWRCTL_PDWKDLY_Pos           (4)                                               /*!< CLK_T::PWRCTL: PDWKDLY Position        */
-#define CLK_PWRCTL_PDWKDLY_Msk           (0x1ul << CLK_PWRCTL_PDWKDLY_Pos)                 /*!< CLK_T::PWRCTL: PDWKDLY Mask            */
-
-#define CLK_PWRCTL_PDWKIEN_Pos           (5)                                               /*!< CLK_T::PWRCTL: PDWKIEN Position        */
-#define CLK_PWRCTL_PDWKIEN_Msk           (0x1ul << CLK_PWRCTL_PDWKIEN_Pos)                 /*!< CLK_T::PWRCTL: PDWKIEN Mask            */
-
-#define CLK_PWRCTL_PDWKIF_Pos            (6)                                               /*!< CLK_T::PWRCTL: PDWKIF Position         */
-#define CLK_PWRCTL_PDWKIF_Msk            (0x1ul << CLK_PWRCTL_PDWKIF_Pos)                  /*!< CLK_T::PWRCTL: PDWKIF Mask             */
-
-#define CLK_PWRCTL_PDEN_Pos              (7)                                               /*!< CLK_T::PWRCTL: PDEN Position           */
-#define CLK_PWRCTL_PDEN_Msk              (0x1ul << CLK_PWRCTL_PDEN_Pos)                    /*!< CLK_T::PWRCTL: PDEN Mask               */
-
 #define CLK_PWRCTL_HXTDS_Pos             (10)                                              /*!< CLK_T::PWRCTL: HXTDS Position          */
-#define CLK_PWRCTL_HXTDS_Msk             (0x3ul << CLK_PWRCTL_HXTDS_Pos)                   /*!< CLK_T::PWRCTL: HXTDS Mask              */
+#define CLK_PWRCTL_HXTDS_Msk             (0x1ul << CLK_PWRCTL_HXTDS_Pos)                   /*!< CLK_T::PWRCTL: HXTDS Mask              */
 
-#define CLK_PWRCTL_HIRCSTBS_Pos          (16)                                              /*!< CLK_T::PWRCTL: HIRCSTBS Position       */
-#define CLK_PWRCTL_HIRCSTBS_Msk          (0x3ul << CLK_PWRCTL_HIRCSTBS_Pos)                /*!< CLK_T::PWRCTL: HIRCSTBS Mask           */
+#define CLK_PWRCTL_SYSPLLAPD_Pos         (11)                                              /*!< CLK_T::PWRCTL: SYSPLLAPD Position      */
+#define CLK_PWRCTL_SYSPLLAPD_Msk         (0x1ul << CLK_PWRCTL_SYSPLLAPD_Pos)               /*!< CLK_T::PWRCTL: SYSPLLAPD Mask          */
 
-#define CLK_SYSCLK0_CA35CKEN_Pos         (0)                                               /*!< CLK_T::SYSCLK0: CA35CKEN Position      */
-#define CLK_SYSCLK0_CA35CKEN_Msk         (0x1ul << CLK_SYSCLK0_CA35CKEN_Pos)               /*!< CLK_T::SYSCLK0: CA35CKEN Mask          */
+#define CLK_PWRCTL_CAPLLAPD_Pos          (12)                                              /*!< CLK_T::PWRCTL: CAPLLAPD Position       */
+#define CLK_PWRCTL_CAPLLAPD_Msk          (0x1ul << CLK_PWRCTL_CAPLLAPD_Pos)                /*!< CLK_T::PWRCTL: CAPLLAPD Mask           */
 
-#define CLK_SYSCLK0_CM4CKEN_Pos          (1)                                               /*!< CLK_T::SYSCLK0: CM4CKEN Position       */
-#define CLK_SYSCLK0_CM4CKEN_Msk          (0x1ul << CLK_SYSCLK0_CM4CKEN_Pos)                /*!< CLK_T::SYSCLK0: CM4CKEN Mask           */
+#define CLK_PWRCTL_DDRPLLAPD_Pos         (13)                                              /*!< CLK_T::PWRCTL: DDRPLLAPD Position      */
+#define CLK_PWRCTL_DDRPLLAPD_Msk         (0x1ul << CLK_PWRCTL_DDRPLLAPD_Pos)               /*!< CLK_T::PWRCTL: DDRPLLAPD Mask          */
+
+#define CLK_PWRCTL_HXTAOFF_Pos           (14)                                              /*!< CLK_T::PWRCTL: HXTAOFF Position        */
+#define CLK_PWRCTL_HXTAOFF_Msk           (0x1ul << CLK_PWRCTL_HXTAOFF_Pos)                 /*!< CLK_T::PWRCTL: HXTAOFF Mask            */
+
+#define CLK_PWRCTL_HIRCAOFF_Pos          (15)                                              /*!< CLK_T::PWRCTL: HIRCAOFF Position       */
+#define CLK_PWRCTL_HIRCAOFF_Msk          (0x1ul << CLK_PWRCTL_HIRCAOFF_Pos)                /*!< CLK_T::PWRCTL: HIRCAOFF Mask           */
+
+#define CLK_PWRCTL_LXTSTBS_Pos           (16)                                              /*!< CLK_T::PWRCTL: LXTSTBS Position        */
+#define CLK_PWRCTL_LXTSTBS_Msk           (0x3ul << CLK_PWRCTL_LXTSTBS_Pos)                 /*!< CLK_T::PWRCTL: LXTSTBS Mask            */
+
+#define CLK_PWRCTL_GICAOFF_Pos           (21)                                              /*!< CLK_T::PWRCTL: GICAOFF Position        */
+#define CLK_PWRCTL_GICAOFF_Msk           (0x1ul << CLK_PWRCTL_GICAOFF_Pos)                 /*!< CLK_T::PWRCTL: GICAOFF Mask            */
+
+#define CLK_PWRCTL_HXTAPD_Pos            (22)                                              /*!< CLK_T::PWRCTL: HXTAPD Position         */
+#define CLK_PWRCTL_HXTAPD_Msk            (0x1ul << CLK_PWRCTL_HXTAPD_Pos)                  /*!< CLK_T::PWRCTL: HXTAPD Mask             */
+
+#define CLK_PWRCTL_HIRCAPD_Pos           (23)                                              /*!< CLK_T::PWRCTL: HIRCAPD Position        */
+#define CLK_PWRCTL_HIRCAPD_Msk           (0x1ul << CLK_PWRCTL_HIRCAPD_Pos)                 /*!< CLK_T::PWRCTL: HIRCAPD Mask            */
+
+#define CLK_SYSCLK0_RTPEN_Pos            (1)                                               /*!< CLK_T::SYSCLK0: RTPEN Position         */
+#define CLK_SYSCLK0_RTPEN_Msk            (0x1ul << CLK_SYSCLK0_RTPEN_Pos)                  /*!< CLK_T::SYSCLK0: RTPEN Mask             */
 
 #define CLK_SYSCLK0_TAHBCKEN_Pos         (2)                                               /*!< CLK_T::SYSCLK0: TAHBCKEN Position      */
 #define CLK_SYSCLK0_TAHBCKEN_Msk         (0x1ul << CLK_SYSCLK0_TAHBCKEN_Pos)               /*!< CLK_T::SYSCLK0: TAHBCKEN Mask          */
 
 #define CLK_SYSCLK0_LVRDBEN_Pos          (3)                                               /*!< CLK_T::SYSCLK0: LVRDBEN Position       */
-#define CLK_SYSCLK0_LVRDBEN_Msk          (0x1ul << CLK_SYSCLK1_LVRDBEN_Pos)                /*!< CLK_T::SYSCLK0: LVRDBEN Mask           */
+#define CLK_SYSCLK0_LVRDBEN_Msk          (0x1ul << CLK_SYSCLK0_LVRDBEN_Pos)                /*!< CLK_T::SYSCLK0: LVRDBEN Mask           */
 
 #define CLK_SYSCLK0_DDR0CKEN_Pos         (4)                                               /*!< CLK_T::SYSCLK0: DDR0CKEN Position      */
 #define CLK_SYSCLK0_DDR0CKEN_Msk         (0x1ul << CLK_SYSCLK0_DDR0CKEN_Pos)               /*!< CLK_T::SYSCLK0: DDR0CKEN Mask          */
@@ -1106,32 +1756,32 @@ typedef struct
 #define CLK_SYSCLK0_DDR6CKEN_Pos         (5)                                               /*!< CLK_T::SYSCLK0: DDR6CKEN Position      */
 #define CLK_SYSCLK0_DDR6CKEN_Msk         (0x1ul << CLK_SYSCLK0_DDR6CKEN_Pos)               /*!< CLK_T::SYSCLK0: DDR6CKEN Mask          */
 
-#define CLK_SYSCLK0_CAN0CKEN_Pos         (8)                                               /*!< CLK_T::SYSCLK0: CAN0CKEN Position      */
-#define CLK_SYSCLK0_CAN0CKEN_Msk         (0x1ul << CLK_SYSCLK0_CAN0CKEN_Pos)               /*!< CLK_T::SYSCLK0: CAN0CKEN Mask          */
+#define CLK_SYSCLK0_CANFD0CKEN_Pos       (8)                                               /*!< CLK_T::SYSCLK0: CANFD0CKEN Position    */
+#define CLK_SYSCLK0_CANFD0CKEN_Msk       (0x1ul << CLK_SYSCLK0_CANFD0CKEN_Pos)             /*!< CLK_T::SYSCLK0: CANFD0CKEN Mask        */
 
-#define CLK_SYSCLK0_CAN1CKEN_Pos         (9)                                               /*!< CLK_T::SYSCLK0: CAN1CKEN Position      */
-#define CLK_SYSCLK0_CAN1CKEN_Msk         (0x1ul << CLK_SYSCLK0_CAN1CKEN_Pos)               /*!< CLK_T::SYSCLK0: CAN1CKEN Mask          */
+#define CLK_SYSCLK0_CANFD1CKEN_Pos       (9)                                               /*!< CLK_T::SYSCLK0: CANFD1CKEN Position    */
+#define CLK_SYSCLK0_CANFD1CKEN_Msk       (0x1ul << CLK_SYSCLK0_CANFD1CKEN_Pos)             /*!< CLK_T::SYSCLK0: CANFD1CKEN Mask        */
 
-#define CLK_SYSCLK0_CAN2CKEN_Pos         (10)                                              /*!< CLK_T::SYSCLK0: CAN2CKEN Position      */
-#define CLK_SYSCLK0_CAN2CKEN_Msk         (0x1ul << CLK_SYSCLK0_CAN2CKEN_Pos)               /*!< CLK_T::SYSCLK0: CAN2CKEN Mask          */
+#define CLK_SYSCLK0_CANFD2CKEN_Pos       (10)                                              /*!< CLK_T::SYSCLK0: CANFD2CKEN Position    */
+#define CLK_SYSCLK0_CANFD2CKEN_Msk       (0x1ul << CLK_SYSCLK0_CANFD2CKEN_Pos)             /*!< CLK_T::SYSCLK0: CANFD2CKEN Mask        */
 
-#define CLK_SYSCLK0_CAN3CKEN_Pos         (11)                                              /*!< CLK_T::SYSCLK0: CAN3CKEN Position      */
-#define CLK_SYSCLK0_CAN3CKEN_Msk         (0x1ul << CLK_SYSCLK0_CAN3CKEN_Pos)               /*!< CLK_T::SYSCLK0: CAN3CKEN Mask          */
+#define CLK_SYSCLK0_CANFD3CKEN_Pos       (11)                                              /*!< CLK_T::SYSCLK0: CANFD3CKEN Position    */
+#define CLK_SYSCLK0_CANFD3CKEN_Msk       (0x1ul << CLK_SYSCLK0_CANFD3CKEN_Pos)             /*!< CLK_T::SYSCLK0: CANFD3CKEN Mask        */
 
-#define CLK_SYSCLK0_SDH0HCKEN_Pos        (16)                                              /*!< CLK_T::SYSCLK0: SDH0HCKEN Position     */
-#define CLK_SYSCLK0_SDH0HCKEN_Msk        (0x1ul << CLK_SYSCLK0_SDH0HCKEN_Pos)              /*!< CLK_T::SYSCLK0: SDH0HCKEN Mask         */
+#define CLK_SYSCLK0_SDH0EN_Pos           (16)                                              /*!< CLK_T::SYSCLK0: SDH0EN Position        */
+#define CLK_SYSCLK0_SDH0EN_Msk           (0x1ul << CLK_SYSCLK0_SDH0EN_Pos)                 /*!< CLK_T::SYSCLK0: SDH0EN Mask            */
 
-#define CLK_SYSCLK0_SDH1HCKEN_Pos        (17)                                              /*!< CLK_T::SYSCLK0: SDH1HCKEN Position     */
-#define CLK_SYSCLK0_SDH1HCKEN_Msk        (0x1ul << CLK_SYSCLK0_SDH1HCKEN_Pos)              /*!< CLK_T::SYSCLK0: SDH1HCKEN Mask         */
+#define CLK_SYSCLK0_SDH1EN_Pos           (17)                                              /*!< CLK_T::SYSCLK0: SDH1EN Position        */
+#define CLK_SYSCLK0_SDH1EN_Msk           (0x1ul << CLK_SYSCLK0_SDH1EN_Pos)                 /*!< CLK_T::SYSCLK0: SDH1EN Mask            */
 
-#define CLK_SYSCLK0_NANDCKEN_Pos         (18)                                              /*!< CLK_T::SYSCLK0: NANDCKEN Position      */
-#define CLK_SYSCLK0_NANDCKEN_Msk         (0x1ul << CLK_SYSCLK0_NANDCKEN_Pos)               /*!< CLK_T::SYSCLK0: NANDCKEN Mask          */
+#define CLK_SYSCLK0_NANDEN_Pos           (18)                                              /*!< CLK_T::SYSCLK0: NANDEN Position        */
+#define CLK_SYSCLK0_NANDEN_Msk           (0x1ul << CLK_SYSCLK0_NANDEN_Pos)                 /*!< CLK_T::SYSCLK0: NANDEN Mask            */
 
-#define CLK_SYSCLK0_USBDCKEN_Pos         (19)                                              /*!< CLK_T::SYSCLK0: USBDCKEN Position      */
-#define CLK_SYSCLK0_USBDCKEN_Msk         (0x1ul << CLK_SYSCLK0_USBDCKEN_Pos)               /*!< CLK_T::SYSCLK0: USBDCKEN Mask          */
+#define CLK_SYSCLK0_USBDEN_Pos           (19)                                              /*!< CLK_T::SYSCLK0: USBDEN Position        */
+#define CLK_SYSCLK0_USBDEN_Msk           (0x1ul << CLK_SYSCLK0_USBDEN_Pos)                 /*!< CLK_T::SYSCLK0: USBDEN Mask            */
 
-#define CLK_SYSCLK0_USBHCKEN_Pos         (20)                                              /*!< CLK_T::SYSCLK0: USBHCKEN Position      */
-#define CLK_SYSCLK0_USBHCKEN_Msk         (0x1ul << CLK_SYSCLK0_USBHCKEN_Pos)               /*!< CLK_T::SYSCLK0: USBHCKEN Mask          */
+#define CLK_SYSCLK0_USBHEN_Pos           (20)                                              /*!< CLK_T::SYSCLK0: USBHEN Position        */
+#define CLK_SYSCLK0_USBHEN_Msk           (0x1ul << CLK_SYSCLK0_USBHEN_Pos)                 /*!< CLK_T::SYSCLK0: USBHEN Mask            */
 
 #define CLK_SYSCLK0_HUSBH0EN_Pos         (21)                                              /*!< CLK_T::SYSCLK0: HUSBH0EN Position      */
 #define CLK_SYSCLK0_HUSBH0EN_Msk         (0x1ul << CLK_SYSCLK0_HUSBH0EN_Pos)               /*!< CLK_T::SYSCLK0: HUSBH0EN Mask          */
@@ -1139,38 +1789,38 @@ typedef struct
 #define CLK_SYSCLK0_HUSBH1EN_Pos         (22)                                              /*!< CLK_T::SYSCLK0: HUSBH1EN Position      */
 #define CLK_SYSCLK0_HUSBH1EN_Msk         (0x1ul << CLK_SYSCLK0_HUSBH1EN_Pos)               /*!< CLK_T::SYSCLK0: HUSBH1EN Mask          */
 
-#define CLK_SYSCLK0_GFXCKEN_Pos          (24)                                              /*!< CLK_T::SYSCLK0: GFXCKEN Position       */
-#define CLK_SYSCLK0_GFXCKEN_Msk          (0x1ul << CLK_SYSCLK0_GFXCKEN_Pos)                /*!< CLK_T::SYSCLK0: GFXCKEN Mask           */
+#define CLK_SYSCLK0_GFXEN_Pos            (24)                                              /*!< CLK_T::SYSCLK0: GFXEN Position         */
+#define CLK_SYSCLK0_GFXEN_Msk            (0x1ul << CLK_SYSCLK0_GFXEN_Pos)                  /*!< CLK_T::SYSCLK0: GFXEN Mask             */
 
-#define CLK_SYSCLK0_VC8KCKEN_Pos         (25)                                              /*!< CLK_T::SYSCLK0: VC8KCKEN Position      */
-#define CLK_SYSCLK0_VC8KCKEN_Msk         (0x1ul << CLK_SYSCLK0_VC8KCKEN_Pos)               /*!< CLK_T::SYSCLK0: VC8KCKEN Mask          */
+#define CLK_SYSCLK0_VDECEN_Pos           (25)                                              /*!< CLK_T::SYSCLK0: VDECEN Position        */
+#define CLK_SYSCLK0_VDECEN_Msk           (0x1ul << CLK_SYSCLK0_VDECEN_Pos)                 /*!< CLK_T::SYSCLK0: VDECEN Mask            */
 
-#define CLK_SYSCLK0_DCUCKEN_Pos          (26)                                              /*!< CLK_T::SYSCLK0: DCUCKEN Position       */
-#define CLK_SYSCLK0_DCUCKEN_Msk          (0x1ul << CLK_SYSCLK0_DCUCKEN_Pos)                /*!< CLK_T::SYSCLK0: DCUCKEN Mask           */
+#define CLK_SYSCLK0_DCUEN_Pos            (26)                                              /*!< CLK_T::SYSCLK0: DCUEN Position         */
+#define CLK_SYSCLK0_DCUEN_Msk            (0x1ul << CLK_SYSCLK0_DCUEN_Pos)                  /*!< CLK_T::SYSCLK0: DCUEN Mask             */
 
-#define CLK_SYSCLK0_GMAC0CKEN_Pos        (27)                                              /*!< CLK_T::SYSCLK0: GMAC0CKEN Position     */
-#define CLK_SYSCLK0_GMAC0CKEN_Msk        (0x1ul << CLK_SYSCLK0_GMAC0CKEN_Pos)              /*!< CLK_T::SYSCLK0: GMAC0CKEN Mask         */
+#define CLK_SYSCLK0_GMAC0EN_Pos          (27)                                              /*!< CLK_T::SYSCLK0: GMAC0EN Position       */
+#define CLK_SYSCLK0_GMAC0EN_Msk          (0x1ul << CLK_SYSCLK0_GMAC0EN_Pos)                /*!< CLK_T::SYSCLK0: GMAC0EN Mask           */
 
-#define CLK_SYSCLK0_GMAC1CKEN_Pos        (28)                                              /*!< CLK_T::SYSCLK0: GMAC1CKEN Position     */
-#define CLK_SYSCLK0_GMAC1CKEN_Msk        (0x1ul << CLK_SYSCLK0_GMAC1CKEN_Pos)              /*!< CLK_T::SYSCLK0: GMAC1CKEN Mask         */
+#define CLK_SYSCLK0_GMAC1EN_Pos          (28)                                              /*!< CLK_T::SYSCLK0: GMAC1EN Position       */
+#define CLK_SYSCLK0_GMAC1EN_Msk          (0x1ul << CLK_SYSCLK0_GMAC1EN_Pos)                /*!< CLK_T::SYSCLK0: GMAC1EN Mask           */
 
-#define CLK_SYSCLK0_CAP0HCKEN_Pos        (29)                                              /*!< CLK_T::SYSCLK0: CAP0HCKEN Position     */
-#define CLK_SYSCLK0_CAP0HCKEN_Msk        (0x1ul << CLK_SYSCLK0_CAP0HCKEN_Pos)              /*!< CLK_T::SYSCLK0: CAP0HCKEN Mask         */
+#define CLK_SYSCLK0_CCAP0EN_Pos          (29)                                              /*!< CLK_T::SYSCLK0: CCAP0EN Position       */
+#define CLK_SYSCLK0_CCAP0EN_Msk          (0x1ul << CLK_SYSCLK0_CCAP0EN_Pos)                /*!< CLK_T::SYSCLK0: CCAP0EN Mask           */
 
-#define CLK_SYSCLK0_CAP1HCKEN_Pos        (30)                                              /*!< CLK_T::SYSCLK0: CAP1HCKEN Position     */
-#define CLK_SYSCLK0_CAP1HCKEN_Msk        (0x1ul << CLK_SYSCLK0_CAP1HCKEN_Pos)              /*!< CLK_T::SYSCLK0: CAP1HCKEN Mask         */
+#define CLK_SYSCLK0_CCAP1EN_Pos          (30)                                              /*!< CLK_T::SYSCLK0: CCAP1EN Position       */
+#define CLK_SYSCLK0_CCAP1EN_Msk          (0x1ul << CLK_SYSCLK0_CCAP1EN_Pos)                /*!< CLK_T::SYSCLK0: CCAP1EN Mask           */
 
-#define CLK_SYSCLK1_PDMA0CKEN_Pos        (0)                                               /*!< CLK_T::SYSCLK1: PDMA0CKEN Position     */
-#define CLK_SYSCLK1_PDMA0CKEN_Msk        (0x1ul << CLK_SYSCLK1_PDMA0CKEN_Pos)              /*!< CLK_T::SYSCLK1: PDMA0CKEN Mask         */
+#define CLK_SYSCLK1_PDMA0EN_Pos          (0)                                               /*!< CLK_T::SYSCLK1: PDMA0EN Position       */
+#define CLK_SYSCLK1_PDMA0EN_Msk          (0x1ul << CLK_SYSCLK1_PDMA0EN_Pos)                /*!< CLK_T::SYSCLK1: PDMA0EN Mask           */
 
-#define CLK_SYSCLK1_PDMA1CKEN_Pos        (1)                                               /*!< CLK_T::SYSCLK1: PDMA1CKEN Position     */
-#define CLK_SYSCLK1_PDMA1CKEN_Msk        (0x1ul << CLK_SYSCLK1_PDMA1CKEN_Pos)              /*!< CLK_T::SYSCLK1: PDMA1CKEN Mask         */
+#define CLK_SYSCLK1_PDMA1EN_Pos          (1)                                               /*!< CLK_T::SYSCLK1: PDMA1EN Position       */
+#define CLK_SYSCLK1_PDMA1EN_Msk          (0x1ul << CLK_SYSCLK1_PDMA1EN_Pos)                /*!< CLK_T::SYSCLK1: PDMA1EN Mask           */
 
-#define CLK_SYSCLK1_PDMA2CKEN_Pos        (2)                                               /*!< CLK_T::SYSCLK1: PDMA2CKEN Position     */
-#define CLK_SYSCLK1_PDMA2CKEN_Msk        (0x1ul << CLK_SYSCLK1_PDMA2CKEN_Pos)              /*!< CLK_T::SYSCLK1: PDMA2CKEN Mask         */
+#define CLK_SYSCLK1_PDMA2EN_Pos          (2)                                               /*!< CLK_T::SYSCLK1: PDMA2EN Position       */
+#define CLK_SYSCLK1_PDMA2EN_Msk          (0x1ul << CLK_SYSCLK1_PDMA2EN_Pos)                /*!< CLK_T::SYSCLK1: PDMA2EN Mask           */
 
-#define CLK_SYSCLK1_PDMA3CKEN_Pos        (3)                                               /*!< CLK_T::SYSCLK1: PDMA3CKEN Position     */
-#define CLK_SYSCLK1_PDMA3CKEN_Msk        (0x1ul << CLK_SYSCLK1_PDMA3CKEN_Pos)              /*!< CLK_T::SYSCLK1: PDMA3CKEN Mask         */
+#define CLK_SYSCLK1_PDMA3EN_Pos          (3)                                               /*!< CLK_T::SYSCLK1: PDMA3EN Position       */
+#define CLK_SYSCLK1_PDMA3EN_Msk          (0x1ul << CLK_SYSCLK1_PDMA3EN_Pos)                /*!< CLK_T::SYSCLK1: PDMA3EN Mask           */
 
 #define CLK_SYSCLK1_WH0CKEN_Pos          (4)                                               /*!< CLK_T::SYSCLK1: WH0CKEN Position       */
 #define CLK_SYSCLK1_WH0CKEN_Msk          (0x1ul << CLK_SYSCLK1_WH0CKEN_Pos)                /*!< CLK_T::SYSCLK1: WH0CKEN Mask           */
@@ -1367,23 +2017,11 @@ typedef struct
 #define CLK_APBCLK1_QSPI1CKEN_Pos        (7)                                               /*!< CLK_T::APBCLK1: QSPI1CKEN Position     */
 #define CLK_APBCLK1_QSPI1CKEN_Msk        (0x1ul << CLK_APBCLK1_QSPI1CKEN_Pos)              /*!< CLK_T::APBCLK1: QSPI1CKEN Mask         */
 
-#define CLK_APBCLK1_CAN0CKEN_Pos         (8)                                               /*!< CLK_T::APBCLK1: CAN0CKEN Position      */
-#define CLK_APBCLK1_CAN0CKEN_Msk         (0x1ul << CLK_APBCLK1_CAN0CKEN_Pos)               /*!< CLK_T::APBCLK1: CAN0CKEN Mask          */
+#define CLK_APBCLK1_SC0CKEN_Pos          (12)                                              /*!< CLK_T::APBCLK1: SC0CKEN Position       */
+#define CLK_APBCLK1_SC0CKEN_Msk          (0x1ul << CLK_APBCLK1_SC0CKEN_Pos)                /*!< CLK_T::APBCLK1: SC0CKEN Mask           */
 
-#define CLK_APBCLK1_CAN1CKEN_Pos         (9)                                               /*!< CLK_T::APBCLK1: CAN1CKEN Position      */
-#define CLK_APBCLK1_CAN1CKEN_Msk         (0x1ul << CLK_APBCLK1_CAN1CKEN_Pos)               /*!< CLK_T::APBCLK1: CAN1CKEN Mask          */
-
-#define CLK_APBCLK1_CAN2CKEN_Pos         (10)                                              /*!< CLK_T::APBCLK1: CAN2CKEN Position      */
-#define CLK_APBCLK1_CAN2CKEN_Msk         (0x1ul << CLK_APBCLK1_CAN2CKEN_Pos)               /*!< CLK_T::APBCLK1: CAN2CKEN Mask          */
-
-#define CLK_APBCLK1_CAN3CKEN_Pos         (11)                                              /*!< CLK_T::APBCLK1: CAN3CKEN Position      */
-#define CLK_APBCLK1_CAN3CKEN_Msk         (0x1ul << CLK_APBCLK1_CAN3CKEN_Pos)               /*!< CLK_T::APBCLK1: CAN3CKEN Mask          */
-
-#define CLK_APBCLK1_SMC0CKEN_Pos         (12)                                              /*!< CLK_T::APBCLK1: SMC0CKEN Position      */
-#define CLK_APBCLK1_SMC0CKEN_Msk         (0x1ul << CLK_APBCLK1_SMC0CKEN_Pos)               /*!< CLK_T::APBCLK1: SMC0CKEN Mask          */
-
-#define CLK_APBCLK1_SMC1CKEN_Pos         (13)                                              /*!< CLK_T::APBCLK1: SMC1CKEN Position      */
-#define CLK_APBCLK1_SMC1CKEN_Msk         (0x1ul << CLK_APBCLK1_SMC1CKEN_Pos)               /*!< CLK_T::APBCLK1: SMC1CKEN Mask          */
+#define CLK_APBCLK1_SC1CKEN_Pos          (13)                                              /*!< CLK_T::APBCLK1: SC1CKEN Position       */
+#define CLK_APBCLK1_SC1CKEN_Msk          (0x1ul << CLK_APBCLK1_SC1CKEN_Pos)                /*!< CLK_T::APBCLK1: SC1CKEN Mask           */
 
 #define CLK_APBCLK1_WDT0CKEN_Pos         (16)                                              /*!< CLK_T::APBCLK1: WDT0CKEN Position      */
 #define CLK_APBCLK1_WDT0CKEN_Msk         (0x1ul << CLK_APBCLK1_WDT0CKEN_Pos)               /*!< CLK_T::APBCLK1: WDT0CKEN Mask          */
@@ -1421,11 +2059,11 @@ typedef struct
 #define CLK_APBCLK2_SPI1CKEN_Pos         (5)                                               /*!< CLK_T::APBCLK2: SPI1CKEN Position      */
 #define CLK_APBCLK2_SPI1CKEN_Msk         (0x1ul << CLK_APBCLK2_SPI1CKEN_Pos)               /*!< CLK_T::APBCLK2: SPI1CKEN Mask          */
 
-#define CLK_APBCLK2_SPI2CKEN_Pos         (6)                                               /*!< CLK_T::APBCLK2: SPI0CKEN Position      */
-#define CLK_APBCLK2_SPI2CKEN_Msk         (0x1ul << CLK_APBCLK2_SPI2CKEN_Pos)               /*!< CLK_T::APBCLK2: SPI0CKEN Mask          */
+#define CLK_APBCLK2_SPI2CKEN_Pos         (6)                                               /*!< CLK_T::APBCLK2: SPI2CKEN Position      */
+#define CLK_APBCLK2_SPI2CKEN_Msk         (0x1ul << CLK_APBCLK2_SPI2CKEN_Pos)               /*!< CLK_T::APBCLK2: SPI2CKEN Mask          */
 
-#define CLK_APBCLK2_SPI3CKEN_Pos         (7)                                               /*!< CLK_T::APBCLK2: SPI1CKEN Position      */
-#define CLK_APBCLK2_SPI3CKEN_Msk         (0x1ul << CLK_APBCLK2_SPI3CKEN_Pos)               /*!< CLK_T::APBCLK2: SPI1CKEN Mask          */
+#define CLK_APBCLK2_SPI3CKEN_Pos         (7)                                               /*!< CLK_T::APBCLK2: SPI3CKEN Position      */
+#define CLK_APBCLK2_SPI3CKEN_Msk         (0x1ul << CLK_APBCLK2_SPI3CKEN_Pos)               /*!< CLK_T::APBCLK2: SPI3CKEN Mask          */
 
 #define CLK_APBCLK2_ECAP0CKEN_Pos        (8)                                               /*!< CLK_T::APBCLK2: ECAP0CKEN Position     */
 #define CLK_APBCLK2_ECAP0CKEN_Msk        (0x1ul << CLK_APBCLK2_ECAP0CKEN_Pos)              /*!< CLK_T::APBCLK2: ECAP0CKEN Mask         */
@@ -1463,8 +2101,8 @@ typedef struct
 #define CLK_CLKSEL0_SYSCK1SEL_Pos        (4)                                               /*!< CLK_T::CLKSEL0: SYSCK1SEL Position     */
 #define CLK_CLKSEL0_SYSCK1SEL_Msk        (0x3ul << CLK_CLKSEL0_SYSCK1SEL_Pos)              /*!< CLK_T::CLKSEL0: SYSCK1SEL Mask         */
 
-#define CLK_CLKSEL0_RTPSTSEL_Pos         (8)                                               /*!< CLK_T::CLKSEL0: RTPSTSEL Position       */
-#define CLK_CLKSEL0_RTPSTSEL_Msk         (0x7ul << CLK_CLKSEL0_RTPSTSEL_Pos)               /*!< CLK_T::CLKSEL0: RTPSTSEL Mask           */
+#define CLK_CLKSEL0_RTPSTSEL_Pos         (8)                                               /*!< CLK_T::CLKSEL0: RTPSTSEL Position      */
+#define CLK_CLKSEL0_RTPSTSEL_Msk         (0x7ul << CLK_CLKSEL0_RTPSTSEL_Pos)               /*!< CLK_T::CLKSEL0: RTPSTSEL Mask          */
 
 #define CLK_CLKSEL0_CCAP0SEL_Pos         (12)                                              /*!< CLK_T::CLKSEL0: CCAP0SEL Position      */
 #define CLK_CLKSEL0_CCAP0SEL_Msk         (0x3ul << CLK_CLKSEL0_CCAP0SEL_Pos)               /*!< CLK_T::CLKSEL0: CCAP0SEL Mask          */
@@ -1486,6 +2124,9 @@ typedef struct
 
 #define CLK_CLKSEL0_GFXSEL_Pos           (26)                                              /*!< CLK_T::CLKSEL0: GFXSEL Position        */
 #define CLK_CLKSEL0_GFXSEL_Msk           (0x1ul << CLK_CLKSEL0_GFXSEL_Pos)                 /*!< CLK_T::CLKSEL0: GFXSEL Mask            */
+
+#define CLK_CLKSEL0_DBGSEL_Pos           (27)                                              /*!< CLK_T::CLKSEL0: DBGSEL Position        */
+#define CLK_CLKSEL0_DBGSEL_Msk           (0x1ul << CLK_CLKSEL0_DBGSEL_Pos)                 /*!< CLK_T::CLKSEL0: DBGSEL Mask            */
 
 #define CLK_CLKSEL1_TMR0SEL_Pos          (0)                                               /*!< CLK_T::CLKSEL1: TMR0SEL Position       */
 #define CLK_CLKSEL1_TMR0SEL_Msk          (0x7ul << CLK_CLKSEL1_TMR0SEL_Pos)                /*!< CLK_T::CLKSEL1: TMR0SEL Mask           */
@@ -1616,20 +2257,20 @@ typedef struct
 #define CLK_CLKSEL4_I2S1SEL_Pos          (14)                                              /*!< CLK_T::CLKSEL4: I2S1SEL Position       */
 #define CLK_CLKSEL4_I2S1SEL_Msk          (0x3ul << CLK_CLKSEL4_I2S1SEL_Pos)                /*!< CLK_T::CLKSEL4: I2S1SEL Mask           */
 
-#define CLK_CLKSEL4_CAN0SEL_Pos          (16)                                              /*!< CLK_T::CLKSEL4: CAN0SEL Position       */
-#define CLK_CLKSEL4_CAN0SEL_Msk          (0x1ul << CLK_CLKSEL4_CAN0SEL_Pos)                /*!< CLK_T::CLKSEL4: CAN0SEL Mask           */
+#define CLK_CLKSEL4_CANFD0SEL_Pos        (16)                                              /*!< CLK_T::CLKSEL4: CANFD0SEL Position     */
+#define CLK_CLKSEL4_CANFD0SEL_Msk        (0x1ul << CLK_CLKSEL4_CANFD0SEL_Pos)              /*!< CLK_T::CLKSEL4: CANFD0SEL Mask         */
 
-#define CLK_CLKSEL4_CAN1SEL_Pos          (17)                                              /*!< CLK_T::CLKSEL4: CAN1SEL Position       */
-#define CLK_CLKSEL4_CAN1SEL_Msk          (0x1ul << CLK_CLKSEL4_CAN1SEL_Pos)                /*!< CLK_T::CLKSEL4: CAN1SEL Mask           */
+#define CLK_CLKSEL4_CANFD1SEL_Pos        (17)                                              /*!< CLK_T::CLKSEL4: CANFD1SEL Position     */
+#define CLK_CLKSEL4_CANFD1SEL_Msk        (0x1ul << CLK_CLKSEL4_CANFD1SEL_Pos)              /*!< CLK_T::CLKSEL4: CANFD1SEL Mask         */
 
-#define CLK_CLKSEL4_CAN2SEL_Pos          (18)                                              /*!< CLK_T::CLKSEL4: CAN2SEL Position       */
-#define CLK_CLKSEL4_CAN2SEL_Msk          (0x1ul << CLK_CLKSEL4_CAN2SEL_Pos)                /*!< CLK_T::CLKSEL4: CAN2SEL Mask           */
+#define CLK_CLKSEL4_CANFD2SEL_Pos        (18)                                              /*!< CLK_T::CLKSEL4: CANFD2SEL Position     */
+#define CLK_CLKSEL4_CANFD2SEL_Msk        (0x1ul << CLK_CLKSEL4_CANFD2SEL_Pos)              /*!< CLK_T::CLKSEL4: CANFD2SEL Mask         */
 
-#define CLK_CLKSEL4_CAN3SEL_Pos          (19)                                              /*!< CLK_T::CLKSEL4: CAN3SEL Position       */
-#define CLK_CLKSEL4_CAN3SEL_Msk          (0x1ul << CLK_CLKSEL4_CAN3SEL_Pos)                /*!< CLK_T::CLKSEL4: CAN3SEL Mask           */
+#define CLK_CLKSEL4_CANFD3SEL_Pos        (19)                                              /*!< CLK_T::CLKSEL4: CANFD3SEL Position     */
+#define CLK_CLKSEL4_CANFD3SEL_Msk        (0x1ul << CLK_CLKSEL4_CANFD3SEL_Pos)              /*!< CLK_T::CLKSEL4: CANFD3SEL Mask         */
 
-#define CLK_CLKSEL4_CLKOSEL_Pos          (24)                                              /*!< CLK_T::CLKSEL4: CLKOSEL Position       */
-#define CLK_CLKSEL4_CLKOSEL_Msk          (0xFul << CLK_CLKSEL4_CLKOSEL_Pos)                /*!< CLK_T::CLKSEL4: CLKOSEL Mask           */
+#define CLK_CLKSEL4_CKOSEL_Pos           (24)                                              /*!< CLK_T::CLKSEL4: CKOSEL Position        */
+#define CLK_CLKSEL4_CKOSEL_Msk           (0xful << CLK_CLKSEL4_CKOSEL_Pos)                 /*!< CLK_T::CLKSEL4: CKOSEL Mask            */
 
 #define CLK_CLKSEL4_SC0SEL_Pos           (28)                                              /*!< CLK_T::CLKSEL4: SC0SEL Position        */
 #define CLK_CLKSEL4_SC0SEL_Msk           (0x1ul << CLK_CLKSEL4_SC0SEL_Pos)                 /*!< CLK_T::CLKSEL4: SC0SEL Mask            */
@@ -1640,22 +2281,28 @@ typedef struct
 #define CLK_CLKSEL4_KPISEL_Pos           (30)                                              /*!< CLK_T::CLKSEL4: KPISEL Position        */
 #define CLK_CLKSEL4_KPISEL_Msk           (0x1ul << CLK_CLKSEL4_KPISEL_Pos)                 /*!< CLK_T::CLKSEL4: KPISEL Mask            */
 
-#define CLK_CLKDIV0_SDH0DIV_Pos          (0)                                               /*!< CLK_T::CLKDIV0: SDH0DIV Position       */
-#define CLK_CLKDIV0_SDH0DIV_Msk          (0x7ul << CLK_CLKDIV0_SDH0DIV_Pos)                /*!< CLK_T::CLKDIV0: SDH0DIV Mask           */
+#define CLK_CLKDIV0_CANFD0DIV_Pos        (0)                                               /*!< CLK_T::CLKDIV0: CANFD0DIV Position     */
+#define CLK_CLKDIV0_CANFD0DIV_Msk        (0x3ul << CLK_CLKDIV0_CANFD0DIV_Pos)              /*!< CLK_T::CLKDIV0: CANFD0DIV Mask         */
 
-#define CLK_CLKDIV0_SDH1DIV_Pos          (8)                                               /*!< CLK_T::CLKDIV0: SDH1DIV Position       */
-#define CLK_CLKDIV0_SDH1DIV_Msk          (0x7ul << CLK_CLKDIV0_SDH1DIV_Pos)                /*!< CLK_T::CLKDIV0: SDH1DIV Mask           */
+#define CLK_CLKDIV0_CANFD1DIV_Pos        (2)                                               /*!< CLK_T::CLKDIV0: CANFD1DIV Position     */
+#define CLK_CLKDIV0_CANFD1DIV_Msk        (0x3ul << CLK_CLKDIV0_CANFD1DIV_Pos)              /*!< CLK_T::CLKDIV0: CANFD1DIV Mask         */
 
-#define CLK_CLKDIV0_ACLK0DIV_Pos         (16)                                              /*!< CLK_T::CLKDIV0: ACLK0DIV Position      */
+#define CLK_CLKDIV0_CANFD2DIV_Pos        (4)                                               /*!< CLK_T::CLKDIV0: CANFD2DIV Position     */
+#define CLK_CLKDIV0_CANFD2DIV_Msk        (0x3ul << CLK_CLKDIV0_CANFD2DIV_Pos)              /*!< CLK_T::CLKDIV0: CANFD2DIV Mask         */
+
+#define CLK_CLKDIV0_CANFD3DIV_Pos        (6)                                               /*!< CLK_T::CLKDIV0: CANFD3DIV Position     */
+#define CLK_CLKDIV0_CANFD3DIV_Msk        (0x3ul << CLK_CLKDIV0_CANFD3DIV_Pos)              /*!< CLK_T::CLKDIV0: CANFD3DIV Mask         */
+
+#define CLK_CLKDIV0_DCUPDIV_Pos          (24)                                              /*!< CLK_T::CLKDIV0: DCUPDIV Position       */
+#define CLK_CLKDIV0_DCUPDIV_Msk          (0x3ul << CLK_CLKDIV0_DCUPDIV_Pos)                /*!< CLK_T::CLKDIV0: DCUPDIV Mask           */
+
+#define CLK_CLKDIV0_ACLK0DIV_Pos         (26)                                              /*!< CLK_T::CLKDIV0: ACLK0DIV Position      */
 #define CLK_CLKDIV0_ACLK0DIV_Msk         (0x1ul << CLK_CLKDIV0_ACLK0DIV_Pos)               /*!< CLK_T::CLKDIV0: ACLK0DIV Mask          */
 
-#define CLK_CLKDIV0_DCUPDIV_Pos        	 (24)                                              /*!< CLK_T::CLKDIV0: DCUPDIV Position       */
-#define CLK_CLKDIV0_DCUPDIV_Msk        	 (0x3ul << CLK_CLKDIV0_DCUPDIV_Pos)                /*!< CLK_T::CLKDIV0: DCUPDIV Mask           */
-
-#define CLK_CLKDIV0_EMAC0DIV_Pos         (20)                                              /*!< CLK_T::CLKDIV0: EMAC0DIV Position      */
+#define CLK_CLKDIV0_EMAC0DIV_Pos         (28)                                              /*!< CLK_T::CLKDIV0: EMAC0DIV Position      */
 #define CLK_CLKDIV0_EMAC0DIV_Msk         (0x3ul << CLK_CLKDIV0_EMAC0DIV_Pos)               /*!< CLK_T::CLKDIV0: EMAC0DIV Mask          */
 
-#define CLK_CLKDIV0_EMAC1DIV_Pos         (22)                                              /*!< CLK_T::CLKDIV0: EMAC1DIV Position      */
+#define CLK_CLKDIV0_EMAC1DIV_Pos         (30)                                              /*!< CLK_T::CLKDIV0: EMAC1DIV Position      */
 #define CLK_CLKDIV0_EMAC1DIV_Msk         (0x3ul << CLK_CLKDIV0_EMAC1DIV_Pos)               /*!< CLK_T::CLKDIV0: EMAC1DIV Mask          */
 
 #define CLK_CLKDIV1_SC0DIV_Pos           (0)                                               /*!< CLK_T::CLKDIV1: SC0DIV Position        */
@@ -1665,10 +2312,10 @@ typedef struct
 #define CLK_CLKDIV1_SC1DIV_Msk           (0xful << CLK_CLKDIV1_SC1DIV_Pos)                 /*!< CLK_T::CLKDIV1: SC1DIV Mask            */
 
 #define CLK_CLKDIV1_CCAP0DIV_Pos         (8)                                               /*!< CLK_T::CLKDIV1: CCAP0DIV Position      */
-#define CLK_CLKDIV1_CCAP0DIV_Msk         (0xfful << CLK_CLKDIV1_CCAP0DIV_Pos)              /*!< CLK_T::CLKDIV1: CCAP0DIV Mask          */
+#define CLK_CLKDIV1_CCAP0DIV_Msk         (0xful << CLK_CLKDIV1_CCAP0DIV_Pos)               /*!< CLK_T::CLKDIV1: CCAP0DIV Mask          */
 
 #define CLK_CLKDIV1_CCAP1DIV_Pos         (12)                                              /*!< CLK_T::CLKDIV1: CCAP1DIV Position      */
-#define CLK_CLKDIV1_CCAP1DIV_Msk         (0xfful << CLK_CLKDIV1_CCAP1DIV_Pos)              /*!< CLK_T::CLKDIV1: CCAP1DIV Mask          */
+#define CLK_CLKDIV1_CCAP1DIV_Msk         (0xful << CLK_CLKDIV1_CCAP1DIV_Pos)               /*!< CLK_T::CLKDIV1: CCAP1DIV Mask          */
 
 #define CLK_CLKDIV1_UART0DIV_Pos         (16)                                              /*!< CLK_T::CLKDIV1: UART0DIV Position      */
 #define CLK_CLKDIV1_UART0DIV_Msk         (0xful << CLK_CLKDIV1_UART0DIV_Pos)               /*!< CLK_T::CLKDIV1: UART0DIV Mask          */
@@ -1720,12 +2367,6 @@ typedef struct
 
 #define CLK_CLKDIV3_UART16DIV_Pos        (16)                                              /*!< CLK_T::CLKDIV3: UART16DIV Position     */
 #define CLK_CLKDIV3_UART16DIV_Msk        (0xful << CLK_CLKDIV3_UART16DIV_Pos)              /*!< CLK_T::CLKDIV3: UART16DIV Mask         */
-
-#define CLK_CLKDIV3_TRACEDIV_Pos         (24)                                              /*!< CLK_T::CLKDIV3: TRACEDIV Position      */
-#define CLK_CLKDIV3_TRACEDIV_Msk         (0xful << CLK_CLKDIV3_TRACEDIV_Pos)               /*!< CLK_T::CLKDIV3: TRACEDIV Mask          */
-
-#define CLK_CLKDIV3_DBGDIV_Pos           (28)                                              /*!< CLK_T::CLKDIV3: DBGDIV Position        */
-#define CLK_CLKDIV3_DBGDIV_Msk           (0xful << CLK_CLKDIV3_DBGDIV_Pos)                 /*!< CLK_T::CLKDIV3: DBGDIV Mask            */
 
 #define CLK_CLKDIV4_EADCDIV_Pos          (0)                                               /*!< CLK_T::CLKDIV4: EADCDIV Position       */
 #define CLK_CLKDIV4_EADCDIV_Msk          (0xful << CLK_CLKDIV4_EADCDIV_Pos)                /*!< CLK_T::CLKDIV4: EADCDIV Mask           */
@@ -1802,6 +2443,141 @@ typedef struct
 #define CLK_PLL0CTL2_SLOPE_Pos           (0)                                               /*!< CLK_T::PLL0CTL2: SLOPE Position        */
 #define CLK_PLL0CTL2_SLOPE_Msk           (0xfffffful << CLK_PLL0CTL2_SLOPE_Pos)            /*!< CLK_T::PLL0CTL2: SLOPE Mask            */
 
+#define CLK_PLL1CTL0_FBDIV_Pos           (0)                                               /*!< CLK_T::PLL1CTL0: FBDIV Position        */
+#define CLK_PLL1CTL0_FBDIV_Msk           (0x7fful << CLK_PLL1CTL0_FBDIV_Pos)               /*!< CLK_T::PLL1CTL0: FBDIV Mask            */
+
+#define CLK_PLL1CTL0_INDIV_Pos           (12)                                              /*!< CLK_T::PLL1CTL0: INDIV Position        */
+#define CLK_PLL1CTL0_INDIV_Msk           (0x3ful << CLK_PLL1CTL0_INDIV_Pos)                /*!< CLK_T::PLL1CTL0: INDIV Mask            */
+
+#define CLK_PLL1CTL0_MODE_Pos            (18)                                              /*!< CLK_T::PLL1CTL0: MODE Position         */
+#define CLK_PLL1CTL0_MODE_Msk            (0x3ul << CLK_PLL1CTL0_MODE_Pos)                  /*!< CLK_T::PLL1CTL0: MODE Mask             */
+
+#define CLK_PLL1CTL0_SSRATE_Pos          (20)                                              /*!< CLK_T::PLL1CTL0: SSRATE Position       */
+#define CLK_PLL1CTL0_SSRATE_Msk          (0x7fful << CLK_PLL1CTL0_SSRATE_Pos)              /*!< CLK_T::PLL1CTL0: SSRATE Mask           */
+
+#define CLK_PLL1CTL1_PD_Pos              (0)                                               /*!< CLK_T::PLL1CTL1: PD Position           */
+#define CLK_PLL1CTL1_PD_Msk              (0x1ul << CLK_PLL1CTL1_PD_Pos)                    /*!< CLK_T::PLL1CTL1: PD Mask               */
+
+#define CLK_PLL1CTL1_BP_Pos              (1)                                               /*!< CLK_T::PLL1CTL1: BP Position           */
+#define CLK_PLL1CTL1_BP_Msk              (0x1ul << CLK_PLL1CTL1_BP_Pos)                    /*!< CLK_T::PLL1CTL1: BP Mask               */
+
+#define CLK_PLL1CTL1_OUTDIV_Pos          (4)                                               /*!< CLK_T::PLL1CTL1: OUTDIV Position       */
+#define CLK_PLL1CTL1_OUTDIV_Msk          (0x7ul << CLK_PLL1CTL1_OUTDIV_Pos)                /*!< CLK_T::PLL1CTL1: OUTDIV Mask           */
+
+#define CLK_PLL1CTL1_FRAC_Pos            (8)                                               /*!< CLK_T::PLL1CTL1: FRAC Position         */
+#define CLK_PLL1CTL1_FRAC_Msk            (0xfffffful << CLK_PLL1CTL1_FRAC_Pos)             /*!< CLK_T::PLL1CTL1: FRAC Mask             */
+
+#define CLK_PLL1CTL2_SLOPE_Pos           (0)                                               /*!< CLK_T::PLL1CTL2: SLOPE Position        */
+#define CLK_PLL1CTL2_SLOPE_Msk           (0xfffffful << CLK_PLL1CTL2_SLOPE_Pos)            /*!< CLK_T::PLL1CTL2: SLOPE Mask            */
+
+#define CLK_PLL2CTL0_FBDIV_Pos           (0)                                               /*!< CLK_T::PLL2CTL0: FBDIV Position        */
+#define CLK_PLL2CTL0_FBDIV_Msk           (0x7fful << CLK_PLL2CTL0_FBDIV_Pos)               /*!< CLK_T::PLL2CTL0: FBDIV Mask            */
+
+#define CLK_PLL2CTL0_INDIV_Pos           (12)                                              /*!< CLK_T::PLL2CTL0: INDIV Position        */
+#define CLK_PLL2CTL0_INDIV_Msk           (0x3ful << CLK_PLL2CTL0_INDIV_Pos)                /*!< CLK_T::PLL2CTL0: INDIV Mask            */
+
+#define CLK_PLL2CTL0_MODE_Pos            (18)                                              /*!< CLK_T::PLL2CTL0: MODE Position         */
+#define CLK_PLL2CTL0_MODE_Msk            (0x3ul << CLK_PLL2CTL0_MODE_Pos)                  /*!< CLK_T::PLL2CTL0: MODE Mask             */
+
+#define CLK_PLL2CTL0_SSRATE_Pos          (20)                                              /*!< CLK_T::PLL2CTL0: SSRATE Position       */
+#define CLK_PLL2CTL0_SSRATE_Msk          (0x7fful << CLK_PLL2CTL0_SSRATE_Pos)              /*!< CLK_T::PLL2CTL0: SSRATE Mask           */
+
+#define CLK_PLL2CTL1_PD_Pos              (0)                                               /*!< CLK_T::PLL2CTL1: PD Position           */
+#define CLK_PLL2CTL1_PD_Msk              (0x1ul << CLK_PLL2CTL1_PD_Pos)                    /*!< CLK_T::PLL2CTL1: PD Mask               */
+
+#define CLK_PLL2CTL1_BP_Pos              (1)                                               /*!< CLK_T::PLL2CTL1: BP Position           */
+#define CLK_PLL2CTL1_BP_Msk              (0x1ul << CLK_PLL2CTL1_BP_Pos)                    /*!< CLK_T::PLL2CTL1: BP Mask               */
+
+#define CLK_PLL2CTL1_OUTDIV_Pos          (4)                                               /*!< CLK_T::PLL2CTL1: OUTDIV Position       */
+#define CLK_PLL2CTL1_OUTDIV_Msk          (0x7ul << CLK_PLL2CTL1_OUTDIV_Pos)                /*!< CLK_T::PLL2CTL1: OUTDIV Mask           */
+
+#define CLK_PLL2CTL1_FRAC_Pos            (8)                                               /*!< CLK_T::PLL2CTL1: FRAC Position         */
+#define CLK_PLL2CTL1_FRAC_Msk            (0xfffffful << CLK_PLL2CTL1_FRAC_Pos)             /*!< CLK_T::PLL2CTL1: FRAC Mask             */
+
+#define CLK_PLL2CTL2_SLOPE_Pos           (0)                                               /*!< CLK_T::PLL2CTL2: SLOPE Position        */
+#define CLK_PLL2CTL2_SLOPE_Msk           (0xfffffful << CLK_PLL2CTL2_SLOPE_Pos)            /*!< CLK_T::PLL2CTL2: SLOPE Mask            */
+
+#define CLK_PLL3CTL0_FBDIV_Pos           (0)                                               /*!< CLK_T::PLL3CTL0: FBDIV Position        */
+#define CLK_PLL3CTL0_FBDIV_Msk           (0x7fful << CLK_PLL3CTL0_FBDIV_Pos)               /*!< CLK_T::PLL3CTL0: FBDIV Mask            */
+
+#define CLK_PLL3CTL0_INDIV_Pos           (12)                                              /*!< CLK_T::PLL3CTL0: INDIV Position        */
+#define CLK_PLL3CTL0_INDIV_Msk           (0x3ful << CLK_PLL3CTL0_INDIV_Pos)                /*!< CLK_T::PLL3CTL0: INDIV Mask            */
+
+#define CLK_PLL3CTL0_MODE_Pos            (18)                                              /*!< CLK_T::PLL3CTL0: MODE Position         */
+#define CLK_PLL3CTL0_MODE_Msk            (0x3ul << CLK_PLL3CTL0_MODE_Pos)                  /*!< CLK_T::PLL3CTL0: MODE Mask             */
+
+#define CLK_PLL3CTL0_SSRATE_Pos          (20)                                              /*!< CLK_T::PLL3CTL0: SSRATE Position       */
+#define CLK_PLL3CTL0_SSRATE_Msk          (0x7fful << CLK_PLL3CTL0_SSRATE_Pos)              /*!< CLK_T::PLL3CTL0: SSRATE Mask           */
+
+#define CLK_PLL3CTL1_PD_Pos              (0)                                               /*!< CLK_T::PLL3CTL1: PD Position           */
+#define CLK_PLL3CTL1_PD_Msk              (0x1ul << CLK_PLL3CTL1_PD_Pos)                    /*!< CLK_T::PLL3CTL1: PD Mask               */
+
+#define CLK_PLL3CTL1_BP_Pos              (1)                                               /*!< CLK_T::PLL3CTL1: BP Position           */
+#define CLK_PLL3CTL1_BP_Msk              (0x1ul << CLK_PLL3CTL1_BP_Pos)                    /*!< CLK_T::PLL3CTL1: BP Mask               */
+
+#define CLK_PLL3CTL1_OUTDIV_Pos          (4)                                               /*!< CLK_T::PLL3CTL1: OUTDIV Position       */
+#define CLK_PLL3CTL1_OUTDIV_Msk          (0x7ul << CLK_PLL3CTL1_OUTDIV_Pos)                /*!< CLK_T::PLL3CTL1: OUTDIV Mask           */
+
+#define CLK_PLL3CTL1_FRAC_Pos            (8)                                               /*!< CLK_T::PLL3CTL1: FRAC Position         */
+#define CLK_PLL3CTL1_FRAC_Msk            (0xfffffful << CLK_PLL3CTL1_FRAC_Pos)             /*!< CLK_T::PLL3CTL1: FRAC Mask             */
+
+#define CLK_PLL3CTL2_SLOPE_Pos           (0)                                               /*!< CLK_T::PLL3CTL2: SLOPE Position        */
+#define CLK_PLL3CTL2_SLOPE_Msk           (0xfffffful << CLK_PLL3CTL2_SLOPE_Pos)            /*!< CLK_T::PLL3CTL2: SLOPE Mask            */
+
+#define CLK_PLL4CTL0_FBDIV_Pos           (0)                                               /*!< CLK_T::PLL4CTL0: FBDIV Position        */
+#define CLK_PLL4CTL0_FBDIV_Msk           (0x7fful << CLK_PLL4CTL0_FBDIV_Pos)               /*!< CLK_T::PLL4CTL0: FBDIV Mask            */
+
+#define CLK_PLL4CTL0_INDIV_Pos           (12)                                              /*!< CLK_T::PLL4CTL0: INDIV Position        */
+#define CLK_PLL4CTL0_INDIV_Msk           (0x3ful << CLK_PLL4CTL0_INDIV_Pos)                /*!< CLK_T::PLL4CTL0: INDIV Mask            */
+
+#define CLK_PLL4CTL0_MODE_Pos            (18)                                              /*!< CLK_T::PLL4CTL0: MODE Position         */
+#define CLK_PLL4CTL0_MODE_Msk            (0x3ul << CLK_PLL4CTL0_MODE_Pos)                  /*!< CLK_T::PLL4CTL0: MODE Mask             */
+
+#define CLK_PLL4CTL0_SSRATE_Pos          (20)                                              /*!< CLK_T::PLL4CTL0: SSRATE Position       */
+#define CLK_PLL4CTL0_SSRATE_Msk          (0x7fful << CLK_PLL4CTL0_SSRATE_Pos)              /*!< CLK_T::PLL4CTL0: SSRATE Mask           */
+
+#define CLK_PLL4CTL1_PD_Pos              (0)                                               /*!< CLK_T::PLL4CTL1: PD Position           */
+#define CLK_PLL4CTL1_PD_Msk              (0x1ul << CLK_PLL4CTL1_PD_Pos)                    /*!< CLK_T::PLL4CTL1: PD Mask               */
+
+#define CLK_PLL4CTL1_BP_Pos              (1)                                               /*!< CLK_T::PLL4CTL1: BP Position           */
+#define CLK_PLL4CTL1_BP_Msk              (0x1ul << CLK_PLL4CTL1_BP_Pos)                    /*!< CLK_T::PLL4CTL1: BP Mask               */
+
+#define CLK_PLL4CTL1_OUTDIV_Pos          (4)                                               /*!< CLK_T::PLL4CTL1: OUTDIV Position       */
+#define CLK_PLL4CTL1_OUTDIV_Msk          (0x7ul << CLK_PLL4CTL1_OUTDIV_Pos)                /*!< CLK_T::PLL4CTL1: OUTDIV Mask           */
+
+#define CLK_PLL4CTL1_FRAC_Pos            (8)                                               /*!< CLK_T::PLL4CTL1: FRAC Position         */
+#define CLK_PLL4CTL1_FRAC_Msk            (0xfffffful << CLK_PLL4CTL1_FRAC_Pos)             /*!< CLK_T::PLL4CTL1: FRAC Mask             */
+
+#define CLK_PLL4CTL2_SLOPE_Pos           (0)                                               /*!< CLK_T::PLL4CTL2: SLOPE Position        */
+#define CLK_PLL4CTL2_SLOPE_Msk           (0xfffffful << CLK_PLL4CTL2_SLOPE_Pos)            /*!< CLK_T::PLL4CTL2: SLOPE Mask            */
+
+#define CLK_PLL5CTL0_FBDIV_Pos           (0)                                               /*!< CLK_T::PLL5CTL0: FBDIV Position        */
+#define CLK_PLL5CTL0_FBDIV_Msk           (0x7fful << CLK_PLL5CTL0_FBDIV_Pos)               /*!< CLK_T::PLL5CTL0: FBDIV Mask            */
+
+#define CLK_PLL5CTL0_INDIV_Pos           (12)                                              /*!< CLK_T::PLL5CTL0: INDIV Position        */
+#define CLK_PLL5CTL0_INDIV_Msk           (0x3ful << CLK_PLL5CTL0_INDIV_Pos)                /*!< CLK_T::PLL5CTL0: INDIV Mask            */
+
+#define CLK_PLL5CTL0_MODE_Pos            (18)                                              /*!< CLK_T::PLL5CTL0: MODE Position         */
+#define CLK_PLL5CTL0_MODE_Msk            (0x3ul << CLK_PLL5CTL0_MODE_Pos)                  /*!< CLK_T::PLL5CTL0: MODE Mask             */
+
+#define CLK_PLL5CTL0_SSRATE_Pos          (20)                                              /*!< CLK_T::PLL5CTL0: SSRATE Position       */
+#define CLK_PLL5CTL0_SSRATE_Msk          (0x7fful << CLK_PLL5CTL0_SSRATE_Pos)              /*!< CLK_T::PLL5CTL0: SSRATE Mask           */
+
+#define CLK_PLL5CTL1_PD_Pos              (0)                                               /*!< CLK_T::PLL5CTL1: PD Position           */
+#define CLK_PLL5CTL1_PD_Msk              (0x1ul << CLK_PLL5CTL1_PD_Pos)                    /*!< CLK_T::PLL5CTL1: PD Mask               */
+
+#define CLK_PLL5CTL1_BP_Pos              (1)                                               /*!< CLK_T::PLL5CTL1: BP Position           */
+#define CLK_PLL5CTL1_BP_Msk              (0x1ul << CLK_PLL5CTL1_BP_Pos)                    /*!< CLK_T::PLL5CTL1: BP Mask               */
+
+#define CLK_PLL5CTL1_OUTDIV_Pos          (4)                                               /*!< CLK_T::PLL5CTL1: OUTDIV Position       */
+#define CLK_PLL5CTL1_OUTDIV_Msk          (0x7ul << CLK_PLL5CTL1_OUTDIV_Pos)                /*!< CLK_T::PLL5CTL1: OUTDIV Mask           */
+
+#define CLK_PLL5CTL1_FRAC_Pos            (8)                                               /*!< CLK_T::PLL5CTL1: FRAC Position         */
+#define CLK_PLL5CTL1_FRAC_Msk            (0xfffffful << CLK_PLL5CTL1_FRAC_Pos)             /*!< CLK_T::PLL5CTL1: FRAC Mask             */
+
+#define CLK_PLL5CTL2_SLOPE_Pos           (0)                                               /*!< CLK_T::PLL5CTL2: SLOPE Position        */
+#define CLK_PLL5CTL2_SLOPE_Msk           (0xfffffful << CLK_PLL5CTL2_SLOPE_Pos)            /*!< CLK_T::PLL5CTL2: SLOPE Mask            */
+
 #define CLK_CLKDCTL_HXTFDEN_Pos          (4)                                               /*!< CLK_T::CLKDCTL: HXTFDEN Position       */
 #define CLK_CLKDCTL_HXTFDEN_Msk          (0x1ul << CLK_CLKDCTL_HXTFDEN_Pos)                /*!< CLK_T::CLKDCTL: HXTFDEN Mask           */
 
@@ -1835,8 +2611,26 @@ typedef struct
 #define CLK_CDLOWB_LOWERBD_Pos           (0)                                               /*!< CLK_T::CDLOWB: LOWERBD Position        */
 #define CLK_CDLOWB_LOWERBD_Msk           (0x3fful << CLK_CDLOWB_LOWERBD_Pos)               /*!< CLK_T::CDLOWB: LOWERBD Mask            */
 
-#define CLK_HXTFSEL_HXTFSEL_Pos          (0)                                               /*!< CLK_T::HXTFSEL: HXTFSEL Position       */
-#define CLK_HXTFSEL_HXTFSEL_Msk          (0x1ul << CLK_HXTFSEL_HXTFSEL_Pos)                /*!< CLK_T::HXTFSEL: HXTFSEL Mask           */
+#define CLK_CKFLTRCTL_HXTFLTREN_Pos      (0)                                               /*!< CLK_T::CKFLTRCTL: HXTFLTREN Position   */
+#define CLK_CKFLTRCTL_HXTFLTREN_Msk      (0x1ul << CLK_CKFLTRCTL_HXTFLTREN_Pos)            /*!< CLK_T::CKFLTRCTL: HXTFLTREN Mask       */
+
+#define CLK_CKFLTRCTL_HXTFLTRSEL_Pos     (1)                                               /*!< CLK_T::CKFLTRCTL: HXTFLTRSEL Position  */
+#define CLK_CKFLTRCTL_HXTFLTRSEL_Msk     (0x1ul << CLK_CKFLTRCTL_HXTFLTRSEL_Pos)           /*!< CLK_T::CKFLTRCTL: HXTFLTRSEL Mask      */
+
+#define CLK_CKFLTRCTL_HXTGTEN_Pos        (4)                                               /*!< CLK_T::CKFLTRCTL: HXTGTEN Position     */
+#define CLK_CKFLTRCTL_HXTGTEN_Msk        (0x1ul << CLK_CKFLTRCTL_HXTGTEN_Pos)              /*!< CLK_T::CKFLTRCTL: HXTGTEN Mask         */
+
+#define CLK_CKFLTRCTL_HXTBYPSEN_Pos      (5)                                               /*!< CLK_T::CKFLTRCTL: HXTBYPSEN Position   */
+#define CLK_CKFLTRCTL_HXTBYPSEN_Msk      (0x1ul << CLK_CKFLTRCTL_HXTBYPSEN_Pos)            /*!< CLK_T::CKFLTRCTL: HXTBYPSEN Mask       */
+
+#define CLK_CKFLTRCTL_HIRCFLTREN_Pos     (8)                                               /*!< CLK_T::CKFLTRCTL: HIRCFLTREN Position  */
+#define CLK_CKFLTRCTL_HIRCFLTREN_Msk     (0x1ul << CLK_CKFLTRCTL_HIRCFLTREN_Pos)           /*!< CLK_T::CKFLTRCTL: HIRCFLTREN Mask      */
+
+#define CLK_CKFLTRCTL_HIRCFLTRSEL_Pos    (9)                                               /*!< CLK_T::CKFLTRCTL: HIRCFLTRSEL Position */
+#define CLK_CKFLTRCTL_HIRCFLTRSEL_Msk    (0x1ul << CLK_CKFLTRCTL_HIRCFLTRSEL_Pos)          /*!< CLK_T::CKFLTRCTL: HIRCFLTRSEL Mask     */
+
+#define CLK_CKFLTRCTL_HIRCGTEN_Pos       (12)                                              /*!< CLK_T::CKFLTRCTL: HIRCGTEN Position    */
+#define CLK_CKFLTRCTL_HIRCGTEN_Msk       (0x1ul << CLK_CKFLTRCTL_HIRCGTEN_Pos)             /*!< CLK_T::CKFLTRCTL: HIRCGTEN Mask        */
 
 /**@}*/ /* CLK_CONST */
 /**@}*/ /* end of CLK register group */

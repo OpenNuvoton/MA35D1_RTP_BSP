@@ -65,10 +65,10 @@ void I2C1_IRQHandler(void)
 void PWRWU_IRQHandler(void)
 {
     /* Check system power down mode wake-up interrupt flag */
-    if(((CLK->PWRCTL) & CLK_PWRCTL_PDWKIF_Msk) != 0)
+    if(((SYS->PMUSTS) & SYS_PMUSTS_RTPPDWKIF_Msk) != 0)
     {
         /* Clear system power down wake-up interrupt flag */
-        CLK->PWRCTL |= CLK_PWRCTL_PDWKIF_Msk;
+        SYS->PMUSTS |= SYS_PMUSTS_RTPPDWKIF_Msk;
         g_u8SlvPWRDNWK = 1;
 
     }
@@ -256,7 +256,7 @@ int32_t main(void)
     SYS_UnlockReg();
 
     /* Enable power wake-up interrupt */
-    CLK->PWRCTL |= CLK_PWRCTL_PDWKIEN_Msk;
+    SYS->PMUIEN |= SYS_PMUIEN_RTPPDWKIEN_Msk;
     NVIC_EnableIRQ(PWRWU_IRQn);
     g_u8SlvPWRDNWK = 0;
 
@@ -279,11 +279,11 @@ int32_t main(void)
     while((g_u8SlvPWRDNWK & g_u8SlvI2CWK) == 0);
 
     /* Wake-up Interrupt Message */
-    printf("Power-down Wake-up INT 0x%x\n", (unsigned int)((CLK->PWRCTL) & CLK_PWRCTL_PDWKIF_Msk));
+    printf("Power-down Wake-up INT 0x%x\n", (unsigned int)((SYS->PMUSTS) & SYS_PMUSTS_RTPPDWKIF_Msk));
     printf("I2C1 WAKE INT 0x%x\n", I2C1->WKSTS);
 
     /* Disable power wake-up interrupt */
-    CLK->PWRCTL &= ~CLK_PWRCTL_PDWKIEN_Msk;
+    SYS->PMUIEN &= ~SYS_PMUIEN_RTPPDWKIEN_Msk;
     NVIC_DisableIRQ(PWRWU_IRQn);
 
     /* Lock protected registers */

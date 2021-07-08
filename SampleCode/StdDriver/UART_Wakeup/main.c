@@ -105,7 +105,7 @@ void PWRWU_IRQHandler(void)
 {
     g_bWait = 1;
 
-    CLK->PWRCTL |= CLK_PWRCTL_PDWKIF_Msk;
+    SYS->PMUSTS |= SYS_PMUSTS_RTPPDWKIF_Msk;
     printf("\n Wake-Up ");
 }
 
@@ -145,7 +145,7 @@ void UART_FunctionTest()
     NVIC_EnableIRQ(UART1_IRQn);
     UART_EnableInt(UART1, (UART_INTEN_WKIEN_Msk));
 
-    CLK->PWRCTL |= CLK_PWRCTL_PDWKIEN_Msk;
+    SYS->PMUIEN |= SYS_PMUIEN_RTPPDWKIEN_Msk;
     NVIC_EnableIRQ(PWRWU_IRQn);
 
     UART1->WKSTS = UART1->WKSTS; // clecar status

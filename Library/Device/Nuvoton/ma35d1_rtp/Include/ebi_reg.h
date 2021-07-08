@@ -26,209 +26,209 @@ typedef struct
 {
 
 
-    /**
-     * @var EBI_T::CTL0
-     * Offset: 0x00  External Bus Interface Bank0 Control Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[0]     |EN        |EBI Enable Bit
-     * |        |          |This bit is the functional enable bit for EBI.
-     * |        |          |0 = EBI function Disabled.
-     * |        |          |1 = EBI function Enabled.
-     * |[1]     |DW16      |EBI Data Width 16-bit Select
-     * |        |          |This bit defines if the EBI data width is 8-bit or 16-bit.
-     * |        |          |0 = EBI data width is 8-bit.
-     * |        |          |1 = EBI data width is 16-bit.
-     * |[2]     |CSPOLINV  |Chip Select Pin Polar Inverse
-     * |        |          |This bit defines the active level of EBI chip select pin (EBI_nCS).
-     * |        |          |0 = Chip select pin (EBI_nCS) is active low.
-     * |        |          |1 = Chip select pin (EBI_nCS) is active high.
-     * |[3]     |ADSEPEN   |EBI Address/Data Bus Separating Mode Enable Bit
-     * |        |          |0 = Address/Data Bus Separating Mode Disabled.
-     * |        |          |1 = Address/Data Bus Separating Mode Enabled.
-     * |[4]     |CACCESS   |Continuous Data Access Mode
-     * |        |          |When con tenuous access mode enabled, the tASU, tALE and tLHD cycles are bypass for continuous data transfer request.
-     * |        |          |0 = Continuous data access mode Disabled.
-     * |        |          |1 = Continuous data access mode Enabled.
-     * |[10:8]  |MCLKDIV   |External Output Clock Divider
-     * |        |          |The frequency of EBI output clock (MCLK) is controlled by MCLKDIV as follow:
-     * |        |          |000 = HCLK/1.
-     * |        |          |001 = HCLK/2.
-     * |        |          |010 = HCLK/4.
-     * |        |          |011 = HCLK/8.
-     * |        |          |100 = HCLK/16.
-     * |        |          |101 = HCLK/32.
-     * |        |          |110 = HCLK/64.
-     * |        |          |111 = HCLK/128.
-     * |[18:16] |TALE      |Extend Time of ALE
-     * |        |          |The EBI_ALE high pulse period (tALE) to latch the address can be controlled by TALE.
-     * |        |          |tALE = (TALE+1)*EBI_MCLK.
-     * |        |          |Note: This field only available in EBI_CTL0 register
-     * |[24]    |WBUFEN    |EBI Write Buffer Enable Bit
-     * |        |          |0 = EBI write buffer Disabled.
-     * |        |          |1 = EBI write buffer Enabled.
-     * |        |          |Note: This bit only available in EBI_CTL0 register
-     * @var EBI_T::TCTL0
-     * Offset: 0x04  External Bus Interface Bank0 Timing Control Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[7:3]   |TACC      |EBI Data Access Time
-     * |        |          |TACC define data access time (tACC).
-     * |        |          |tACC = (TACC +1) * EBI_MCLK.
-     * |[10:8]  |TAHD      |EBI Data Access Hold Time
-     * |        |          |TAHD define data access hold time (tAHD).
-     * |        |          |tAHD = (TAHD +1) * EBI_MCLK.
-     * |[15:12] |W2X       |Idle Cycle After Write
-     * |        |          |This field defines the number of W2X idle cycle.
-     * |        |          |W2X idle cycle = (W2X * EBI_MCLK).
-     * |        |          |When write action is finish, W2X idle cycle is inserted and EBI_nCS return to idle state.
-     * |[22]    |RAHDOFF   |Access Hold Time Disable Control When Read
-     * |        |          |0 = The Data Access Hold Time (tAHD) during EBI reading is Enabled.
-     * |        |          |1 = The Data Access Hold Time (tAHD) during EBI reading is Disabled.
-     * |[23]    |WAHDOFF   |Access Hold Time Disable Control When Write
-     * |        |          |0 = The Data Access Hold Time (tAHD) during EBI writing is Enabled.
-     * |        |          |1 = The Data Access Hold Time (tAHD) during EBI writing is Disabled.
-     * |[27:24] |R2R       |Idle Cycle Between Read-to-read
-     * |        |          |This field defines the number of R2R idle cycle.
-     * |        |          |R2R idle cycle = (R2R * EBI_MCLK).
-     * |        |          |When read action is finish and next action is going to read, R2R idle cycle is inserted and EBI_nCS return to idle state.
-     * @var EBI_T::CTL1
-     * Offset: 0x10  External Bus Interface Bank1 Control Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[0]     |EN        |EBI Enable Bit
-     * |        |          |This bit is the functional enable bit for EBI.
-     * |        |          |0 = EBI function Disabled.
-     * |        |          |1 = EBI function Enabled.
-     * |[1]     |DW16      |EBI Data Width 16-bit Select
-     * |        |          |This bit defines if the EBI data width is 8-bit or 16-bit.
-     * |        |          |0 = EBI data width is 8-bit.
-     * |        |          |1 = EBI data width is 16-bit.
-     * |[2]     |CSPOLINV  |Chip Select Pin Polar Inverse
-     * |        |          |This bit defines the active level of EBI chip select pin (EBI_nCS).
-     * |        |          |0 = Chip select pin (EBI_nCS) is active low.
-     * |        |          |1 = Chip select pin (EBI_nCS) is active high.
-     * |[3]     |ADSEPEN   |EBI Address/Data Bus Separating Mode Enable Bit
-     * |        |          |0 = Address/Data Bus Separating Mode Disabled.
-     * |        |          |1 = Address/Data Bus Separating Mode Enabled.
-     * |[4]     |CACCESS   |Continuous Data Access Mode
-     * |        |          |When con tenuous access mode enabled, the tASU, tALE and tLHD cycles are bypass for continuous data transfer request.
-     * |        |          |0 = Continuous data access mode Disabled.
-     * |        |          |1 = Continuous data access mode Enabled.
-     * |[10:8]  |MCLKDIV   |External Output Clock Divider
-     * |        |          |The frequency of EBI output clock (MCLK) is controlled by MCLKDIV as follow:
-     * |        |          |000 = HCLK/1.
-     * |        |          |001 = HCLK/2.
-     * |        |          |010 = HCLK/4.
-     * |        |          |011 = HCLK/8.
-     * |        |          |100 = HCLK/16.
-     * |        |          |101 = HCLK/32.
-     * |        |          |110 = HCLK/64.
-     * |        |          |111 = HCLK/128.
-     * |[18:16] |TALE      |Extend Time of ALE
-     * |        |          |The EBI_ALE high pulse period (tALE) to latch the address can be controlled by TALE.
-     * |        |          |tALE = (TALE+1)*EBI_MCLK.
-     * |        |          |Note: This field only available in EBI_CTL0 register
-     * |[24]    |WBUFEN    |EBI Write Buffer Enable Bit
-     * |        |          |0 = EBI write buffer Disabled.
-     * |        |          |1 = EBI write buffer Enabled.
-     * |        |          |Note: This bit only available in EBI_CTL0 register
-     * @var EBI_T::TCTL1
-     * Offset: 0x14  External Bus Interface Bank1 Timing Control Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[7:3]   |TACC      |EBI Data Access Time
-     * |        |          |TACC define data access time (tACC).
-     * |        |          |tACC = (TACC +1) * EBI_MCLK.
-     * |[10:8]  |TAHD      |EBI Data Access Hold Time
-     * |        |          |TAHD define data access hold time (tAHD).
-     * |        |          |tAHD = (TAHD +1) * EBI_MCLK.
-     * |[15:12] |W2X       |Idle Cycle After Write
-     * |        |          |This field defines the number of W2X idle cycle.
-     * |        |          |W2X idle cycle = (W2X * EBI_MCLK).
-     * |        |          |When write action is finish, W2X idle cycle is inserted and EBI_nCS return to idle state.
-     * |[22]    |RAHDOFF   |Access Hold Time Disable Control When Read
-     * |        |          |0 = The Data Access Hold Time (tAHD) during EBI reading is Enabled.
-     * |        |          |1 = The Data Access Hold Time (tAHD) during EBI reading is Disabled.
-     * |[23]    |WAHDOFF   |Access Hold Time Disable Control When Write
-     * |        |          |0 = The Data Access Hold Time (tAHD) during EBI writing is Enabled.
-     * |        |          |1 = The Data Access Hold Time (tAHD) during EBI writing is Disabled.
-     * |[27:24] |R2R       |Idle Cycle Between Read-to-read
-     * |        |          |This field defines the number of R2R idle cycle.
-     * |        |          |R2R idle cycle = (R2R * EBI_MCLK).
-     * |        |          |When read action is finish and next action is going to read, R2R idle cycle is inserted and EBI_nCS return to idle state.
-     * @var EBI_T::CTL2
-     * Offset: 0x20  External Bus Interface Bank2 Control Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[0]     |EN        |EBI Enable Bit
-     * |        |          |This bit is the functional enable bit for EBI.
-     * |        |          |0 = EBI function Disabled.
-     * |        |          |1 = EBI function Enabled.
-     * |[1]     |DW16      |EBI Data Width 16-bit Select
-     * |        |          |This bit defines if the EBI data width is 8-bit or 16-bit.
-     * |        |          |0 = EBI data width is 8-bit.
-     * |        |          |1 = EBI data width is 16-bit.
-     * |[2]     |CSPOLINV  |Chip Select Pin Polar Inverse
-     * |        |          |This bit defines the active level of EBI chip select pin (EBI_nCS).
-     * |        |          |0 = Chip select pin (EBI_nCS) is active low.
-     * |        |          |1 = Chip select pin (EBI_nCS) is active high.
-     * |[3]     |ADSEPEN   |EBI Address/Data Bus Separating Mode Enable Bit
-     * |        |          |0 = Address/Data Bus Separating Mode Disabled.
-     * |        |          |1 = Address/Data Bus Separating Mode Enabled.
-     * |[4]     |CACCESS   |Continuous Data Access Mode
-     * |        |          |When con tenuous access mode enabled, the tASU, tALE and tLHD cycles are bypass for continuous data transfer request.
-     * |        |          |0 = Continuous data access mode Disabled.
-     * |        |          |1 = Continuous data access mode Enabled.
-     * |[10:8]  |MCLKDIV   |External Output Clock Divider
-     * |        |          |The frequency of EBI output clock (MCLK) is controlled by MCLKDIV as follow:
-     * |        |          |000 = HCLK/1.
-     * |        |          |001 = HCLK/2.
-     * |        |          |010 = HCLK/4.
-     * |        |          |011 = HCLK/8.
-     * |        |          |100 = HCLK/16.
-     * |        |          |101 = HCLK/32.
-     * |        |          |110 = HCLK/64.
-     * |        |          |111 = HCLK/128.
-     * |[18:16] |TALE      |Extend Time of ALE
-     * |        |          |The EBI_ALE high pulse period (tALE) to latch the address can be controlled by TALE.
-     * |        |          |tALE = (TALE+1)*EBI_MCLK.
-     * |        |          |Note: This field only available in EBI_CTL0 register
-     * |[24]    |WBUFEN    |EBI Write Buffer Enable Bit
-     * |        |          |0 = EBI write buffer Disabled.
-     * |        |          |1 = EBI write buffer Enabled.
-     * |        |          |Note: This bit only available in EBI_CTL0 register
-     * @var EBI_T::TCTL2
-     * Offset: 0x24  External Bus Interface Bank2 Timing Control Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[7:3]   |TACC      |EBI Data Access Time
-     * |        |          |TACC define data access time (tACC).
-     * |        |          |tACC = (TACC +1) * EBI_MCLK.
-     * |[10:8]  |TAHD      |EBI Data Access Hold Time
-     * |        |          |TAHD define data access hold time (tAHD).
-     * |        |          |tAHD = (TAHD +1) * EBI_MCLK.
-     * |[15:12] |W2X       |Idle Cycle After Write
-     * |        |          |This field defines the number of W2X idle cycle.
-     * |        |          |W2X idle cycle = (W2X * EBI_MCLK).
-     * |        |          |When write action is finish, W2X idle cycle is inserted and EBI_nCS return to idle state.
-     * |[22]    |RAHDOFF   |Access Hold Time Disable Control When Read
-     * |        |          |0 = The Data Access Hold Time (tAHD) during EBI reading is Enabled.
-     * |        |          |1 = The Data Access Hold Time (tAHD) during EBI reading is Disabled.
-     * |[23]    |WAHDOFF   |Access Hold Time Disable Control When Write
-     * |        |          |0 = The Data Access Hold Time (tAHD) during EBI writing is Enabled.
-     * |        |          |1 = The Data Access Hold Time (tAHD) during EBI writing is Disabled.
-     * |[27:24] |R2R       |Idle Cycle Between Read-to-read
-     * |        |          |This field defines the number of R2R idle cycle.
-     * |        |          |R2R idle cycle = (R2R * EBI_MCLK).
-     * |        |          |When read action is finish and next action is going to read, R2R idle cycle is inserted and EBI_nCS return to idle state.
-     */
+/**
+ * @var EBI_T::CTL0
+ * Offset: 0x00  External Bus Interface Bank0 Control Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[0]     |EN        |EBI Enable Bit
+ * |        |          |This bit is the functional enable bit for EBI.
+ * |        |          |0 = EBI function Disabled.
+ * |        |          |1 = EBI function Enabled.
+ * |[1]     |DW16      |EBI Data Width 16-bit Select
+ * |        |          |This bit defines if the EBI data width is 8-bit or 16-bit.
+ * |        |          |0 = EBI data width is 8-bit.
+ * |        |          |1 = EBI data width is 16-bit.
+ * |[2]     |CSPOLINV  |Chip Select Pin Polar Inverse
+ * |        |          |This bit defines the active level of EBI chip select pin (EBI_nCS).
+ * |        |          |0 = Chip select pin (EBI_nCS) is active low.
+ * |        |          |1 = Chip select pin (EBI_nCS) is active high.
+ * |[3]     |ADSEPEN   |EBI Address/Data Bus Separate Mode Enable Bit
+ * |        |          |0 = Address/Data Bus Separate Mode Disabled.
+ * |        |          |1 = Address/Data Bus Separate Mode Enabled.
+ * |[4]     |CACCESS   |Continuous Data Access Mode
+ * |        |          |When continuous access mode enabled, the tASU, tALE and tLHD cycles are bypass for continuous data transfer request.
+ * |        |          |0 = Continuous data access mode Disabled.
+ * |        |          |1 = Continuous data access mode Enabled.
+ * |[10:8]  |MCLKDIV   |External Output Clock Divider
+ * |        |          |The frequency of EBI output clock (MCLK) is controlled by MCLKDIV as follow:
+ * |        |          |000 = HCLK/1.
+ * |        |          |001 = HCLK/2.
+ * |        |          |010 = HCLK/4.
+ * |        |          |011 = HCLK/8.
+ * |        |          |100 = HCLK/16.
+ * |        |          |101 = HCLK/32.
+ * |        |          |110 = HCLK/64.
+ * |        |          |111 = HCLK/128.
+ * |[18:16] |TALE      |Extend Time of ALE
+ * |        |          |The EBI_ALE high pulse period (tALE) to latch the address can be controlled by TALE.
+ * |        |          |tALE = (TALE+1)*EBI_MCLK.
+ * |        |          |Note: This field only available in EBI_CTL0 register.
+ * |[24]    |WBUFEN    |EBI Write Buffer Enable Bit
+ * |        |          |0 = EBI write buffer Disabled.
+ * |        |          |1 = EBI write buffer Enabled.
+ * |        |          |Note: This bit only available in EBI_CTL0 register.
+ * @var EBI_T::TCTL0
+ * Offset: 0x04  External Bus Interface Bank0 Timing Control Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[7:3]   |TACC      |EBI Data Access Time
+ * |        |          |TACC defines data access time (tACC).
+ * |        |          |tACC = (TACC +1) * EBI_MCLK.
+ * |[10:8]  |TAHD      |EBI Data Access Hold Time
+ * |        |          |TAHD defines data access hold time (tAHD).
+ * |        |          |tAHD = (TAHD +1) * EBI_MCLK.
+ * |[15:12] |W2X       |Idle Cycle After Write
+ * |        |          |This field defines the number of W2X idle cycle.
+ * |        |          |W2X idle cycle = (W2X * EBI_MCLK).
+ * |        |          |When write action is finished, W2X idle cycle is inserted and EBI_nCS return to idle state.
+ * |[22]    |RAHDOFF   |Access Hold Time Disable Control When Read
+ * |        |          |0 = Data Access Hold Time (tAHD) during EBI reading Enabled.
+ * |        |          |1 = Data Access Hold Time (tAHD) during EBI reading Disabled.
+ * |[23]    |WAHDOFF   |Access Hold Time Disable Control When Write
+ * |        |          |0 = Data Access Hold Time (tAHD) during EBI writing Enabled.
+ * |        |          |1 = Data Access Hold Time (tAHD) during EBI writing Disabled.
+ * |[27:24] |R2R       |Idle Cycle Between Read-to-read
+ * |        |          |This field defines the number of R2R idle cycle.
+ * |        |          |R2R idle cycle = (R2R * EBI_MCLK).
+ * |        |          |When read action is finished and the next action is going to read, R2R idle cycle is inserted and EBI_nCS return to idle state.
+ * @var EBI_T::CTL1
+ * Offset: 0x10  External Bus Interface Bank1 Control Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[0]     |EN        |EBI Enable Bit
+ * |        |          |This bit is the functional enable bit for EBI.
+ * |        |          |0 = EBI function Disabled.
+ * |        |          |1 = EBI function Enabled.
+ * |[1]     |DW16      |EBI Data Width 16-bit Select
+ * |        |          |This bit defines if the EBI data width is 8-bit or 16-bit.
+ * |        |          |0 = EBI data width is 8-bit.
+ * |        |          |1 = EBI data width is 16-bit.
+ * |[2]     |CSPOLINV  |Chip Select Pin Polar Inverse
+ * |        |          |This bit defines the active level of EBI chip select pin (EBI_nCS).
+ * |        |          |0 = Chip select pin (EBI_nCS) is active low.
+ * |        |          |1 = Chip select pin (EBI_nCS) is active high.
+ * |[3]     |ADSEPEN   |EBI Address/Data Bus Separate Mode Enable Bit
+ * |        |          |0 = Address/Data Bus Separate Mode Disabled.
+ * |        |          |1 = Address/Data Bus Separate Mode Enabled.
+ * |[4]     |CACCESS   |Continuous Data Access Mode
+ * |        |          |When continuous access mode enabled, the tASU, tALE and tLHD cycles are bypass for continuous data transfer request.
+ * |        |          |0 = Continuous data access mode Disabled.
+ * |        |          |1 = Continuous data access mode Enabled.
+ * |[10:8]  |MCLKDIV   |External Output Clock Divider
+ * |        |          |The frequency of EBI output clock (MCLK) is controlled by MCLKDIV as follow:
+ * |        |          |000 = HCLK/1.
+ * |        |          |001 = HCLK/2.
+ * |        |          |010 = HCLK/4.
+ * |        |          |011 = HCLK/8.
+ * |        |          |100 = HCLK/16.
+ * |        |          |101 = HCLK/32.
+ * |        |          |110 = HCLK/64.
+ * |        |          |111 = HCLK/128.
+ * |[18:16] |TALE      |Extend Time of ALE
+ * |        |          |The EBI_ALE high pulse period (tALE) to latch the address can be controlled by TALE.
+ * |        |          |tALE = (TALE+1)*EBI_MCLK.
+ * |        |          |Note: This field only available in EBI_CTL0 register.
+ * |[24]    |WBUFEN    |EBI Write Buffer Enable Bit
+ * |        |          |0 = EBI write buffer Disabled.
+ * |        |          |1 = EBI write buffer Enabled.
+ * |        |          |Note: This bit only available in EBI_CTL0 register.
+ * @var EBI_T::TCTL1
+ * Offset: 0x14  External Bus Interface Bank1 Timing Control Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[7:3]   |TACC      |EBI Data Access Time
+ * |        |          |TACC defines data access time (tACC).
+ * |        |          |tACC = (TACC +1) * EBI_MCLK.
+ * |[10:8]  |TAHD      |EBI Data Access Hold Time
+ * |        |          |TAHD defines data access hold time (tAHD).
+ * |        |          |tAHD = (TAHD +1) * EBI_MCLK.
+ * |[15:12] |W2X       |Idle Cycle After Write
+ * |        |          |This field defines the number of W2X idle cycle.
+ * |        |          |W2X idle cycle = (W2X * EBI_MCLK).
+ * |        |          |When write action is finished, W2X idle cycle is inserted and EBI_nCS return to idle state.
+ * |[22]    |RAHDOFF   |Access Hold Time Disable Control When Read
+ * |        |          |0 = Data Access Hold Time (tAHD) during EBI reading Enabled.
+ * |        |          |1 = Data Access Hold Time (tAHD) during EBI reading Disabled.
+ * |[23]    |WAHDOFF   |Access Hold Time Disable Control When Write
+ * |        |          |0 = Data Access Hold Time (tAHD) during EBI writing Enabled.
+ * |        |          |1 = Data Access Hold Time (tAHD) during EBI writing Disabled.
+ * |[27:24] |R2R       |Idle Cycle Between Read-to-read
+ * |        |          |This field defines the number of R2R idle cycle.
+ * |        |          |R2R idle cycle = (R2R * EBI_MCLK).
+ * |        |          |When read action is finished and the next action is going to read, R2R idle cycle is inserted and EBI_nCS return to idle state.
+ * @var EBI_T::CTL2
+ * Offset: 0x20  External Bus Interface Bank2 Control Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[0]     |EN        |EBI Enable Bit
+ * |        |          |This bit is the functional enable bit for EBI.
+ * |        |          |0 = EBI function Disabled.
+ * |        |          |1 = EBI function Enabled.
+ * |[1]     |DW16      |EBI Data Width 16-bit Select
+ * |        |          |This bit defines if the EBI data width is 8-bit or 16-bit.
+ * |        |          |0 = EBI data width is 8-bit.
+ * |        |          |1 = EBI data width is 16-bit.
+ * |[2]     |CSPOLINV  |Chip Select Pin Polar Inverse
+ * |        |          |This bit defines the active level of EBI chip select pin (EBI_nCS).
+ * |        |          |0 = Chip select pin (EBI_nCS) is active low.
+ * |        |          |1 = Chip select pin (EBI_nCS) is active high.
+ * |[3]     |ADSEPEN   |EBI Address/Data Bus Separate Mode Enable Bit
+ * |        |          |0 = Address/Data Bus Separate Mode Disabled.
+ * |        |          |1 = Address/Data Bus Separate Mode Enabled.
+ * |[4]     |CACCESS   |Continuous Data Access Mode
+ * |        |          |When continuous access mode enabled, the tASU, tALE and tLHD cycles are bypass for continuous data transfer request.
+ * |        |          |0 = Continuous data access mode Disabled.
+ * |        |          |1 = Continuous data access mode Enabled.
+ * |[10:8]  |MCLKDIV   |External Output Clock Divider
+ * |        |          |The frequency of EBI output clock (MCLK) is controlled by MCLKDIV as follow:
+ * |        |          |000 = HCLK/1.
+ * |        |          |001 = HCLK/2.
+ * |        |          |010 = HCLK/4.
+ * |        |          |011 = HCLK/8.
+ * |        |          |100 = HCLK/16.
+ * |        |          |101 = HCLK/32.
+ * |        |          |110 = HCLK/64.
+ * |        |          |111 = HCLK/128.
+ * |[18:16] |TALE      |Extend Time of ALE
+ * |        |          |The EBI_ALE high pulse period (tALE) to latch the address can be controlled by TALE.
+ * |        |          |tALE = (TALE+1)*EBI_MCLK.
+ * |        |          |Note: This field only available in EBI_CTL0 register.
+ * |[24]    |WBUFEN    |EBI Write Buffer Enable Bit
+ * |        |          |0 = EBI write buffer Disabled.
+ * |        |          |1 = EBI write buffer Enabled.
+ * |        |          |Note: This bit only available in EBI_CTL0 register.
+ * @var EBI_T::TCTL2
+ * Offset: 0x24  External Bus Interface Bank2 Timing Control Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[7:3]   |TACC      |EBI Data Access Time
+ * |        |          |TACC defines data access time (tACC).
+ * |        |          |tACC = (TACC +1) * EBI_MCLK.
+ * |[10:8]  |TAHD      |EBI Data Access Hold Time
+ * |        |          |TAHD defines data access hold time (tAHD).
+ * |        |          |tAHD = (TAHD +1) * EBI_MCLK.
+ * |[15:12] |W2X       |Idle Cycle After Write
+ * |        |          |This field defines the number of W2X idle cycle.
+ * |        |          |W2X idle cycle = (W2X * EBI_MCLK).
+ * |        |          |When write action is finished, W2X idle cycle is inserted and EBI_nCS return to idle state.
+ * |[22]    |RAHDOFF   |Access Hold Time Disable Control When Read
+ * |        |          |0 = Data Access Hold Time (tAHD) during EBI reading Enabled.
+ * |        |          |1 = Data Access Hold Time (tAHD) during EBI reading Disabled.
+ * |[23]    |WAHDOFF   |Access Hold Time Disable Control When Write
+ * |        |          |0 = Data Access Hold Time (tAHD) during EBI writing Enabled.
+ * |        |          |1 = Data Access Hold Time (tAHD) during EBI writing Disabled.
+ * |[27:24] |R2R       |Idle Cycle Between Read-to-read
+ * |        |          |This field defines the number of R2R idle cycle.
+ * |        |          |R2R idle cycle = (R2R * EBI_MCLK).
+ * |        |          |When read action is finished and the next action is going to read, R2R idle cycle is inserted and EBI_nCS return to idle state.
+ */
     __IO uint32_t CTL0;                  /*!< [0x0000] External Bus Interface Bank0 Control Register                    */
     __IO uint32_t TCTL0;                 /*!< [0x0004] External Bus Interface Bank0 Timing Control Register             */
     /// @cond HIDDEN_SYMBOLS

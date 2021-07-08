@@ -367,14 +367,13 @@ void TIMER_SetTriggerSource(TIMER_T *timer, uint32_t u32Src)
   * @param[in] timer The base address of Timer module
   * @param[in] u32Mask The mask of modules (EPWM, EADC, DAC and PDMA) trigger by timer. Is the combination of
   *             - \ref TIMER_TRG_TO_EPWM,
-  *             - \ref TIMER_TRG_TO_EADC,
-  *             - \ref TIMER_TRG_TO_DAC, and
+  *             - \ref TIMER_TRG_TO_EADC, and
   *             - \ref TIMER_TRG_TO_PDMA
   * @return None
   */
 void TIMER_SetTriggerTarget(TIMER_T *timer, uint32_t u32Mask)
 {
-    timer->TRGCTL = (timer->TRGCTL & ~(TIMER_TRGCTL_TRGEPWM_Msk | TIMER_TRGCTL_TRGDAC_Msk | TIMER_TRGCTL_TRGEADC_Msk | TIMER_TRGCTL_TRGPDMA_Msk)) | u32Mask;
+    timer->TRGCTL = (timer->TRGCTL & ~(TIMER_TRGCTL_TRGPWM_Msk | TIMER_TRGCTL_TRGEADC_Msk | TIMER_TRGCTL_TRGPDMA_Msk)) | u32Mask;
 }
 
 /*@}*/ /* end of group TIMER_EXPORTED_FUNCTIONS */

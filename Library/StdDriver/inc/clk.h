@@ -283,14 +283,14 @@ extern "C"
 #define CLK_CLKSEL4_I2S1SEL_APLL           (0x1UL<<CLK_CLKSEL4_I2S1SEL_Pos)         /*!< Select I2S1 clock source from APLL \hideinitializer */
 #define CLK_CLKSEL4_I2S1SEL_PCLK2          (0x2UL<<CLK_CLKSEL4_I2S1SEL_Pos)         /*!< Select I2S1 clock source from PCLK2 \hideinitializer */
 #define CLK_CLKSEL4_I2S1SEL_HIRC           (0x3UL<<CLK_CLKSEL4_I2S1SEL_Pos)         /*!< Select I2S1 clock source from high speed oscillator \hideinitializer */
-#define CLK_CLKSEL4_CAN0SEL_APLL           (0x0UL<<CLK_CLKSEL4_CAN0SEL_Pos)         /*!< Select CAN0 clock source from VPLL \hideinitializer */
-#define CLK_CLKSEL4_CAN0SEL_VPLL           (0x1UL<<CLK_CLKSEL4_CAN0SEL_Pos)         /*!< Select CAN0 clock source from APLL \hideinitializer */
-#define CLK_CLKSEL4_CAN1SEL_APLL           (0x0UL<<CLK_CLKSEL4_CAN1SEL_Pos)         /*!< Select CAN1 clock source from VPLL \hideinitializer */
-#define CLK_CLKSEL4_CAN1SEL_VPLL           (0x1UL<<CLK_CLKSEL4_CAN1SEL_Pos)         /*!< Select CAN1 clock source from APLL \hideinitializer */
-#define CLK_CLKSEL4_CAN2SEL_APLL           (0x0UL<<CLK_CLKSEL4_CAN2SEL_Pos)         /*!< Select CAN2 clock source from VPLL \hideinitializer */
-#define CLK_CLKSEL4_CAN2SEL_VPLL           (0x1UL<<CLK_CLKSEL4_CAN2SEL_Pos)         /*!< Select CAN2 clock source from APLL \hideinitializer */
-#define CLK_CLKSEL4_CAN3SEL_APLL           (0x0UL<<CLK_CLKSEL4_CAN3SEL_Pos)         /*!< Select CAN3 clock source from VPLL \hideinitializer */
-#define CLK_CLKSEL4_CAN3SEL_VPLL           (0x1UL<<CLK_CLKSEL4_CAN3SEL_Pos)         /*!< Select CAN3 clock source from APLL \hideinitializer */
+#define CLK_CLKSEL4_CAN0SEL_APLL           (0x0UL<<CLK_CLKSEL4_CANFD0SEL_Pos)       /*!< Select CAN0 clock source from VPLL \hideinitializer */
+#define CLK_CLKSEL4_CAN0SEL_VPLL           (0x1UL<<CLK_CLKSEL4_CANFD0SEL_Pos)       /*!< Select CAN0 clock source from APLL \hideinitializer */
+#define CLK_CLKSEL4_CAN1SEL_APLL           (0x0UL<<CLK_CLKSEL4_CANFD1SEL_Pos)       /*!< Select CAN1 clock source from VPLL \hideinitializer */
+#define CLK_CLKSEL4_CAN1SEL_VPLL           (0x1UL<<CLK_CLKSEL4_CANFD1SEL_Pos)       /*!< Select CAN1 clock source from APLL \hideinitializer */
+#define CLK_CLKSEL4_CAN2SEL_APLL           (0x0UL<<CLK_CLKSEL4_CANFD2SEL_Pos)       /*!< Select CAN2 clock source from VPLL \hideinitializer */
+#define CLK_CLKSEL4_CAN2SEL_VPLL           (0x1UL<<CLK_CLKSEL4_CANFD2SEL_Pos)       /*!< Select CAN2 clock source from APLL \hideinitializer */
+#define CLK_CLKSEL4_CAN3SEL_APLL           (0x0UL<<CLK_CLKSEL4_CANFD3SEL_Pos)       /*!< Select CAN3 clock source from VPLL \hideinitializer */
+#define CLK_CLKSEL4_CAN3SEL_VPLL           (0x1UL<<CLK_CLKSEL4_CANFD3SEL_Pos)       /*!< Select CAN3 clock source from APLL \hideinitializer */
 #define CLK_CLKSEL4_CKOSEL_HXT             (0x0UL<<CLK_CLKSEL4_CKOSEL_Pos)          /*!< Select CKO clock source from high speed crystal \hideinitializer */
 #define CLK_CLKSEL4_CKOSEL_LXT             (0x1UL<<CLK_CLKSEL4_CKOSEL_Pos)          /*!< Select CKO clock source from low speed crystal \hideinitializer */
 #define CLK_CLKSEL4_CKOSEL_HIRC            (0x2UL<<CLK_CLKSEL4_CKOSEL_Pos)          /*!< Select CKO clock source from high speed oscillator \hideinitializer */
