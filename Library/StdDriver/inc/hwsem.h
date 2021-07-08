@@ -67,7 +67,7 @@ extern "C"
   *
   *    \hideinitializer
   */
-#define HWSEM_ENABLE_INT(hwsem, u32Num)    ((hwsem)->INTEN_CM4 |= (HWSEM_INTEN_SEM0IEN_Msk << (u32Num)))
+#define HWSEM_ENABLE_INT(hwsem, u32Num)    ((hwsem)->INTENM4 |= (HWSEM_INTENM4_SEM0IEN_Msk << (u32Num)))
 
 
 /**
@@ -79,7 +79,7 @@ extern "C"
   *
   *    \hideinitializer
   */
-#define HWSEM_DISABLE_INT(hwsem, u32Num)    ((hwsem)->INTEN_CM4 &= ~(HWSEM_INTEN_SEM0IEN_Msk << (u32Num)))
+#define HWSEM_DISABLE_INT(hwsem, u32Num)    ((hwsem)->INTENM4 &= ~(HWSEM_INTENM4_SEM0IEN_Msk << (u32Num)))
 
 /**
   * @brief        Get specified interrupt flag
@@ -91,7 +91,7 @@ extern "C"
   *                  Otherwise The specified interrupt is happened.
   *    \hideinitializer
   */
-#define HWSEM_GET_INT_FLAG(hwsem, u32Num)    ((hwsem)->INTSTS_CM4 & (HWSEM_INTSTS_SEM0IF_Msk << (u32Num)))
+#define HWSEM_GET_INT_FLAG(hwsem, u32Num)    ((hwsem)->INTSTSM4 & (HWSEM_INTSTSM4_SEM0IF_Msk << (u32Num)))
 
 
 /**
@@ -102,7 +102,7 @@ extern "C"
   *
   *    \hideinitializer
   */
-#define HWSEM_CLR_INT_FLAG(hwsem, u32Num)    ((hwsem)->INTSTS_CM4 = (HWSEM_INTSTS_SEM0IF_Msk << (u32Num)))
+#define HWSEM_CLR_INT_FLAG(hwsem, u32Num)    ((hwsem)->INTSTSM4 = (HWSEM_INTSTSM4_SEM0IF_Msk << (u32Num)))
 
 
 /**

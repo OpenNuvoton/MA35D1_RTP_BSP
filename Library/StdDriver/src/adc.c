@@ -52,7 +52,7 @@ void ADC_Open(ADC_T *adc,
                 break;
             }
         }
-        adc->CONF = (u32Ch << ADC_CONF_CHSEL_Pos) | u32OpMode | ADC_CONF_NAEN_Msk;
+        adc->CONF = (u32Ch << ADC_CONF_CHSEL_Pos) | u32OpMode | ADC_CONF_NACEN_Msk;
     } 
     else if (u32InputMode == ADC_INPUT_MODE_4WIRE_TOUCH) 
     {
