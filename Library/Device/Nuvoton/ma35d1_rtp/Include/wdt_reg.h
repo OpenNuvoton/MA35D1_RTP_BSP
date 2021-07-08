@@ -26,101 +26,101 @@ typedef struct
 {
 
 
-    /**
-     * @var WDT_T::CTL
-     * Offset: 0x00  WDT Control Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[0]     |RSTCNT    |Reset WDT Up Counter (Write Protect)
-     * |        |          |0 = No effect.
-     * |        |          |1 = Reset the internal 18-bit WDT up counter value.
-     * |        |          |Note1: This bit is write protected. Refer to the SYS_REGLCTL register.
-     * |        |          |Note2: This bit will be automatically cleared by hardware.
-     * |[1]     |RSTEN     |WDT Time-out Reset Enable Control (Write Protect)
-     * |        |          |Setting this bit will enable the WDT time-out reset function If the WDT up counter value has not been cleared after the specific WDT reset delay period expires.
-     * |        |          |0 = WDT time-out reset function Disabled.
-     * |        |          |1 = WDT time-out reset function Enabled.
-     * |        |          |Note: This bit is write protected. Refer to the SYS_REGLCTL register.
-     * |[2]     |RSTF      |WDT Time-out Reset Flag
-     * |        |          |This bit indicates the system has been reset by WDT time-out reset or not.
-     * |        |          |0 = WDT time-out reset did not occur.
-     * |        |          |1 = WDT time-out reset occurred.
-     * |        |          |Note: This bit is cleared by writing 1 to it.
-     * |[3]     |IF        |WDT Time-out Interrupt Flag
-     * |        |          |This bit will set to 1 while WDT up counter value reaches the selected WDT time-out interval
-     * |        |          |0 = WDT time-out interrupt did not occur.
-     * |        |          |1 = WDT time-out interrupt occurred.
-     * |        |          |Note: This bit is cleared by writing 1 to it.
-     * |[4]     |WKEN      |WDT Time-out Wake-up Function Control (Write Protect)
-     * |        |          |If this bit is set to 1, while WDT time-out interrupt flag IF (WDT_CTL[3]) is generated to 1 and interrupt enable bit INTEN (WDT_CTL[6]) is enabled, the WDT time-out interrupt signal will generate a wake-up trigger event to chip.
-     * |        |          |0 = Wake-up trigger event Disabled if WDT time-out interrupt signal generated.
-     * |        |          |1 = Wake-up trigger event Enabled if WDT time-out interrupt signal generated.
-     * |        |          |Note1: This bit is write protected. Refer to the SYS_REGLCTL register.
-     * |        |          |Note2: Chip can be woken-up by WDT time-out interrupt signal generated only if WDT clock source is selected to 10 kHz internal low speed RC oscillator (LIRC) or LXT.
-     * |[5]     |WKF       |WDT Time-out Wake-up Flag (Write Protect)
-     * |        |          |This bit indicates the interrupt wake-up flag status of WDT
-     * |        |          |0 = WDT does not cause chip wake-up.
-     * |        |          |1 = Chip wake-up from Idle or Power-down mode if WDT time-out interrupt signal generated.
-     * |        |          |Note1: This bit is write protected. Refer to the SYS_REGLCTL register.
-     * |        |          |Note2: This bit is cleared by writing 1 to it.
-     * |[6]     |INTEN     |WDT Time-out Interrupt Enable Control (Write Protect)
-     * |        |          |If this bit is enabled, the WDT time-out interrupt signal is generated and inform to CPU.
-     * |        |          |0 = WDT time-out interrupt Disabled.
-     * |        |          |1 = WDT time-out interrupt Enabled.
-     * |        |          |Note: This bit is write protected. Refer to the SYS_REGLCTL register.
-     * |[7]     |WDTEN     |WDT Enable Control (Write Protect)
-     * |        |          |0 = WDT Disabled (This action will reset the internal up counter value).
-     * |        |          |1 = WDT Enabled.
-     * |        |          |Note1: This bit is write protected. Refer to the SYS_REGLCTL register.
-     * |        |          |Note2: If CWDTEN[2:0] (combined by Config0[31] and Config0[4:3]) bits is not configure to 111, this bit is forced as 1 and user cannot change this bit to 0.
-     * |[10:8]  |TOUTSEL   |WDT Time-out Interval Selection (Write Protect)
-     * |        |          |These three bits select the time-out interval period for the WDT.
-     * |        |          |000 = 24 * WDT_CLK.
-     * |        |          |001 = 26 * WDT_CLK.
-     * |        |          |010 = 28 * WDT_CLK.
-     * |        |          |011 = 210 * WDT_CLK.
-     * |        |          |100 = 212 * WDT_CLK.
-     * |        |          |101 = 214 * WDT_CLK.
-     * |        |          |110 = 216 * WDT_CLK.
-     * |        |          |111 = 218 * WDT_CLK.
-     * |        |          |Note: This bit is write protected. Refer to the SYS_REGLCTL register.
-     * |[30]    |SYNC      |WDT Enable Control SYNC Flag Indicator (Read Only)
-     * |        |          |If user execute enable/disable WDTEN (WDT_CTL[7]), this flag can be indicated enable/disable WDTEN function is completed or not.
-     * |        |          |0 = Set WDTEN bit is completed.
-     * |        |          |1 = Set WDTEN bit is synchronizing and not become active yet..
-     * |        |          |Note: Perform enable or disable WDTEN bit needs 2 * WDT_CLK period to become active.
-     * |[31]    |ICEDEBUG  |ICE Debug Mode Acknowledge Disable Control (Write Protect)
-     * |        |          |0 = ICE debug mode acknowledgement affects WDT counting.
-     * |        |          |WDT up counter will be held while CPU is held by ICE.
-     * |        |          |1 = ICE debug mode acknowledgement Disabled.
-     * |        |          |WDT up counter will keep going no matter CPU is held by ICE or not.
-     * |        |          |Note: This bit is write protected. Refer to the SYS_REGLCTL register.
-     * @var WDT_T::ALTCTL
-     * Offset: 0x04  WDT Alternative Control Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[1:0]   |RSTDSEL   |WDT Reset Delay Selection (Write Protect)
-     * |        |          |When WDT time-out happened, user has a time named WDT Reset Delay Period to clear WDT counter by setting RSTCNT (WDT_CTL[0]) to prevent WDT time-out reset happened
-     * |        |          |User can select a suitable setting of RSTDSEL for different WDT Reset Delay Period.
-     * |        |          |00 = WDT Reset Delay Period is 1026 * WDT_CLK.
-     * |        |          |01 = WDT Reset Delay Period is 130 * WDT_CLK.
-     * |        |          |10 = WDT Reset Delay Period is 18 * WDT_CLK.
-     * |        |          |11 = WDT Reset Delay Period is 3 * WDT_CLK.
-     * |        |          |Note1: This bit is write protected. Refer to the SYS_REGLCTL register.
-     * |        |          |Note2: This register will be reset to 0 if WDT time-out reset happened.
-     * @var WDT_T::RSTCNT
-     * Offset: 0x08  WDT Reset Counter Register
-     * ---------------------------------------------------------------------------------------------------
-     * |Bits    |Field     |Descriptions
-     * | :----: | :----:   | :---- |
-     * |[31:0]  |RSTCNT    |WDT Reset Counter Register
-     * |        |          |Writing 0x00005AA5 to this field will reset the internal 18-bit WDT up counter value to 0.
-     * |        |          |Note: Perform RSTCNT to reset counter needs 2 * WDT_CLK period to become active.
-     * |        |          |Note: RSTCNT (WDT_CTL[0]) bit is a write protected bit
-     * |        |          |RSTCNT (WDT_RSTCNT[31:0]) bits are not write protected.
-     */
+/**
+ * @var WDT_T::CTL
+ * Offset: 0x00  WDT Control Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[1]     |RSTEN     |WDT Time-out Reset Enable Bit (Write Protect)
+ * |        |          |Setting this bit will enable the WDT time-out reset function if the WDT up counter value has not been cleared after the specific WDT reset delay period expires.
+ * |        |          |0 = WDT time-out reset function Disabled.
+ * |        |          |1 = WDT time-out reset function Enabled.
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register or SYS_RLKTZNS register or SYS_RLKSUBM register.
+ * |[2]     |RSTF      |WDT Time-out Reset Flag
+ * |        |          |This bit indicates the system has been reset by WDT time-out reset or not.
+ * |        |          |0 = WDT time-out reset did not occur.
+ * |        |          |1 = WDT time-out reset occurred.
+ * |        |          |Note: This bit is cleared by writing 1 to it.
+ * |[3]     |IF        |WDT Time-out Interrupt Flag
+ * |        |          |This bit will be set to 1 while WDT up counter value reaches the selected WDT time-out interval.
+ * |        |          |0 = WDT time-out interrupt did not occur.
+ * |        |          |1 = WDT time-out interrupt occurred.
+ * |        |          |Note: This bit is cleared by writing 1 to it.
+ * |[4]     |WKEN      |WDT Time-out Wake-up Function Control (Write Protect)
+ * |        |          |If this bit is set to 1, while WDT time-out interrupt flag IF (WDT_CTL[3]) is generated to 1 and interrupt enable bit INTEN (WDT_CTL[6]) is enabled, the WDT time-out interrupt signal will generate a wake-up trigger event to chip.
+ * |        |          |0 = Wake-up trigger event Disabled if WDT time-out interrupt signal generated.
+ * |        |          |1 = Wake-up trigger event Enabled if WDT time-out interrupt signal generated.
+ * |        |          |Note 1: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register or SYS_RLKTZNS register or SYS_RLKSUBM register.
+ * |        |          |Note 2: Chip can be woken up by WDT time-out interrupt signal generated only if WDT clock source is selected to 32 kHz internal low speed RC oscillator (LIRC) or LXT.
+ * |[5]     |WKF       |WDT Time-out Wake-up Flag
+ * |        |          |This bit indicates the interrupt wake-up flag status of WDT
+ * |        |          |0 = WDT does not cause chip wake-up.
+ * |        |          |1 = Chip wake-up from Idle or Power-down mode if WDT time-out interrupt signal generated.
+ * |        |          |Note: This bit is cleared by writing 1 to it.
+ * |[6]     |INTEN     |WDT Time-out Interrupt Enable Bit (Write Protect)
+ * |        |          |If this bit is enabled, the WDT time-out interrupt signal is generated and inform to CPU.
+ * |        |          |0 = WDT time-out interrupt Disabled.
+ * |        |          |1 = WDT time-out interrupt Enabled.
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register or SYS_RLKTZNS register or SYS_RLKSUBM register.
+ * |[7]     |WDTEN     |WDT Enable Bit (Write Protect)
+ * |        |          |0 = WDT Disabled (This action will reset the internal up counter value).
+ * |        |          |1 = WDT Enabled.
+ * |        |          |Note 1: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register or SYS_RLKTZNS register or SYS_RLKSUBM register.
+ * |        |          |Note 2: If CWDTEN[2:0] (combined by Config0[31] and Config0[4:3]) bits is not configured to 111, this bit is forced as 1 and user cannot change this bit to 0.
+ * |[11:8]  |TOUTSEL   |WDT Time-out Interval Selection (Write Protect)
+ * |        |          |These three bits select the time-out interval period for the WDT.
+ * |        |          |0000 = 24 * WDT_CLK.
+ * |        |          |0001 = 26 * WDT_CLK.
+ * |        |          |0010 = 28 * WDT_CLK.
+ * |        |          |0011 = 210 * WDT_CLK.
+ * |        |          |0100= 212 * WDT_CLK.
+ * |        |          |0101 = 214 * WDT_CLK.
+ * |        |          |0110 = 216 * WDT_CLK.
+ * |        |          |0111 = 218 * WDT_CLK.
+ * |        |          |1000 = 220 * WDT_CLK.
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register or SYS_RLKTZNS register or SYS_RLKSUBM register.
+ * |[30]    |SYNC      |WDT Enable Control SYNC Flag Indicator (Read Only)
+ * |        |          |If user executes enable/disable WDTEN (WDT_CTL[7]), this flag can be indicated enable/disable WDTEN function is completed or not.
+ * |        |          |0 = Set WDTEN bit is completed.
+ * |        |          |1 = Set WDTEN bit is synchronizing and not become active yet.
+ * |        |          |Note: Performing enable or disable WDTEN bit needs 2 * WDT_CLK period to become active.
+ * |[31]    |ICEDEBUG  |ICE Debug Mode Acknowledge Disable Bit (Write Protect)
+ * |        |          |0 = ICE debug mode acknowledgement affects WDT counting.
+ * |        |          |WDT up counter will be held while CPU is held by ICE.
+ * |        |          |1 = ICE debug mode acknowledgement Disabled.
+ * |        |          |WDT up counter will keep going no matter CPU is held by ICE or not.
+ * |        |          |Note: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register or SYS_RLKTZNS register or SYS_RLKSUBM register
+ * @var WDT_T::ALTCTL
+ * Offset: 0x04  WDT Alternative Control Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[1:0]   |RSTDSEL   |WDT Reset Delay Selection (Write Protect)
+ * |        |          |When WDT time-out happened, user has a time named WDT Reset Delay Period to clear WDT counter by programming 0x5AA5 to RSTCNT to prevent WDT time-out reset happened.
+ * |        |          |User can select a suitable setting of RSTDSEL for different WDT Reset Delay Period.
+ * |        |          |00 = WDT Reset Delay Period is 1026 * WDT_CLK.
+ * |        |          |01 = WDT Reset Delay Period is 130 * WDT_CLK.
+ * |        |          |10 = WDT Reset Delay Period is 18 * WDT_CLK.
+ * |        |          |11 = WDT Reset Delay Period is 3 * WDT_CLK.
+ * |        |          |Note 1: This bit is write protected
+ * |        |          |Refer to the SYS_RLKTZS register or SYS_RLKTZNS register or SYS_RLKSUBM register.
+ * |        |          |Note 2: This register will be reset to 0 if WDT time-out reset happened.
+ * @var WDT_T::RSTCNT
+ * Offset: 0x08  WDT Reset Counter Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[31:0]  |RSTCNT    |WDT Reset Counter Register
+ * |        |          |Writing 0x00005AA5 to this field will reset the internal 20-bit WDT up counter value to 0.
+ * |        |          |Note: Performing RSTCNT to reset counter needs 2 * WDT_CLK period to become active.
+ */
     __IO uint32_t CTL;                   /*!< [0x0000] WDT Control Register                                             */
     __IO uint32_t ALTCTL;                /*!< [0x0004] WDT Alternative Control Register                                 */
     __O  uint32_t RSTCNT;                /*!< [0x0008] WDT Reset Counter Register                                       */
@@ -131,9 +131,6 @@ typedef struct
     @addtogroup WDT_CONST WDT Bit Field Definition
     Constant Definitions for WDT Controller
 @{ */
-
-#define WDT_CTL_RSTCNT_Pos               (0)                                               /*!< WDT_T::CTL: RSTCNT Position            */
-#define WDT_CTL_RSTCNT_Msk               (0x1ul << WDT_CTL_RSTCNT_Pos)                     /*!< WDT_T::CTL: RSTCNT Mask                */
 
 #define WDT_CTL_RSTEN_Pos                (1)                                               /*!< WDT_T::CTL: RSTEN Position             */
 #define WDT_CTL_RSTEN_Msk                (0x1ul << WDT_CTL_RSTEN_Pos)                      /*!< WDT_T::CTL: RSTEN Mask                 */
@@ -157,7 +154,7 @@ typedef struct
 #define WDT_CTL_WDTEN_Msk                (0x1ul << WDT_CTL_WDTEN_Pos)                      /*!< WDT_T::CTL: WDTEN Mask                 */
 
 #define WDT_CTL_TOUTSEL_Pos              (8)                                               /*!< WDT_T::CTL: TOUTSEL Position           */
-#define WDT_CTL_TOUTSEL_Msk              (0x7ul << WDT_CTL_TOUTSEL_Pos)                    /*!< WDT_T::CTL: TOUTSEL Mask               */
+#define WDT_CTL_TOUTSEL_Msk              (0xful << WDT_CTL_TOUTSEL_Pos)                    /*!< WDT_T::CTL: TOUTSEL Mask               */
 
 #define WDT_CTL_SYNC_Pos                 (30)                                              /*!< WDT_T::CTL: SYNC Position              */
 #define WDT_CTL_SYNC_Msk                 (0x1ul << WDT_CTL_SYNC_Pos)                       /*!< WDT_T::CTL: SYNC Mask                  */
