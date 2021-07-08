@@ -26,9 +26,8 @@
  *
  *    @param[in]    uart                The pointer of the specified UART module.
  *    @param[in]    u32InterruptFlag    The specified interrupt of UART module.
- *                                      - \ref UART_INTSTS_LININT_Msk    : LIN bus interrupt
  *                                      - \ref UART_INTSTS_WKIF_Msk      : Wake-up interrupt
- *                                      - \ref UART_INTSTS_BUFERRINT_Msk : Buffer Error interrupt
+ *                                      - \ref UART_INTSTS_BUFEINT_Msk : Buffer Error interrupt
  *                                      - \ref UART_INTSTS_MODEMINT_Msk  : Modem Status interrupt
  *                                      - \ref UART_INTSTS_RLSINT_Msk    : Receive Line Status interrupt
  *
@@ -54,7 +53,7 @@ void UART_ClearIntFlag(UART_T* uart, uint32_t u32InterruptFlag)
     {
     }
 
-    if(u32InterruptFlag & UART_INTSTS_BUFERRINT_Msk)   /* Clear Buffer Error Interrupt */
+    if(u32InterruptFlag & UART_INTSTS_BUFEINT_Msk)   /* Clear Buffer Error Interrupt */
     {
         uart->FIFOSTS = UART_FIFOSTS_RXOVIF_Msk | UART_FIFOSTS_TXOVIF_Msk;
     }
@@ -66,13 +65,6 @@ void UART_ClearIntFlag(UART_T* uart, uint32_t u32InterruptFlag)
                       UART_WKSTS_TOUTWKF_Msk;
     }
 
-    if(u32InterruptFlag & UART_INTSTS_LININT_Msk)   /* Clear LIN Bus Interrupt */
-    {
-        uart->INTSTS = UART_INTSTS_LINIF_Msk;
-        uart->LINSTS = UART_LINSTS_BITEF_Msk    | UART_LINSTS_BRKDETF_Msk  |
-                       UART_LINSTS_SLVSYNCF_Msk | UART_LINSTS_SLVIDPEF_Msk |
-                       UART_LINSTS_SLVHEF_Msk   | UART_LINSTS_SLVHDETF_Msk ;
-    }
 }
 
 
@@ -112,8 +104,7 @@ void UART_DisableFlowCtrl(UART_T* uart)
  *    @param[in]    uart                The pointer of the specified UART module.
  *    @param[in]    u32InterruptFlag    The specified interrupt of UART module.
  *                                      - \ref UART_INTEN_WKIEN_Msk      : Wake-up interrupt
- *                                      - \ref UART_INTEN_LINIEN_Msk     : Lin bus interrupt
- *                                      - \ref UART_INTEN_BUFERRIEN_Msk  : Buffer Error interrupt
+ *                                      - \ref UART_INTEN_BUFEIEN_Msk  : Buffer Error interrupt
  *                                      - \ref UART_INTEN_RXTOIEN_Msk    : Rx time-out interrupt
  *                                      - \ref UART_INTEN_MODEMIEN_Msk   : Modem status interrupt
  *                                      - \ref UART_INTEN_RLSIEN_Msk     : Receive Line status interrupt
@@ -159,8 +150,7 @@ void UART_EnableFlowCtrl(UART_T* uart)
  *    @param[in]    uart                The pointer of the specified UART module.
  *    @param[in]    u32InterruptFlag    The specified interrupt of UART module:
  *                                      - \ref UART_INTEN_WKIEN_Msk      : Wake-up interrupt
- *                                      - \ref UART_INTEN_LINIEN_Msk     : Lin bus interrupt
- *                                      - \ref UART_INTEN_BUFERRIEN_Msk  : Buffer Error interrupt
+ *                                      - \ref UART_INTEN_BUFEIEN_Msk  : Buffer Error interrupt
  *                                      - \ref UART_INTEN_RXTOIEN_Msk    : Rx time-out interrupt
  *                                      - \ref UART_INTEN_MODEMIEN_Msk   : Modem status interrupt
  *                                      - \ref UART_INTEN_RLSIEN_Msk     : Receive Line status interrupt
@@ -548,30 +538,6 @@ void UART_SelectRS485Mode(UART_T* uart, uint32_t u32Mode, uint32_t u32Addr)
     /* Set RS585 configuration */
     uart->ALTCTL &= ~(UART_ALTCTL_RS485NMM_Msk | UART_ALTCTL_RS485AUD_Msk | UART_ALTCTL_RS485AAD_Msk | UART_ALTCTL_ADDRMV_Msk);
     uart->ALTCTL |= (u32Mode | (u32Addr << UART_ALTCTL_ADDRMV_Pos));
-}
-
-
-/**
- *    @brief        Select and configure LIN function
- *
- *    @param[in]    uart            The pointer of the specified UART module.
- *    @param[in]    u32Mode         The LIN direction :
- *                                  - \ref UART_ALTCTL_LINTXEN_Msk
- *                                  - \ref UART_ALTCTL_LINRXEN_Msk
- *    @param[in]    u32BreakLength  The break field length.
- *
- *    @return       None
- *
- *    @details      The function is used to set LIN relative setting.
- */
-void UART_SelectLINMode(UART_T* uart, uint32_t u32Mode, uint32_t u32BreakLength)
-{
-    /* Select LIN function mode */
-    uart->FUNCSEL = UART_FUNCSEL_LIN;
-
-    /* Select LIN function setting : Tx enable, Rx enable and break field length */
-    uart->ALTCTL &= ~(UART_ALTCTL_LINTXEN_Msk | UART_ALTCTL_LINRXEN_Msk | UART_ALTCTL_BRKFL_Msk);
-    uart->ALTCTL |= (u32Mode | (u32BreakLength << UART_ALTCTL_BRKFL_Pos));
 }
 
 

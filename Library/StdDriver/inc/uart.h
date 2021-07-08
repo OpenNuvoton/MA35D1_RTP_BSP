@@ -88,21 +88,10 @@ extern "C"
 /*---------------------------------------------------------------------------------------------------------*/
 /* UART_FUNCSEL constants definitions                                                                      */
 /*---------------------------------------------------------------------------------------------------------*/
-#define UART_FUNCSEL_UART  (0x0ul << UART_FUNCSEL_FUNCSEL_Pos) /*!< UART_FUNCSEL setting to set UART Function  (Default) \hideinitializer */
-#define UART_FUNCSEL_LIN   (0x1ul << UART_FUNCSEL_FUNCSEL_Pos) /*!< UART_FUNCSEL setting to set LIN Function             \hideinitializer */
-#define UART_FUNCSEL_IrDA  (0x2ul << UART_FUNCSEL_FUNCSEL_Pos) /*!< UART_FUNCSEL setting to set IrDA Function            \hideinitializer */
-#define UART_FUNCSEL_RS485 (0x3ul << UART_FUNCSEL_FUNCSEL_Pos) /*!< UART_FUNCSEL setting to set RS485 Function           \hideinitializer */
-
-
-/*---------------------------------------------------------------------------------------------------------*/
-/* UART_LINCTL constants definitions                                                                       */
-/*---------------------------------------------------------------------------------------------------------*/
-#define UART_LINCTL_BRKFL(x)    (((x)-1) << UART_LINCTL_BRKFL_Pos)  /*!< UART_LINCTL setting to set LIN Break Field Length, x = 10 ~ 15, default value is 12 \hideinitializer */
-#define UART_LINCTL_BSL(x)      (((x)-1) << UART_LINCTL_BSL_Pos)    /*!< UART_LINCTL setting to set LIN Break/Sync Delimiter Length, x = 1 ~ 4 \hideinitializer */
-#define UART_LINCTL_HSEL_BREAK             (0x0UL << UART_LINCTL_HSEL_Pos)    /*!< UART_LINCTL setting to set LIN Header Select to break field \hideinitializer */
-#define UART_LINCTL_HSEL_BREAK_SYNC        (0x1UL << UART_LINCTL_HSEL_Pos)    /*!< UART_LINCTL setting to set LIN Header Select to break field and sync field \hideinitializer */
-#define UART_LINCTL_HSEL_BREAK_SYNC_ID     (0x2UL << UART_LINCTL_HSEL_Pos)    /*!< UART_LINCTL setting to set LIN Header Select to break field, sync field and ID field \hideinitializer */
-#define UART_LINCTL_PID(x)      ((x) << UART_LINCTL_PID_Pos)       /*!< UART_LINCTL setting to set LIN PID value \hideinitializer */
+#define UART_FUNCSEL_UART  (0x0ul << UART_FUNCSEL_FUNCSEL_Pos)       /*!< UART_FUNCSEL setting to set UART Function  (Default) \hideinitializer */
+#define UART_FUNCSEL_IrDA  (0x2ul << UART_FUNCSEL_FUNCSEL_Pos)       /*!< UART_FUNCSEL setting to set IrDA Function            \hideinitializer */
+#define UART_FUNCSEL_RS485 (0x3ul << UART_FUNCSEL_FUNCSEL_Pos)       /*!< UART_FUNCSEL setting to set RS485 Function           \hideinitializer */
+#define UART_FUNCSEL_SINGLE_WIRE (0x4ul << UART_FUNCSEL_FUNCSEL_Pos) /*!< UART_FUNCSEL setting to set Single-wire Function     \hideinitializer */
 
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -308,8 +297,7 @@ extern "C"
  *    @param[in]    u32eIntSel  Interrupt type select
  *                              - \ref UART_INTEN_ABRIEN_Msk     : Auto baud rate interrupt
  *                              - \ref UART_INTEN_WKIEN_Msk      : Wakeup interrupt
- *                              - \ref UART_INTEN_LINIEN_Msk     : Lin bus interrupt
- *                              - \ref UART_INTEN_BUFERRIEN_Msk  : Buffer Error interrupt
+ *                              - \ref UART_INTEN_BUFEIEN_Msk  : Buffer Error interrupt
  *                              - \ref UART_INTEN_RXTOIEN_Msk    : Rx time-out interrupt
  *                              - \ref UART_INTEN_MODEMIEN_Msk   : Modem interrupt
  *                              - \ref UART_INTEN_RLSIEN_Msk     : Rx Line status interrupt
@@ -331,8 +319,7 @@ extern "C"
  *    @param[in]    u32eIntSel  Interrupt type select
  *                              - \ref UART_INTEN_ABRIEN_Msk     : Auto baud rate interrupt
  *                              - \ref UART_INTEN_WKIEN_Msk      : Wakeup interrupt
- *                              - \ref UART_INTEN_LINIEN_Msk     : Lin bus interrupt
- *                              - \ref UART_INTEN_BUFERRIEN_Msk  : Buffer Error interrupt
+ *                              - \ref UART_INTEN_BUFEIEN_Msk  : Buffer Error interrupt
  *                              - \ref UART_INTEN_RXTOIEN_Msk    : Rx time-out interrupt
  *                              - \ref UART_INTEN_MODEMIEN_Msk   : Modem status interrupt
  *                              - \ref UART_INTEN_RLSIEN_Msk     : Receive Line status interrupt
@@ -352,23 +339,21 @@ extern "C"
  *
  *    @param[in]    uart            The pointer of the specified UART module
  *    @param[in]    u32eIntTypeFlag Interrupt Type Flag, should be
- *                                  - \ref UART_INTSTS_HWBUFEINT_Msk : In DMA Mode, Buffer Error Interrupt Indicator
- *                                  - \ref UART_INTSTS_HWTOINT_Msk   : In DMA Mode, Time-out Interrupt Indicator
- *                                  - \ref UART_INTSTS_HWMODINT_Msk  : In DMA Mode, MODEM Status Interrupt Indicator
- *                                  - \ref UART_INTSTS_HWRLSINT_Msk  : In DMA Mode, Receive Line Status Interrupt Indicator
- *                                  - \ref UART_INTSTS_HWBUFEIF_Msk  : In DMA Mode, Buffer Error Interrupt Flag
- *                                  - \ref UART_INTSTS_HWTOIF_Msk    : In DMA Mode, Time-out Interrupt Flag
- *                                  - \ref UART_INTSTS_HWMODIF_Msk   : In DMA Mode, MODEM Interrupt Flag
- *                                  - \ref UART_INTSTS_HWRLSIF_Msk   : In DMA Mode, Receive Line Status Flag
- *                                  - \ref UART_INTSTS_LININT_Msk    : LIN Bus Interrupt Indicator
- *                                  - \ref UART_INTSTS_BUFERRINT_Msk : Buffer Error Interrupt Indicator
+ *                                  - \ref UART_INTSTS_PBUFEINT_Msk  : PDMA Mode Buffer Error Interrupt Indicator
+ *                                  - \ref UART_INTSTS_PTOINT_Msk    : PDMA Mode Time-out Interrupt Indicator
+ *                                  - \ref UART_INTSTS_PMODINT_Msk   : PDMA Mode MODEM Status Interrupt Indicator
+ *                                  - \ref UART_INTSTS_PRLSINT_Msk   : PDMA Mode Receive Line Status Interrupt Indicator
+ *                                  - \ref UART_INTSTS_PBUFEIF_Msk   : PDMA Mode Buffer Error Interrupt Flag
+ *                                  - \ref UART_INTSTS_PTOIF_Msk     : PDMA Mode Time-out Interrupt Flag
+ *                                  - \ref UART_INTSTS_PMODIF_Msk    : PDMA Mode MODEM Interrupt Flag
+ *                                  - \ref UART_INTSTS_PRLSIF_Msk    : PDMA Mode Receive Line Status Flag
+ *                                  - \ref UART_INTSTS_BUFEINT_Msk   : Buffer Error Interrupt Indicator
  *                                  - \ref UART_INTSTS_RXTOINT_Msk   : Time-out Interrupt Indicator
  *                                  - \ref UART_INTSTS_MODEMINT_Msk  : Modem Status Interrupt Indicator
  *                                  - \ref UART_INTSTS_RLSINT_Msk    : Receive Line Status Interrupt Indicator
  *                                  - \ref UART_INTSTS_THREINT_Msk   : Transmit Holding Register Empty Interrupt Indicator
  *                                  - \ref UART_INTSTS_RDAINT_Msk    : Receive Data Available Interrupt Indicator
- *                                  - \ref UART_INTSTS_LINIF_Msk     : LIN Bus Flag
- *                                  - \ref UART_INTSTS_BUFERRIF_Msk  : Buffer Error Interrupt Flag
+ *                                  - \ref UART_INTSTS_BUFEIF_Msk    : Buffer Error Interrupt Flag
  *                                  - \ref UART_INTSTS_RXTOIF_Msk    : Rx Time-out Interrupt Flag
  *                                  - \ref UART_INTSTS_MODEMIF_Msk   : Modem Interrupt Flag
  *                                  - \ref UART_INTSTS_RLSIF_Msk     : Receive Line Status Interrupt Flag
@@ -485,7 +470,6 @@ void UART_SetLineConfig(UART_T* uart, uint32_t u32baudrate, uint32_t u32data_wid
 void UART_SetTimeoutCnt(UART_T* uart, uint32_t u32TOC);
 void UART_SelectIrDAMode(UART_T* uart, uint32_t u32Buadrate, uint32_t u32Direction);
 void UART_SelectRS485Mode(UART_T* uart, uint32_t u32Mode, uint32_t u32Addr);
-void UART_SelectLINMode(UART_T* uart, uint32_t u32Mode, uint32_t u32BreakLength);
 uint32_t UART_Write(UART_T* uart, uint8_t pu8TxBuf[], uint32_t u32WriteBytes);
 
 
