@@ -143,10 +143,10 @@ void RS485_HANDLE()
         /* Handle received data */
         printf("%2d,",UART1->DAT);
     }
-    else if(u32IntSts & UART_INTSTS_BUFERRINT_Msk)     /* Buffer Error INT */
+    else if(u32IntSts & UART_INTSTS_BUFEINT_Msk)     /* Buffer Error INT */
     {
         printf("\nBuffer Error...\n");
-        UART_ClearIntFlag(UART1, UART_INTSTS_BUFERRINT_Msk);
+        UART_ClearIntFlag(UART1, UART_INTSTS_BUFEINT_Msk);
     }
 }
 

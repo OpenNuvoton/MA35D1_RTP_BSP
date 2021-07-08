@@ -243,7 +243,7 @@ void UART1_IRQHandler(void)
     uint32_t u32DAT;
     uint32_t u32IntSts = UART1->INTSTS;
 
-    if(u32IntSts & UART_INTSTS_HWRLSIF_Msk)
+    if(u32IntSts & UART_INTSTS_PRLSIF_Msk)
     {
         if(UART1->FIFOSTS & UART_FIFOSTS_BIF_Msk)
             printf("\n BIF \n");
