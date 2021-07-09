@@ -28,84 +28,63 @@ typedef struct
 
     /**
      * @var GPIO_T::MODE
-     * Offset: 0x00/0x40/0x80/0xC0/0x100/0x140/0x180/0x1C0  Port A-H I/O Mode Control
+     * Offset: 0x00/0x40/0x80/0xC0/0x100/0x140/0x180/0x1C0/0x200/0x240/0x280/0x2C0/0x300/0x340 Port A-N I/O Mode Control
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[2n+1:2n]|MODEn    |Port A-H I/O Pin[n] Mode Control
+     * |[2n+1:2n]|MODEn    |Port A-N I/O Pin[n] Mode Control
      * |        |          |Determine each I/O mode of Px.n pins.
      * |        |          |00 = Px.n is in Input mode.
      * |        |          |01 = Px.n is in Push-pull Output mode.
      * |        |          |10 = Px.n is in Open-drain Output mode.
-     * |        |          |11 = Px.n is in Quasi-bidirectional mode.
-     * |        |          |Note1: The initial value of this field is defined by CIOINI (CONFIG0 [10]).
-     * |        |          |If CIOINI is set to 0, the default value is 0xFFFF_FFFF and all pins will be quasi-bidirectional mode after chip powered on.
-     * |        |          |If CIOINI is set to 1, the default value is 0x0000_0000 and all pins will be input mode after chip powered on.
-     * |        |          |Note2:
-     * |        |          |Max. n=15 for port A/B/E/G.
-     * |        |          |Max. n=14 for port C/D.
-     * |        |          |Max. n=11 for port F/H.
+     * |        |          |11 = Reserved.
+     * |        |          |Note 1: The default value is 0x0000_0000 and all pins will be input mode after chip powered on.
+     * |        |          |Note 2: If MFOS is enabled then GPIO mode setting is ignored.
      * @var GPIO_T::DINOFF
-     * Offset: 0x04/0x44/0x84/0xC4/0x104/0x144/0x184/0x1C4  Port A-H Digital Input Path Disable Control
+     * Offset: 0x04/0x44/0x84/0xC4/0x104/0x144/0x184/0x1C4/0x204/0x244/0x284/0x2C4/0x304/0x344  Port A-N Digital Input Path Disable Control
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[n+16]  |DINOFFn   |Port A-H Pin[n] Digital Input Path Disable Control
+     * |[n+16]  |DINOFFn   |Port A-N Pin[n] Digital Input Path Disable Bit
      * |        |          |Each of these bits is used to control if the digital input path of corresponding Px.n pin is disabled.
      * |        |          |If input is analog signal, users can disable Px.n digital input path to avoid input current leakage.
      * |        |          |0 = Px.n digital input path Enabled.
      * |        |          |1 = Px.n digital input path Disabled (digital input tied to low).
-     * |        |          |Note:
-     * |        |          |Max. n=15 for port A/B/E/G.
-     * |        |          |Max. n=14 for port C/D.
-     * |        |          |Max. n=11 for port F/H.
      * @var GPIO_T::DOUT
-     * Offset: 0x08/0x48/0x88/0xC8/0x108/0x148/0x188/0x1C8  Port A-H Data Output Value
+     * Offset: 0x08/0x48/0x88/0xC8/0x108/0x148/0x188/0x1C8/0x208/0x248/0x288/0x2C8/0x308/0x348  Port A-N Data Output Value
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[n]     |DOUTn     |Port A-H Pin[n] Output Value
+     * |[n]     |DOUTn     |Port A-N Pin[n] Output Value
      * |        |          |Each of these bits controls the status of a Px.n pin when the Px.n is configured as Push-pull output, Open-drain output or Quasi-bidirectional mode.
      * |        |          |0 = Px.n will drive Low if the Px.n pin is configured as Push-pull output, Open-drain output or Quasi-bidirectional mode.
      * |        |          |1 = Px.n will drive High if the Px.n pin is configured as Push-pull output or Quasi-bidirectional mode.
-     * |        |          |Note:
-     * |        |          |Max. n=15 for port A/B/E/G.
-     * |        |          |Max. n=14 for port C/D.
-     * |        |          |Max. n=11 for port F/H.
      * @var GPIO_T::DATMSK
-     * Offset: 0x0C/0x4C/0x8C/0xCC/0x10C/0x14C/0x18C/0x1CC  Port A-H Data Output Write Mask
+     * Offset: 0x0C/0x4C/0x8C/0xCC/0x10C/0x14C/0x18C/0x1CC/0x20C/0x24C/0x28C/0x2CC/0x30C/0x34C  Port A-N Data Output Write Mask
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[n]     |DATMSKn    |Port A-H Pin[n] Data Output Write Mask
-     * |        |          |These bits are used to protect the corresponding DOUT (Px_DOUT[n]) bit.
+     * |[n]     |DATMSKn    |Port A-N Pin[n] Data Output Write Mask
+     * |        |          |These bits are used to protect the corresponding DOUT (Px_DOUT[n]) bit
      * |        |          |When the DATMSK (Px_DATMSK[n]) bit is set to 1, the corresponding DOUT (Px_DOUT[n]) bit is protected.
      * |        |          |If the write signal is masked, writing data to the protect bit is ignored.
      * |        |          |0 = Corresponding DOUT (Px_DOUT[n]) bit can be updated.
      * |        |          |1 = Corresponding DOUT (Px_DOUT[n]) bit protected.
-     * |        |          |Note1: This function only protects the corresponding DOUT (Px_DOUT[n]) bit, and will not protect the corresponding PDIO (Pxn_PDIO[n]) bit.
-     * |        |          |Note2:
-     * |        |          |Max. n=15 for port A/B/E/G.
-     * |        |          |Max. n=14 for port C/D.
-     * |        |          |Max. n=11 for port F/H.
+     * |        |          |Note: This function only protects the corresponding DOUT (Px_DOUT[n]) bit, and will not protect the corresponding PDIO (Pxn_PDIO[0]) bit.
      * @var GPIO_T::PIN
-     * Offset: 0x10/0x50/0x90/0xD0/0x110/0x150/0x190/0x1D0  Port A-H Pin Value
+     * Offset: 0x10/0x50/0x90/0xD0/0x110/0x150/0x190/0x1D0/0x210/0x250/0x290/0x2D0/0x310/0x350  Port A-N Pin Value
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[n]     |PINn      |Port A-H Pin[n] Pin Value
+     * |[n]     |PINn      |Port A-N Pin[n] Pin Value
      * |        |          |Each bit of the register reflects the actual status of the respective Px.n pin.
      * |        |          |If the bit is 1, it indicates the corresponding pin status is high; else the pin status is low.
-     * |        |          |Note:
-     * |        |          |Max. n=15 for port A/B/E/G.
-     * |        |          |Max. n=14 for port C/D.
-     * |        |          |Max. n=11 for port F/H.
      * @var GPIO_T::DBEN
-     * Offset: 0x14/0x54/0x94/0xD4/0x114/0x154/0x194/0x1D4  Port A-H De-Bounce Enable Control Register
+     * Offset: 0x14/0x54/0x94/0xD4/0x114/0x154/0x194/0x1D4/0x214/0x254/0x294/0x2D4/0x314/0x354  Port A-N De-Bounce Enable Control Register
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[n]     |DBENn     |Port A-H Pin[n] Input Signal De-Bounce Enable Bit
+     * |[n]     |DBENn     |Port A-N Pin[n] Input Signal De-Bounce Enable Bit
      * |        |          |The DBEN[n] bit is used to enable the de-bounce function for each corresponding bit.
      * |        |          |If the input signal pulse width cannot be sampled by continuous two de-bounce sample cycle, the input signal transition is seen as the signal bounce and will not trigger the interrupt.
      * |        |          |The de-bounce clock source is controlled by DBCLKSRC (GPIO_DBCTL [4]), one de-bounce sample cycle period is controlled by DBCLKSEL (GPIO_DBCTL [3:0]).
@@ -113,16 +92,12 @@ typedef struct
      * |        |          |1 = Px.n de-bounce function Enabled.
      * |        |          |The de-bounce function is valid only for edge triggered interrupt.
      * |        |          |If the interrupt mode is level triggered, the de-bounce enable bit is ignored.
-     * |        |          |Note:
-     * |        |          |Max. n=15 for port A/B/E/G.
-     * |        |          |Max. n=14 for port C/D.
-     * |        |          |Max. n=11 for port F/H.
      * @var GPIO_T::INTTYPE
-     * Offset: 0x18/0x58/0x98/0xD8/0x118/0x158/0x198/0x1D8  Port A-H Interrupt Trigger Type Control
+     * Offset: 0x18/0x58/0x98/0xD8/0x118/0x158/0x198/0x1D8/0x218/0x258/0x298/0x2D8/0x318/0x358  Port A-N Interrupt Trigger Type Control
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[n]     |TYPEn     |Port A-H Pin[n] Edge or Level Detection Interrupt Trigger Type Control
+     * |[n]     |TYPEn     |Port A-N Pin[n] Edge or Level Detection Interrupt Trigger Type Control
      * |        |          |TYPE (Px_INTTYPE[n]) bit is used to control the triggered interrupt is by level trigger or by edge trigger.
      * |        |          |If the interrupt is by edge trigger, the trigger source can be controlled by de-bounce.
      * |        |          |If the interrupt is by level trigger, the input source is sampled by one HCLK clock and generates the interrupt.
@@ -132,16 +107,12 @@ typedef struct
      * |        |          |If both levels to trigger interrupt are set, the setting is ignored and no interrupt will occur.
      * |        |          |The de-bounce function is valid only for edge triggered interrupt.
      * |        |          |If the interrupt mode is level triggered, the de-bounce enable bit is ignored.
-     * |        |          |Note:
-     * |        |          |Max. n=15 for port A/B/E/G.
-     * |        |          |Max. n=14 for port C/D.
-     * |        |          |Max. n=11 for port F/H.
      * @var GPIO_T::INTEN
-     * Offset: 0x1C/0x5C/0x9C/0xDC/0x11C/0x15C/0x19C/0x1DC  Port A-H Interrupt Enable Control Register
+     * Offset: 0x1C/0x5C/0x9C/0xDC/0x11C/0x15C/0x19C/0x1DC/0x21C/0x25C/0x29C/0x2DC/0x31C/0x35C  Port A-N Interrupt Enable Control Register
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[n]     |FLIENn    |Port A-H Pin[n] Falling Edge or Low Level Interrupt Trigger Type Enable Bit
+     * |[n]     |FLIENn    |Port A-N Pin[n] Falling Edge or Low Level Interrupt Trigger Type Enable Bit
      * |        |          |The FLIEN (Px_INTEN[n]) bit is used to enable the interrupt for each of the corresponding input Px.n pin.
      * |        |          |Set bit to 1 also enable the pin wake-up function.
      * |        |          |When setting the FLIEN (Px_INTEN[n]) bit to 1 :
@@ -149,11 +120,7 @@ typedef struct
      * |        |          |If the interrupt is edge trigger(TYPE (Px_INTTYPE[n]) bit is set to 0), the input Px.n pin will generate the interrupt while this pin state changed from high to low.
      * |        |          |0 = Px.n level low or high to low interrupt Disabled.
      * |        |          |1 = Px.n level low or high to low interrupt Enabled.
-     * |        |          |Note:
-     * |        |          |Max. n=15 for port A/B/E/G.
-     * |        |          |Max. n=14 for port C/D.
-     * |        |          |Max. n=11 for port F/H.
-     * |[n+16]  |RHIENn    |Port A-H Pin[n] Rising Edge or High Level Interrupt Trigger Type Enable Bit
+     * |[n+16]  |RHIENn    |Port A-N Pin[n] Rising Edge or High Level Interrupt Trigger Type Enable Bit
      * |        |          |The RHIEN (Px_INTEN[n+16]) bit is used to enable the interrupt for each of the corresponding input Px.n pin
      * |        |          |Set bit to 1 also enable the pin wake-up function.
      * |        |          |When setting the RHIEN (Px_INTEN[n+16]) bit to 1 :
@@ -161,104 +128,58 @@ typedef struct
      * |        |          |If the interrupt is edge trigger (TYPE (Px_INTTYPE[n]) bit is set to 0), the input Px.n pin will generate the interrupt while this pin state changed from low to high.
      * |        |          |0 = Px.n level high or low to high interrupt Disabled.
      * |        |          |1 = Px.n level high or low to high interrupt Enabled.
-     * |        |          |Note:
-     * |        |          |Max. n=15 for port A/B/E/G.
-     * |        |          |Max. n=14 for port C/D.
-     * |        |          |Max. n=11 for port F/H.
      * @var GPIO_T::INTSRC
-     * Offset: 0x20/0x60/0xA0/0xE0/0x120/0x160/0x1A0/0x1E0  Port A-H Interrupt Source Flag
+     * Offset: 0x20/0x60/0xA0/0xE0/0x120/0x160/0x1A0/0x1E0/0x220/0x260/0x2A0/0x2E0/0x320/0x360  Port A-N Interrupt Source Flag
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[n]     |INTSRCn   |Port A-H Pin[n] Interrupt Source Flag
+     * |[n]     |INTSRCn   |Port A-N Pin[n] Interrupt Source Flag
      * |        |          |Write Operation :
      * |        |          |0 = No action.
      * |        |          |1 = Clear the corresponding pending interrupt.
      * |        |          |Read Operation :
      * |        |          |0 = No interrupt at Px.n.
      * |        |          |1 = Px.n generates an interrupt.
-     * |        |          |Note:
-     * |        |          |Max. n=15 for port A/B/E/G.
-     * |        |          |Max. n=14 for port C/D.
-     * |        |          |Max. n=11 for port F/H.
      * @var GPIO_T::SMTEN
-     * Offset: 0x24/0x64/0xA4/0xE4/0x124/0x164/0x1A4/0x1E4  Port A-H Input Schmitt Trigger Enable Register
+     * Offset: 0x24/0x64/0xA4/0xE4/0x124/0x164/0x1A4/0x1E4/0x224/0x264/0x2A4/0x2E4/0x324/0x364  Port A-N Input Schmitt Trigger Enable Register
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[n]     |SMTENn    |Port A-H Pin[n] Input Schmitt Trigger Enable Bit
+     * |[n]     |SMTENn    |Port A-N Pin[n] Input Schmitt Trigger Enable Bit
      * |        |          |0 = Px.n input Schmitt trigger function Disabled.
      * |        |          |1 = Px.n input Schmitt trigger function Enabled.
-     * |        |          |Note:
-     * |        |          |Max. n=15 for port A/B/E/G.
-     * |        |          |Max. n=14 for port C/D.
-     * |        |          |Max. n=11 for port F/H.
      * @var GPIO_T::SLEWCTL
-     * Offset: 0x28/0x68/0xA8/0xE8/0x128/0x168/0x1A8/0x1E8  Port A-H High Slew Rate Control Register
+     * Offset: 0x28/0x68/0xA8/0xE8/0x128/0x168/0x1A8/0x1E8/0x228/0x268/0x2A8/0x2E8/0x328/0x368  Port A-N High Slew Rate Control Register
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[2n+1:2n]|HSRENn    |Port A-H Pin[n] High Slew Rate Control
-     * |        |          |00 = Px.n output with normal slew rate mode (maximum 40 MHz at 2.7V).
-     * |        |          |01 = Px.n output with high slew rate mode (maximum 80 MHz at 2.7V).
-     * |        |          |10 = Px.n output with fast slew rate mode (maximum 100 MHz at 2.7V.
+     * |[2n+1:2n]|HSRENn    |Port A-N Pin[n] High Slew Rate Control
+     * |        |          |00 = Px.n output with normal slew rate mode.
+     * |        |          |01 = Px.n output with high slew rate mode .
+     * |        |          |10 = Reserved.
      * |        |          |11 = Reserved.
-     * |        |          |Note:
-     * |        |          |Max. n=15 for port A/B/E/G.
-     * |        |          |Max. n=14 for port C/D.
-     * |        |          |Max. n=11 for port F/H.
      * @var GPIO_T::PUSEL
-     * Offset: 0x30/0x70/0xB0/0xF0/0x130/0x170/0x1B0/0x1F0  Port A-H Pull-up and Pull-down Selection Register
+     * Offset: 0x30/0x70/0xB0/0xF0/0x130/0x170/0x1B0/0x1F0/0x230/0x270/0x2B0/0x2F0/0x330/0x370  Port A-N Pull-up and Pull-down Selection Register
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[2n+1:2n]|PUSELn    |Port A-H Pin[n] Pull-up and Pull-down Enable Register
+     * |[2n+1:2n]|PUSELn    |Port A-N Pin[n] Pull-up and Pull-down Enable Register
      * |        |          |Determine each I/O Pull-up/pull-down of Px.n pins.
-     * |        |          |00 = Px.n pull-up and pull-up disable.
+     * |        |          |00 = Px.n pull-up and pull-down disable.
      * |        |          |01 = Px.n pull-up enable.
      * |        |          |10 = Px.n pull-down enable.
-     * |        |          |11 = Reserved.
-     * |        |          |Note1:
-     * |        |          |Basically, the pull-up control and pull-down control has following behavior limitation
-     * |        |          |The independent pull-up control register only valid when MODEn set as tri-state and open-drain mode
-     * |        |          |The independent pull-down control register only valid when MODEn set as tri-state mode
-     * |        |          |When both pull-up pull-down is set as 1 at tri-state mode, keep I/O in tri-state mode
-     * |        |          |Note2:
-     * |        |          |Max. n=15 for port A/B/E/G.
-     * |        |          |Max. n=14 for port C/D.
-     * |        |          |Max. n=11 for port F/H.
-     */
-
-    __IO uint32_t MODE;          /* Offset: 0x00/0x40/0x80/0xC0/0x100/0x140/0x180/0x1C0  Port A-H I/O Mode Control                       */
-    __IO uint32_t DINOFF;        /* Offset: 0x04/0x44/0x84/0xC4/0x104/0x144/0x184/0x1C4  Port A-H Digital Input Path Disable Control     */
-    __IO uint32_t DOUT;          /* Offset: 0x08/0x48/0x88/0xC8/0x108/0x148/0x188/0x1C8  Port A-H Data Output Value                      */
-    __IO uint32_t DATMSK;        /* Offset: 0x0C/0x4C/0x8C/0xCC/0x10C/0x14C/0x18C/0x1CC  Port A-H Data Output Write Mask                 */
-    __I  uint32_t PIN;           /* Offset: 0x10/0x50/0x90/0xD0/0x110/0x150/0x190/0x1D0  Port A-H Pin Value                              */
-    __IO uint32_t DBEN;          /* Offset: 0x14/0x54/0x94/0xD4/0x114/0x154/0x194/0x1D4  Port A-H De-Bounce Enable Control Register      */
-    __IO uint32_t INTTYPE;       /* Offset: 0x18/0x58/0x98/0xD8/0x118/0x158/0x198/0x1D8  Port A-H Interrupt Trigger Type Control         */
-    __IO uint32_t INTEN;         /* Offset: 0x1C/0x5C/0x9C/0xDC/0x11C/0x15C/0x19C/0x1DC  Port A-H Interrupt Enable Control Register      */
-    __IO uint32_t INTSRC;        /* Offset: 0x20/0x60/0xA0/0xE0/0x120/0x160/0x1A0/0x1E0  Port A-H Interrupt Source Flag                  */
-    __IO uint32_t SMTEN;         /* Offset: 0x24/0x64/0xA4/0xE4/0x124/0x164/0x1A4/0x1E4  Port A-H Input Schmitt Trigger Enable Register  */
-    __IO uint32_t SLEWCTL;       /* Offset: 0x28/0x68/0xA8/0xE8/0x128/0x168/0x1A8/0x1E8  Port A-H High Slew Rate Control Register        */
-    /// @cond HIDDEN_SYMBOLS
-    __I  uint32_t RESERVE0[1];
-    /// @endcond //HIDDEN_SYMBOLS
-    __IO uint32_t PUSEL;         /* Offset: 0x30/0x70/0xB0/0xF0/0x130/0x170/0x1B0/0x1F0  Port A-H Pull-up and Pull-down Enable Register  */
-    __IO uint32_t DBCTL;         /* Offset: 0x34/0x74/0xB4/0xF4/0x134/0x174/0x1B4/0x1F4  Port A-H Interrupt De-bounce Control Register   */
-    __IO uint32_t DS;            /* Offset: 0x38/0x78/0xB8/0xF8/0x138/0x178/0x1B8/0x1F8  Port A-H Driver Strength Control Register       */
-    __IO uint32_t UDS;           /* Offset: 0x3c/0x7C/0xBC/0xFC/0x13C/0x17C/0x1BC/0x1FC  Port A-H Ultra Driver Strength Control Register */
-} GPIO_T;
-
-typedef struct
-{
-
-    /**
-     * @var GPIO_DBCTL_T::DBCTL
-     * Offset: 0x440  Interrupt De-bounce Control Register
+     * |        |          |11 = Px.n pull-up and pull-down disable.
+     * |        |          |Note: Basically, the pull-up control and pull-down control has following behavior limitation.
+     * |        |          |The independent pull-up control register only valid when MODEn is set as input and open-drain mode even if I/O function is switched to multi-function pin, e.g
+     * |        |          |UARTx_RXD.
+     * |        |          |The independent pull-down control register is only valid when MODEn set as tri-state mode.
+     * |        |          |When both pull-up pull-down is set as 1 at "tri-state" mode, keep I/O in tri-state mode.
+     * @var GPIO_T::DBCTL
+     * Offset: 0x34/0x74/0xB4/0xF4/0x134/0x174/0x1B4/0x1F4/0x234/0x274/0x2B4/0x2F4/0x334/0x374  Port A-N Interrupt De-bounce Control Register
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
-     * |[3:0]   |DBCLKSEL  |De-Bounce Sampling Cycle Selection
+     * |[3:0]   |DBCLKSEL  |De-bounce Sampling Cycle Selection
      * |        |          |0000 = Sample interrupt input once per 1 clocks.
      * |        |          |0001 = Sample interrupt input once per 2 clocks.
      * |        |          |0010 = Sample interrupt input once per 4 clocks.
@@ -275,18 +196,287 @@ typedef struct
      * |        |          |1101 = Sample interrupt input once per 32*256 clocks.
      * |        |          |1110 = Sample interrupt input once per 64*256 clocks.
      * |        |          |1111 = Sample interrupt input once per 128*256 clocks.
-     * |[4]     |DBCLKSRC  |De-Bounce Counter Clock Source Selection
-     * |        |          |0 = De-bounce counter clock source is the HCLK.
-     * |        |          |1 = De-bounce counter clock source is the 10 kHz internal low speed RC oscillator (LIRC).
-     * |[5]     |ICLKON    |Interrupt Clock On Mode
+     * |[4]     |DBCLKSRC  |De-bounce Counter Clock Source Selection
+     * |        |          |0 = De-bounce counter clock source is the HXT.
+     * |        |          |1 = De-bounce counter clock source is the LIRC.
+     * |        |          |Note: This bit is reserved if the chip package without LIRC
+     * |        |          |The de-bounce counter clock source is only from HXT
+     * |        |          |And setting this bit does not guarantee what will occur.
+     * |[5]     |ICLKON    |Interrupt Clock on Mode
      * |        |          |0 = Edge detection circuit is active only if I/O pin corresponding RHIEN (Px_INTEN[n+16])/FLIEN (Px_INTEN[n]) bit is set to 1.
      * |        |          |1 = All I/O pins edge detection circuit is always active after reset.
      * |        |          |Note: It is recommended to disable this bit to save system power if no special application concern.
-     */
+ * @var GPIO_T::DS
+ * Offset: 0x38  0x38/0x78/0xB8/0xF8/0x138/0x178/0x1B8/0x1F8/0x238/0x278/0x2B8/0x2F8/0x338/0x378  Port A-N Driver Strength Control Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[0]     |DS10_DS00 |Port A-N Pin[n] Driver Strength Control Register
+ * |        |          |Determine each driver strength of Px.n pins.
+ * |        |          |00 = [ DS1n, DS0n] is minimum diver strength.
+ * |        |          |11 = [ DS1n, DS0n] is maximum diver strength.
+ * |        |          |Note: PH_DS bit20~bit23 are reserved.
+ * |        |          |The UDS and DS bits are Px.n driver strength control bits.
+ * |        |          |When [ UDS, DS1, DS0 ] are "111", the driver strength is maximum.
+ * |        |          |When [ UDS, DS1, DS0 ] are "000", the driver strength is minimum.
+ * |[1]     |DS11_DS01 |Port A-N Pin[n] Driver Strength Control Register
+ * |        |          |Determine each driver strength of Px.n pins.
+ * |        |          |00 = [ DS1n, DS0n] is minimum diver strength.
+ * |        |          |11 = [ DS1n, DS0n] is maximum diver strength.
+ * |        |          |Note: PH_DS bit20~bit23 are reserved.
+ * |        |          |The UDS and DS bits are Px.n driver strength control bits.
+ * |        |          |When [ UDS, DS1, DS0 ] are "111", the driver strength is maximum.
+ * |        |          |When [ UDS, DS1, DS0 ] are "000", the driver strength is minimum.
+ * |[2]     |DS12_DS02 |Port A-N Pin[n] Driver Strength Control Register
+ * |        |          |Determine each driver strength of Px.n pins.
+ * |        |          |00 = [ DS1n, DS0n] is minimum diver strength.
+ * |        |          |11 = [ DS1n, DS0n] is maximum diver strength.
+ * |        |          |Note: PH_DS bit20~bit23 are reserved.
+ * |        |          |The UDS and DS bits are Px.n driver strength control bits.
+ * |        |          |When [ UDS, DS1, DS0 ] are "111", the driver strength is maximum.
+ * |        |          |When [ UDS, DS1, DS0 ] are "000", the driver strength is minimum.
+ * |[3]     |DS13_DS03 |Port A-N Pin[n] Driver Strength Control Register
+ * |        |          |Determine each driver strength of Px.n pins.
+ * |        |          |00 = [ DS1n, DS0n] is minimum diver strength.
+ * |        |          |11 = [ DS1n, DS0n] is maximum diver strength.
+ * |        |          |Note: PH_DS bit20~bit23 are reserved.
+ * |        |          |The UDS and DS bits are Px.n driver strength control bits.
+ * |        |          |When [ UDS, DS1, DS0 ] are "111", the driver strength is maximum.
+ * |        |          |When [ UDS, DS1, DS0 ] are "000", the driver strength is minimum.
+ * |[4]     |DS14_DS04 |Port A-N Pin[n] Driver Strength Control Register
+ * |        |          |Determine each driver strength of Px.n pins.
+ * |        |          |00 = [ DS1n, DS0n] is minimum diver strength.
+ * |        |          |11 = [ DS1n, DS0n] is maximum diver strength.
+ * |        |          |Note: PH_DS bit20~bit23 are reserved.
+ * |        |          |The UDS and DS bits are Px.n driver strength control bits.
+ * |        |          |When [ UDS, DS1, DS0 ] are "111", the driver strength is maximum.
+ * |        |          |When [ UDS, DS1, DS0 ] are "000", the driver strength is minimum.
+ * |[5]     |DS15_DS05 |Port A-N Pin[n] Driver Strength Control Register
+ * |        |          |Determine each driver strength of Px.n pins.
+ * |        |          |00 = [ DS1n, DS0n] is minimum diver strength.
+ * |        |          |11 = [ DS1n, DS0n] is maximum diver strength.
+ * |        |          |Note: PH_DS bit20~bit23 are reserved.
+ * |        |          |The UDS and DS bits are Px.n driver strength control bits.
+ * |        |          |When [ UDS, DS1, DS0 ] are "111", the driver strength is maximum.
+ * |        |          |When [ UDS, DS1, DS0 ] are "000", the driver strength is minimum.
+ * |[6]     |DS16_DS06 |Port A-N Pin[n] Driver Strength Control Register
+ * |        |          |Determine each driver strength of Px.n pins.
+ * |        |          |00 = [ DS1n, DS0n] is minimum diver strength.
+ * |        |          |11 = [ DS1n, DS0n] is maximum diver strength.
+ * |        |          |Note: PH_DS bit20~bit23 are reserved.
+ * |        |          |The UDS and DS bits are Px.n driver strength control bits.
+ * |        |          |When [ UDS, DS1, DS0 ] are "111", the driver strength is maximum.
+ * |        |          |When [ UDS, DS1, DS0 ] are "000", the driver strength is minimum.
+ * |[7]     |DS17_DS07 |Port A-N Pin[n] Driver Strength Control Register
+ * |        |          |Determine each driver strength of Px.n pins.
+ * |        |          |00 = [ DS1n, DS0n] is minimum diver strength.
+ * |        |          |11 = [ DS1n, DS0n] is maximum diver strength.
+ * |        |          |Note: PH_DS bit20~bit23 are reserved.
+ * |        |          |The UDS and DS bits are Px.n driver strength control bits.
+ * |        |          |When [ UDS, DS1, DS0 ] are "111", the driver strength is maximum.
+ * |        |          |When [ UDS, DS1, DS0 ] are "000", the driver strength is minimum.
+ * |[8]     |DS18_DS08 |Port A-N Pin[n] Driver Strength Control Register
+ * |        |          |Determine each driver strength of Px.n pins.
+ * |        |          |00 = [ DS1n, DS0n] is minimum diver strength.
+ * |        |          |11 = [ DS1n, DS0n] is maximum diver strength.
+ * |        |          |Note: PH_DS bit20~bit23 are reserved.
+ * |        |          |The UDS and DS bits are Px.n driver strength control bits.
+ * |        |          |When [ UDS, DS1, DS0 ] are "111", the driver strength is maximum.
+ * |        |          |When [ UDS, DS1, DS0 ] are "000", the driver strength is minimum.
+ * |[9]     |DS19_DS09 |Port A-N Pin[n] Driver Strength Control Register
+ * |        |          |Determine each driver strength of Px.n pins.
+ * |        |          |00 = [ DS1n, DS0n] is minimum diver strength.
+ * |        |          |11 = [ DS1n, DS0n] is maximum diver strength.
+ * |        |          |Note: PH_DS bit20~bit23 are reserved.
+ * |        |          |The UDS and DS bits are Px.n driver strength control bits.
+ * |        |          |When [ UDS, DS1, DS0 ] are "111", the driver strength is maximum.
+ * |        |          |When [ UDS, DS1, DS0 ] are "000", the driver strength is minimum.
+ * |[10]    |DS110_DS010|Port A-N Pin[n] Driver Strength Control Register
+ * |        |          |Determine each driver strength of Px.n pins.
+ * |        |          |00 = [ DS1n, DS0n] is minimum diver strength.
+ * |        |          |11 = [ DS1n, DS0n] is maximum diver strength.
+ * |        |          |Note: PH_DS bit20~bit23 are reserved.
+ * |        |          |The UDS and DS bits are Px.n driver strength control bits.
+ * |        |          |When [ UDS, DS1, DS0 ] are "111", the driver strength is maximum.
+ * |        |          |When [ UDS, DS1, DS0 ] are "000", the driver strength is minimum.
+ * |[11]    |DS111_DS011|Port A-N Pin[n] Driver Strength Control Register
+ * |        |          |Determine each driver strength of Px.n pins.
+ * |        |          |00 = [ DS1n, DS0n] is minimum diver strength.
+ * |        |          |11 = [ DS1n, DS0n] is maximum diver strength.
+ * |        |          |Note: PH_DS bit20~bit23 are reserved.
+ * |        |          |The UDS and DS bits are Px.n driver strength control bits.
+ * |        |          |When [ UDS, DS1, DS0 ] are "111", the driver strength is maximum.
+ * |        |          |When [ UDS, DS1, DS0 ] are "000", the driver strength is minimum.
+ * |[12]    |DS112_DS012|Port A-N Pin[n] Driver Strength Control Register
+ * |        |          |Determine each driver strength of Px.n pins.
+ * |        |          |00 = [ DS1n, DS0n] is minimum diver strength.
+ * |        |          |11 = [ DS1n, DS0n] is maximum diver strength.
+ * |        |          |Note: PH_DS bit20~bit23 are reserved.
+ * |        |          |The UDS and DS bits are Px.n driver strength control bits.
+ * |        |          |When [ UDS, DS1, DS0 ] are "111", the driver strength is maximum.
+ * |        |          |When [ UDS, DS1, DS0 ] are "000", the driver strength is minimum.
+ * |[13]    |DS113_DS013|Port A-N Pin[n] Driver Strength Control Register
+ * |        |          |Determine each driver strength of Px.n pins.
+ * |        |          |00 = [ DS1n, DS0n] is minimum diver strength.
+ * |        |          |11 = [ DS1n, DS0n] is maximum diver strength.
+ * |        |          |Note: PH_DS bit20~bit23 are reserved.
+ * |        |          |The UDS and DS bits are Px.n driver strength control bits.
+ * |        |          |When [ UDS, DS1, DS0 ] are "111", the driver strength is maximum.
+ * |        |          |When [ UDS, DS1, DS0 ] are "000", the driver strength is minimum.
+ * |[14]    |DS114_DS014|Port A-N Pin[n] Driver Strength Control Register
+ * |        |          |Determine each driver strength of Px.n pins.
+ * |        |          |00 = [ DS1n, DS0n] is minimum diver strength.
+ * |        |          |11 = [ DS1n, DS0n] is maximum diver strength.
+ * |        |          |Note: PH_DS bit20~bit23 are reserved.
+ * |        |          |The UDS and DS bits are Px.n driver strength control bits.
+ * |        |          |When [ UDS, DS1, DS0 ] are "111", the driver strength is maximum.
+ * |        |          |When [ UDS, DS1, DS0 ] are "000", the driver strength is minimum.
+ * |[15]    |DS115_DS015|Port A-N Pin[n] Driver Strength Control Register
+ * |        |          |Determine each driver strength of Px.n pins.
+ * |        |          |00 = [ DS1n, DS0n] is minimum diver strength.
+ * |        |          |11 = [ DS1n, DS0n] is maximum diver strength.
+ * |        |          |Note: PH_DS bit20~bit23 are reserved.
+ * |        |          |The UDS and DS bits are Px.n driver strength control bits.
+ * |        |          |When [ UDS, DS1, DS0 ] are "111", the driver strength is maximum.
+ * |        |          |When [ UDS, DS1, DS0 ] are "000", the driver strength is minimum.
+ * @var GPIO_T::PA_UDS
+ * Offset: 0x3C/0x7C/0xBC/0xFC/0x13C/0x17C/0x1BC/0x1FC/0x23C/0x27C/0x2BC/0x2FC/0x33C/0x37C  Port A-N Ultra Driver Strength Control Register
+ * ---------------------------------------------------------------------------------------------------
+ * |Bits    |Field     |Descriptions
+ * | :----: | :----:   | :---- |
+ * |[0]     |UDS0      |Port A-N Pin[n] Ultra Driver Strength Control Register
+ * |        |          |Determine each driver strength of Px.n pins.
+ * |        |          |0 = Px.n is minimum deiver strength.
+ * |        |          |1 = Px.n is maximum deiver strength.
+ * |        |          |Note: The UDS and DS bits are Px.n driver strength control bits.
+ * |        |          |When [ UDS, DS1, DS0 ] are "111", the driver strength is the maximum.
+ * |        |          |When [ UDS, DS1, DS0 ] are "000", the driver strength is the minimum.
+ * |[1]     |UDS1      |Port A-N Pin[n] Ultra Driver Strength Control Register
+ * |        |          |Determine each driver strength of Px.n pins.
+ * |        |          |0 = Px.n is minimum deiver strength.
+ * |        |          |1 = Px.n is maximum deiver strength.
+ * |        |          |Note: The UDS and DS bits are Px.n driver strength control bits.
+ * |        |          |When [ UDS, DS1, DS0 ] are "111", the driver strength is the maximum.
+ * |        |          |When [ UDS, DS1, DS0 ] are "000", the driver strength is the minimum.
+ * |[2]     |UDS2      |Port A-N Pin[n] Ultra Driver Strength Control Register
+ * |        |          |Determine each driver strength of Px.n pins.
+ * |        |          |0 = Px.n is minimum deiver strength.
+ * |        |          |1 = Px.n is maximum deiver strength.
+ * |        |          |Note: The UDS and DS bits are Px.n driver strength control bits.
+ * |        |          |When [ UDS, DS1, DS0 ] are "111", the driver strength is the maximum.
+ * |        |          |When [ UDS, DS1, DS0 ] are "000", the driver strength is the minimum.
+ * |[3]     |UDS3      |Port A-N Pin[n] Ultra Driver Strength Control Register
+ * |        |          |Determine each driver strength of Px.n pins.
+ * |        |          |0 = Px.n is minimum deiver strength.
+ * |        |          |1 = Px.n is maximum deiver strength.
+ * |        |          |Note: The UDS and DS bits are Px.n driver strength control bits.
+ * |        |          |When [ UDS, DS1, DS0 ] are "111", the driver strength is the maximum.
+ * |        |          |When [ UDS, DS1, DS0 ] are "000", the driver strength is the minimum.
+ * |[4]     |UDS4      |Port A-N Pin[n] Ultra Driver Strength Control Register
+ * |        |          |Determine each driver strength of Px.n pins.
+ * |        |          |0 = Px.n is minimum deiver strength.
+ * |        |          |1 = Px.n is maximum deiver strength.
+ * |        |          |Note: The UDS and DS bits are Px.n driver strength control bits.
+ * |        |          |When [ UDS, DS1, DS0 ] are "111", the driver strength is the maximum.
+ * |        |          |When [ UDS, DS1, DS0 ] are "000", the driver strength is the minimum.
+ * |[5]     |UDS5      |Port A-N Pin[n] Ultra Driver Strength Control Register
+ * |        |          |Determine each driver strength of Px.n pins.
+ * |        |          |0 = Px.n is minimum deiver strength.
+ * |        |          |1 = Px.n is maximum deiver strength.
+ * |        |          |Note: The UDS and DS bits are Px.n driver strength control bits.
+ * |        |          |When [ UDS, DS1, DS0 ] are "111", the driver strength is the maximum.
+ * |        |          |When [ UDS, DS1, DS0 ] are "000", the driver strength is the minimum.
+ * |[6]     |UDS6      |Port A-N Pin[n] Ultra Driver Strength Control Register
+ * |        |          |Determine each driver strength of Px.n pins.
+ * |        |          |0 = Px.n is minimum deiver strength.
+ * |        |          |1 = Px.n is maximum deiver strength.
+ * |        |          |Note: The UDS and DS bits are Px.n driver strength control bits.
+ * |        |          |When [ UDS, DS1, DS0 ] are "111", the driver strength is the maximum.
+ * |        |          |When [ UDS, DS1, DS0 ] are "000", the driver strength is the minimum.
+ * |[7]     |UDS7      |Port A-N Pin[n] Ultra Driver Strength Control Register
+ * |        |          |Determine each driver strength of Px.n pins.
+ * |        |          |0 = Px.n is minimum deiver strength.
+ * |        |          |1 = Px.n is maximum deiver strength.
+ * |        |          |Note: The UDS and DS bits are Px.n driver strength control bits.
+ * |        |          |When [ UDS, DS1, DS0 ] are "111", the driver strength is the maximum.
+ * |        |          |When [ UDS, DS1, DS0 ] are "000", the driver strength is the minimum.
+ * |[8]     |UDS8      |Port A-N Pin[n] Ultra Driver Strength Control Register
+ * |        |          |Determine each driver strength of Px.n pins.
+ * |        |          |0 = Px.n is minimum deiver strength.
+ * |        |          |1 = Px.n is maximum deiver strength.
+ * |        |          |Note: The UDS and DS bits are Px.n driver strength control bits.
+ * |        |          |When [ UDS, DS1, DS0 ] are "111", the driver strength is the maximum.
+ * |        |          |When [ UDS, DS1, DS0 ] are "000", the driver strength is the minimum.
+ * |[9]     |UDS9      |Port A-N Pin[n] Ultra Driver Strength Control Register
+ * |        |          |Determine each driver strength of Px.n pins.
+ * |        |          |0 = Px.n is minimum deiver strength.
+ * |        |          |1 = Px.n is maximum deiver strength.
+ * |        |          |Note: The UDS and DS bits are Px.n driver strength control bits.
+ * |        |          |When [ UDS, DS1, DS0 ] are "111", the driver strength is the maximum.
+ * |        |          |When [ UDS, DS1, DS0 ] are "000", the driver strength is the minimum.
+ * |[10]    |UDS10     |Port A-N Pin[n] Ultra Driver Strength Control Register
+ * |        |          |Determine each driver strength of Px.n pins.
+ * |        |          |0 = Px.n is minimum deiver strength.
+ * |        |          |1 = Px.n is maximum deiver strength.
+ * |        |          |Note: The UDS and DS bits are Px.n driver strength control bits.
+ * |        |          |When [ UDS, DS1, DS0 ] are "111", the driver strength is the maximum.
+ * |        |          |When [ UDS, DS1, DS0 ] are "000", the driver strength is the minimum.
+ * |[11]    |UDS11     |Port A-N Pin[n] Ultra Driver Strength Control Register
+ * |        |          |Determine each driver strength of Px.n pins.
+ * |        |          |0 = Px.n is minimum deiver strength.
+ * |        |          |1 = Px.n is maximum deiver strength.
+ * |        |          |Note: The UDS and DS bits are Px.n driver strength control bits.
+ * |        |          |When [ UDS, DS1, DS0 ] are "111", the driver strength is the maximum.
+ * |        |          |When [ UDS, DS1, DS0 ] are "000", the driver strength is the minimum.
+ * |[12]    |UDS12     |Port A-N Pin[n] Ultra Driver Strength Control Register
+ * |        |          |Determine each driver strength of Px.n pins.
+ * |        |          |0 = Px.n is minimum deiver strength.
+ * |        |          |1 = Px.n is maximum deiver strength.
+ * |        |          |Note: The UDS and DS bits are Px.n driver strength control bits.
+ * |        |          |When [ UDS, DS1, DS0 ] are "111", the driver strength is the maximum.
+ * |        |          |When [ UDS, DS1, DS0 ] are "000", the driver strength is the minimum.
+ * |[13]    |UDS13     |Port A-N Pin[n] Ultra Driver Strength Control Register
+ * |        |          |Determine each driver strength of Px.n pins.
+ * |        |          |0 = Px.n is minimum deiver strength.
+ * |        |          |1 = Px.n is maximum deiver strength.
+ * |        |          |Note: The UDS and DS bits are Px.n driver strength control bits.
+ * |        |          |When [ UDS, DS1, DS0 ] are "111", the driver strength is the maximum.
+ * |        |          |When [ UDS, DS1, DS0 ] are "000", the driver strength is the minimum.
+ * |[14]    |UDS14     |Port A-N Pin[n] Ultra Driver Strength Control Register
+ * |        |          |Determine each driver strength of Px.n pins.
+ * |        |          |0 = Px.n is minimum deiver strength.
+ * |        |          |1 = Px.n is maximum deiver strength.
+ * |        |          |Note: The UDS and DS bits are Px.n driver strength control bits.
+ * |        |          |When [ UDS, DS1, DS0 ] are "111", the driver strength is the maximum.
+ * |        |          |When [ UDS, DS1, DS0 ] are "000", the driver strength is the minimum.
+ * |[15]    |UDS15     |Port A-N Pin[n] Ultra Driver Strength Control Register
+ * |        |          |Determine each driver strength of Px.n pins.
+ * |        |          |0 = Px.n is minimum deiver strength.
+ * |        |          |1 = Px.n is maximum deiver strength.
+ * |        |          |Note: The UDS and DS bits are Px.n driver strength control bits.
+ * |        |          |When [ UDS, DS1, DS0 ] are "111", the driver strength is the maximum.
+ * |        |          |When [ UDS, DS1, DS0 ] are "000", the driver strength is the minimum.
+ */
 
-    __IO uint32_t DBCTL;         /* Offset: 0x440  Interrupt De-bounce Control Register                              */
-
-} GPIO_DBCTL_T;
+    __IO uint32_t MODE;          /* Offset: 0x00/0x40/0x80/0xC0/0x100/0x140/0x180/0x1C0/0x200/0x240/0x280/0x2C0/0x300/0x340  Port A-N I/O Mode Control                       */
+    __IO uint32_t DINOFF;        /* Offset: 0x04/0x44/0x84/0xC4/0x104/0x144/0x184/0x1C4/0x204/0x244/0x284/0x2C4/0x304/0x344  Port A-N Digital Input Path Disable Control     */
+    __IO uint32_t DOUT;          /* Offset: 0x08/0x48/0x88/0xC8/0x108/0x148/0x188/0x1C8/0x208/0x248/0x288/0x2C8/0x308/0x348  Port A-N Data Output Value                      */
+    __IO uint32_t DATMSK;        /* Offset: 0x0C/0x4C/0x8C/0xCC/0x10C/0x14C/0x18C/0x1CC/0x20C/0x24C/0x28C/0x2CC/0x30C/0x34C  Port A-N Data Output Write Mask                 */
+    __I  uint32_t PIN;           /* Offset: 0x10/0x50/0x90/0xD0/0x110/0x150/0x190/0x1D0/0x210/0x250/0x290/0x2D0/0x310/0x350  Port A-N Pin Value                              */
+    __IO uint32_t DBEN;          /* Offset: 0x14/0x54/0x94/0xD4/0x114/0x154/0x194/0x1D4/0x214/0x254/0x294/0x2D4/0x314/0x354  Port A-N De-Bounce Enable Control Register      */
+    __IO uint32_t INTTYPE;       /* Offset: 0x18/0x58/0x98/0xD8/0x118/0x158/0x198/0x1D8/0x218/0x258/0x298/0x2D8/0x318/0x358  Port A-N Interrupt Trigger Type Control         */
+    __IO uint32_t INTEN;         /* Offset: 0x1C/0x5C/0x9C/0xDC/0x11C/0x15C/0x19C/0x1DC/0x21C/0x25C/0x29C/0x2DC/0x31C/0x35C  Port A-N Interrupt Enable Control Register      */
+    __IO uint32_t INTSRC;        /* Offset: 0x20/0x60/0xA0/0xE0/0x120/0x160/0x1A0/0x1E0/0x220/0x260/0x2A0/0x2E0/0x320/0x360  Port A-N Interrupt Source Flag                  */
+    __IO uint32_t SMTEN;         /* Offset: 0x24/0x64/0xA4/0xE4/0x124/0x164/0x1A4/0x1E4/0x224/0x264/0x2A4/0x2E4/0x324/0x364  Port A-N Input Schmitt Trigger Enable Register  */
+    __IO uint32_t SLEWCTL;       /* Offset: 0x28/0x68/0xA8/0xE8/0x128/0x168/0x1A8/0x1E8/0x228/0x268/0x2A8/0x2E8/0x328/0x368  Port A-N High Slew Rate Control Register        */
+    /// @cond HIDDEN_SYMBOLS
+    __I  uint32_t RESERVE0[1];
+    /// @endcond //HIDDEN_SYMBOLS
+    __IO uint32_t PUSEL;         /* Offset: 0x30/0x70/0xB0/0xF0/0x130/0x170/0x1B0/0x1F0/0x230/0x270/0x2B0/0x2F0/0x330/0x370  Port A-N Pull-up and Pull-down Enable Register  */
+    __IO uint32_t DBCTL;         /* Offset: 0x34/0x74/0xB4/0xF4/0x134/0x174/0x1B4/0x1F4/0x234/0x274/0x2B4/0x2F4/0x334/0x374  Port A-N Interrupt De-bounce Control Register   */
+    __IO uint32_t DS;            /* Offset: 0x38/0x78/0xB8/0xF8/0x138/0x178/0x1B8/0x1F8/0x238/0x278/0x2B8/0x2F8/0x338/0x378  Port A-N Driver Strength Control Register       */
+    __IO uint32_t UDS;           /* Offset: 0x3c/0x7C/0xBC/0xFC/0x13C/0x17C/0x1BC/0x1FC/0x23C/0x27C/0x2BC/0x2FC/0x33C/0x37C  Port A-N Ultra Driver Strength Control Register */
+} GPIO_T;
 
 /**
     @addtogroup GPIO_CONST GPIO Bit Field Definition
@@ -917,15 +1107,111 @@ typedef struct
 #define GPIO_PUSEL_PUSEL15_Pos           (30)                                              /*!< GPIO_T::PUSEL: PUSEL15 Position        */
 #define GPIO_PUSEL_PUSEL15_Msk           (0x3ul << GPIO_PUSEL_PUSEL15_Pos)                 /*!< GPIO_T::PUSEL: PUSEL15 Mask            */
 
-#define GPIO_DBCTL_DBCLKSEL_Pos          (0)                                               /*!< GPIO_T::DBCTL: DBCLKSEL Position          */
-#define GPIO_DBCTL_DBCLKSEL_Msk          (0xFul << GPIO_DBCTL_DBCLKSEL_Pos)                /*!< GPIO_T::DBCTL: DBCLKSEL Mask              */
+#define GPIO_DBCTL_DBCLKSEL_Pos          (0)                                               /*!< GPIO_T::DBCTL: DBCLKSEL Position       */
+#define GPIO_DBCTL_DBCLKSEL_Msk          (0xful << GPIO_DBCTL_DBCLKSEL_Pos)                /*!< GPIO_T::DBCTL: DBCLKSEL Mask           */
 
-#define GPIO_DBCTL_DBCLKSRC_Pos          (4)                                               /*!< GPIO_T::DBCTL: DBCLKSRC Position          */
-#define GPIO_DBCTL_DBCLKSRC_Msk          (1ul << GPIO_DBCTL_DBCLKSRC_Pos)                  /*!< GPIO_T::DBCTL: DBCLKSRC Mask              */
+#define GPIO_DBCTL_DBCLKSRC_Pos          (4)                                               /*!< GPIO_T::DBCTL: DBCLKSRC Position       */
+#define GPIO_DBCTL_DBCLKSRC_Msk          (0x1ul << GPIO_DBCTL_DBCLKSRC_Pos)                /*!< GPIO_T::DBCTL: DBCLKSRC Mask           */
 
-#define GPIO_DBCTL_ICLKON_Pos            (5)                                               /*!< GPIO_T::DBCTL: ICLKON Position            */
-#define GPIO_DBCTL_ICLKON_Msk            (1ul << GPIO_DBCTL_ICLKON_Pos)                    /*!< GPIO_T::DBCTL: ICLKON Mask                */
+#define GPIO_DBCTL_ICLKON_Pos            (5)                                               /*!< GPIO_T::DBCTL: ICLKON Position         */
+#define GPIO_DBCTL_ICLKON_Msk            (0x1ul << GPIO_DBCTL_ICLKON_Pos)                  /*!< GPIO_T::DBCTL: ICLKON Mask             */
 
+
+#define GPIO_DS_DS10_DS00_Pos            (0)                                               /*!< GPIO_T::DS: DS10_DS00 Position         */
+#define GPIO_DS_DS10_DS00_Msk            (0x1ul << GPIO_DS_DS10_DS00_Pos)                  /*!< GPIO_T::DS: DS10_DS00 Mask             */
+
+#define GPIO_DS_DS11_DS01_Pos            (1)                                               /*!< GPIO_T::DS: DS11_DS01 Position         */
+#define GPIO_DS_DS11_DS01_Msk            (0x1ul << GPIO_DS_DS11_DS01_Pos)                  /*!< GPIO_T::DS: DS11_DS01 Mask             */
+
+#define GPIO_DS_DS12_DS02_Pos            (2)                                               /*!< GPIO_T::DS: DS12_DS02 Position         */
+#define GPIO_DS_DS12_DS02_Msk            (0x1ul << GPIO_DS_DS12_DS02_Pos)                  /*!< GPIO_T::DS: DS12_DS02 Mask             */
+
+#define GPIO_DS_DS13_DS03_Pos            (3)                                               /*!< GPIO_T::DS: DS13_DS03 Position         */
+#define GPIO_DS_DS13_DS03_Msk            (0x1ul << GPIO_DS_DS13_DS03_Pos)                  /*!< GPIO_T::DS: DS13_DS03 Mask             */
+
+#define GPIO_DS_DS14_DS04_Pos            (4)                                               /*!< GPIO_T::DS: DS14_DS04 Position         */
+#define GPIO_DS_DS14_DS04_Msk            (0x1ul << GPIO_DS_DS14_DS04_Pos)                  /*!< GPIO_T::DS: DS14_DS04 Mask             */
+
+#define GPIO_DS_DS15_DS05_Pos            (5)                                               /*!< GPIO_T::DS: DS15_DS05 Position         */
+#define GPIO_DS_DS15_DS05_Msk            (0x1ul << GPIO_DS_DS15_DS05_Pos)                  /*!< GPIO_T::DS: DS15_DS05 Mask             */
+
+#define GPIO_DS_DS16_DS06_Pos            (6)                                               /*!< GPIO_T::DS: DS16_DS06 Position         */
+#define GPIO_DS_DS16_DS06_Msk            (0x1ul << GPIO_DS_DS16_DS06_Pos)                  /*!< GPIO_T::DS: DS16_DS06 Mask             */
+
+#define GPIO_DS_DS17_DS07_Pos            (7)                                               /*!< GPIO_T::DS: DS17_DS07 Position         */
+#define GPIO_DS_DS17_DS07_Msk            (0x1ul << GPIO_DS_DS17_DS07_Pos)                  /*!< GPIO_T::DS: DS17_DS07 Mask             */
+
+#define GPIO_DS_DS18_DS08_Pos            (8)                                               /*!< GPIO_T::DS: DS18_DS08 Position         */
+#define GPIO_DS_DS18_DS08_Msk            (0x1ul << GPIO_DS_DS18_DS08_Pos)                  /*!< GPIO_T::DS: DS18_DS08 Mask             */
+
+#define GPIO_DS_DS19_DS09_Pos            (9)                                               /*!< GPIO_T::DS: DS19_DS09 Position         */
+#define GPIO_DS_DS19_DS09_Msk            (0x1ul << GPIO_DS_DS19_DS09_Pos)                  /*!< GPIO_T::DS: DS19_DS09 Mask             */
+
+#define GPIO_DS_DS110_DS010_Pos          (10)                                              /*!< GPIO_T::DS: DS110_DS010 Position       */
+#define GPIO_DS_DS110_DS010_Msk          (0x1ul << GPIO_DS_DS110_DS010_Pos)                /*!< GPIO_T::DS: DS110_DS010 Mask           */
+
+#define GPIO_DS_DS111_DS011_Pos          (11)                                              /*!< GPIO_T::DS: DS111_DS011 Position       */
+#define GPIO_DS_DS111_DS011_Msk          (0x1ul << GPIO_DS_DS111_DS011_Pos)                /*!< GPIO_T::DS: DS111_DS011 Mask           */
+
+#define GPIO_DS_DS112_DS012_Pos          (12)                                              /*!< GPIO_T::DS: DS112_DS012 Position       */
+#define GPIO_DS_DS112_DS012_Msk          (0x1ul << GPIO_DS_DS112_DS012_Pos)                /*!< GPIO_T::DS: DS112_DS012 Mask           */
+
+#define GPIO_DS_DS113_DS013_Pos          (13)                                              /*!< GPIO_T::DS: DS113_DS013 Position       */
+#define GPIO_DS_DS113_DS013_Msk          (0x1ul << GPIO_DS_DS113_DS013_Pos)                /*!< GPIO_T::DS: DS113_DS013 Mask           */
+
+#define GPIO_DS_DS114_DS014_Pos          (14)                                              /*!< GPIO_T::DS: DS114_DS014 Position       */
+#define GPIO_DS_DS114_DS014_Msk          (0x1ul << GPIO_DS_DS114_DS014_Pos)                /*!< GPIO_T::DS: DS114_DS014 Mask           */
+
+#define GPIO_DS_DS115_DS015_Pos          (15)                                              /*!< GPIO_T::DS: DS115_DS015 Position       */
+#define GPIO_DS_DS115_DS015_Msk          (0x1ul << GPIO_DS_DS115_DS015_Pos)                /*!< GPIO_T::DS: DS115_DS015 Mask           */
+
+#define GPIO_UDS_UDS0_Pos                (0)                                               /*!< GPIO_T::UDS: UDS0 Position             */
+#define GPIO_UDS_UDS0_Msk                (0x1ul << GPIO_UDS_UDS0_Pos)                      /*!< GPIO_T::UDS: UDS0 Mask                 */
+
+#define GPIO_UDS_UDS1_Pos                (1)                                               /*!< GPIO_T::UDS: UDS1 Position             */
+#define GPIO_UDS_UDS1_Msk                (0x1ul << GPIO_UDS_UDS1_Pos)                      /*!< GPIO_T::UDS: UDS1 Mask                 */
+
+#define GPIO_UDS_UDS2_Pos                (2)                                               /*!< GPIO_T::UDS: UDS2 Position             */
+#define GPIO_UDS_UDS2_Msk                (0x1ul << GPIO_UDS_UDS2_Pos)                      /*!< GPIO_T::UDS: UDS2 Mask                 */
+
+#define GPIO_UDS_UDS3_Pos                (3)                                               /*!< GPIO_T::UDS: UDS3 Position             */
+#define GPIO_UDS_UDS3_Msk                (0x1ul << GPIO_UDS_UDS3_Pos)                      /*!< GPIO_T::UDS: UDS3 Mask                 */
+
+#define GPIO_UDS_UDS4_Pos                (4)                                               /*!< GPIO_T::UDS: UDS4 Position             */
+#define GPIO_UDS_UDS4_Msk                (0x1ul << GPIO_UDS_UDS4_Pos)                      /*!< GPIO_T::UDS: UDS4 Mask                 */
+
+#define GPIO_UDS_UDS5_Pos                (5)                                               /*!< GPIO_T::UDS: UDS5 Position             */
+#define GPIO_UDS_UDS5_Msk                (0x1ul << GPIO_UDS_UDS5_Pos)                      /*!< GPIO_T::UDS: UDS5 Mask                 */
+
+#define GPIO_UDS_UDS6_Pos                (6)                                               /*!< GPIO_T::UDS: UDS6 Position             */
+#define GPIO_UDS_UDS6_Msk                (0x1ul << GPIO_UDS_UDS6_Pos)                      /*!< GPIO_T::UDS: UDS6 Mask                 */
+
+#define GPIO_UDS_UDS7_Pos                (7)                                               /*!< GPIO_T::UDS: UDS7 Position             */
+#define GPIO_UDS_UDS7_Msk                (0x1ul << GPIO_UDS_UDS7_Pos)                      /*!< GPIO_T::UDS: UDS7 Mask                 */
+
+#define GPIO_UDS_UDS8_Pos                (8)                                               /*!< GPIO_T::UDS: UDS8 Position             */
+#define GPIO_UDS_UDS8_Msk                (0x1ul << GPIO_UDS_UDS8_Pos)                      /*!< GPIO_T::UDS: UDS8 Mask                 */
+
+#define GPIO_UDS_UDS9_Pos                (9)                                               /*!< GPIO_T::UDS: UDS9 Position             */
+#define GPIO_UDS_UDS9_Msk                (0x1ul << GPIO_UDS_UDS9_Pos)                      /*!< GPIO_T::UDS: UDS9 Mask                 */
+
+#define GPIO_UDS_UDS10_Pos               (10)                                              /*!< GPIO_T::UDS: UDS10 Position            */
+#define GPIO_UDS_UDS10_Msk               (0x1ul << GPIO_UDS_UDS10_Pos)                     /*!< GPIO_T::UDS: UDS10 Mask                */
+
+#define GPIO_UDS_UDS11_Pos               (11)                                              /*!< GPIO_T::UDS: UDS11 Position            */
+#define GPIO_UDS_UDS11_Msk               (0x1ul << GPIO_UDS_UDS11_Pos)                     /*!< GPIO_T::UDS: UDS11 Mask                */
+
+#define GPIO_UDS_UDS12_Pos               (12)                                              /*!< GPIO_T::UDS: UDS12 Position            */
+#define GPIO_UDS_UDS12_Msk               (0x1ul << GPIO_UDS_UDS12_Pos)                     /*!< GPIO_T::UDS: UDS12 Mask                */
+
+#define GPIO_UDS_UDS13_Pos               (13)                                              /*!< GPIO_T::UDS: UDS13 Position            */
+#define GPIO_UDS_UDS13_Msk               (0x1ul << GPIO_UDS_UDS13_Pos)                     /*!< GPIO_T::UDS: UDS13 Mask                */
+
+#define GPIO_UDS_UDS14_Pos               (14)                                              /*!< GPIO_T::UDS: UDS14 Position            */
+#define GPIO_UDS_UDS14_Msk               (0x1ul << GPIO_UDS_UDS14_Pos)                     /*!< GPIO_T::UDS: UDS14 Mask                */
+
+#define GPIO_UDS_UDS15_Pos               (15)                                              /*!< GPIO_T::UDS: UDS15 Position            */
+#define GPIO_UDS_UDS15_Msk               (0x1ul << GPIO_UDS_UDS15_Pos)                     /*!< GPIO_T::UDS: UDS15 Mask                */
 /**@}*/ /* GPIO_CONST */
 /**@}*/ /* end of GPIO register group */
 /**@}*/ /* end of REGISTER group */
