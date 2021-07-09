@@ -378,36 +378,6 @@ void EPWM_DisableDACTrigger(EPWM_T *epwm, uint32_t u32ChannelNum)
 }
 
 /**
- * @brief Clear selected channel trigger DAC flag
- * @param[in] epwm The pointer of the specified EPWM module
- *                - EPWM0 : EPWM Group 0
- *                - EPWM1 : EPWM Group 1
- * @param[in] u32ChannelNum EPWM channel number. This parameter is not used
- * @param[in] u32Condition The condition to trigger DAC. This parameter is not used
- * @return None
- * @details This function is used to clear selected channel trigger DAC flag.
- */
-void EPWM_ClearDACTriggerFlag(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_t u32Condition)
-{
-    (epwm)->STATUS = EPWM_STATUS_DACTRGF_Msk;
-}
-
-/**
- * @brief Get selected channel trigger DAC flag
- * @param[in] epwm The pointer of the specified EPWM module
- *                - EPWM0 : EPWM Group 0
- *                - EPWM1 : EPWM Group 1
- * @param[in] u32ChannelNum EPWM channel number. This parameter is not used
- * @retval 0 The specified channel trigger DAC to start of conversion flag is not set
- * @retval 1 The specified channel trigger DAC to start of conversion flag is set
- * @details This function is used to get selected channel trigger DAC flag.
- */
-uint32_t EPWM_GetDACTriggerFlag(EPWM_T *epwm, uint32_t u32ChannelNum)
-{
-    return (((epwm)->STATUS & EPWM_STATUS_DACTRGF_Msk)?1UL:0UL);
-}
-
-/**
  * @brief This function enable fault brake of selected channel(s)
  * @param[in] epwm The pointer of the specified EPWM module
  *                - EPWM0 : EPWM Group 0

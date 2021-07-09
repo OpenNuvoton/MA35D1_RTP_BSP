@@ -61,7 +61,7 @@ uint32_t QSPI_Open(QSPI_T *qspi,
         qspi->SSCTL = QSPI_SS_ACTIVE_LOW;
 
         /* Default setting: MSB first, disable unit transfer interrupt, SP_CYCLE = 0. */
-        qspi->CTL = u32MasterSlave | (u32DataWidth << QSPI_CTL_DWIDTH_Pos) | (u32QSPIMode) | QSPI_CTL_QSPIEN_Msk;
+        qspi->CTL = u32MasterSlave | (u32DataWidth << QSPI_CTL_DWIDTH_Pos) | (u32QSPIMode) | QSPI_CTL_SPIEN_Msk;
 
         if(u32BusClock >= u32HCLKFreq)
         {
@@ -133,7 +133,7 @@ uint32_t QSPI_Open(QSPI_T *qspi,
         qspi->SSCTL = QSPI_SS_ACTIVE_LOW;
 
         /* Default setting: MSB first, disable unit transfer interrupt, SP_CYCLE = 0. */
-        qspi->CTL = u32MasterSlave | (u32DataWidth << QSPI_CTL_DWIDTH_Pos) | (u32QSPIMode) | QSPI_CTL_QSPIEN_Msk;
+        qspi->CTL = u32MasterSlave | (u32DataWidth << QSPI_CTL_DWIDTH_Pos) | (u32QSPIMode) | QSPI_CTL_SPIEN_Msk;
 
         /* Set DIVIDER = 0 */
         qspi->CLKDIV = 0U;
@@ -737,7 +737,7 @@ uint32_t QSPI_GetStatus(QSPI_T *qspi, uint32_t u32Mask)
         u32Flag |= QSPI_TXRX_RESET_MASK;
     }
 
-    u32TmpValue = qspi->STATUS & QSPI_STATUS_QSPIENSTS_Msk;
+    u32TmpValue = qspi->STATUS & QSPI_STATUS_SPIENSTS_Msk;
     /* Check QSPIEN flag */
     if((u32Mask & QSPI_QSPIEN_STS_MASK) && (u32TmpValue))
     {
