@@ -140,8 +140,8 @@ typedef struct
      * |[31:16] |DASOL     |VDMA Destination Address Stride Offset Length
      * |        |          |The 16-bit register defines the destination address stride transfer offset count of each row.
      */
-    __IO uint32_t STCR;           /*!< [0x0500] Stride Transfer Count Register of PDMA Channel 0                 */
-    __IO uint32_t ASOCR;          /*!< [0x0504] Address Stride Offset Register of PDMA Channel 0                 */
+    __IO uint32_t STCR;           /*!< [0x0500] Stride Transfer Count Register of PDMA Channel n                 */
+    __IO uint32_t ASOCR;          /*!< [0x0504] Address Stride Offset Register of PDMA Channel n                 */
 } STRIDE_T;
 
 typedef struct
@@ -164,8 +164,8 @@ typedef struct
      * |[15:0]  |RCNT      |PDMA Repeat Count
      * |        |          |The 16-bit register defines the repeat times of block transfer.
      */
-    __IO uint32_t AICTL;         /*!< [0x0600] Address Interval Control Register of PDMA Channel 0                 */
-    __IO uint32_t RCNT;          /*!< [0x0604] Repeat Count Register of PDMA Channel 0                             */
+    __IO uint32_t AICTL;         /*!< [0x0600] Address Interval Control Register of PDMA Channel n                 */
+    __IO uint32_t RCNT;          /*!< [0x0604] Repeat Count Register of PDMA Channel n                             */
 } REPEAT_T;
 
 typedef struct
@@ -446,7 +446,7 @@ typedef struct
      * |        |          |The calculation unit is based on TOUTPSC7 (PDMA_TOUTPSC[30:28]) clock
      * |        |          |The example of time-out period can refer TOC6 bit description.
      * @var PDMA_T::TOC8_9
- * Offset: 0x450  PDMA Time-out Counter Ch9 and Ch8 Register
+     * Offset: 0x450  PDMA Time-out Counter Ch9 and Ch8 Register
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
@@ -466,106 +466,106 @@ typedef struct
      * |[9:0]  |CHnRST    |Channel N Reset
      * |        |          |0 = corresponding channel n is not reset.
      * |        |          |1 = corresponding channel n is reset.
-* @var PDMA_T::TOUTPSC
- * Offset: 0x470  PDMA Time-out Prescaler Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[2:0]   |TOUTPSC0  |PDMA Channel n Time-out Clock Source Prescaler Bits
- * |        |          |000 = PDMA channel n time-out clock source is HCLK/28.
- * |        |          |001 = PDMA channel n time-out clock source is HCLK/29.
- * |        |          |010 = PDMA channel n time-out clock source is HCLK/210.
- * |        |          |011 = PDMA channel n time-out clock source is HCLK/211.
- * |        |          |100 = PDMA channel n time-out clock source is HCLK/212.
- * |        |          |101 = PDMA channel n time-out clock source is HCLK/213.
- * |        |          |110 = PDMA channel n time-out clock source is HCLK/214.
- * |        |          |111 = PDMA channel n time-out clock source is HCLK/215.
- * |[6:4]   |TOUTPSC1  |PDMA Channel n Time-out Clock Source Prescaler Bits
- * |        |          |000 = PDMA channel n time-out clock source is HCLK/28.
- * |        |          |001 = PDMA channel n time-out clock source is HCLK/29.
- * |        |          |010 = PDMA channel n time-out clock source is HCLK/210.
- * |        |          |011 = PDMA channel n time-out clock source is HCLK/211.
- * |        |          |100 = PDMA channel n time-out clock source is HCLK/212.
- * |        |          |101 = PDMA channel n time-out clock source is HCLK/213.
- * |        |          |110 = PDMA channel n time-out clock source is HCLK/214.
- * |        |          |111 = PDMA channel n time-out clock source is HCLK/215.
- * |[10:8]  |TOUTPSC2  |PDMA Channel n Time-out Clock Source Prescaler Bits
- * |        |          |000 = PDMA channel n time-out clock source is HCLK/28.
- * |        |          |001 = PDMA channel n time-out clock source is HCLK/29.
- * |        |          |010 = PDMA channel n time-out clock source is HCLK/210.
- * |        |          |011 = PDMA channel n time-out clock source is HCLK/211.
- * |        |          |100 = PDMA channel n time-out clock source is HCLK/212.
- * |        |          |101 = PDMA channel n time-out clock source is HCLK/213.
- * |        |          |110 = PDMA channel n time-out clock source is HCLK/214.
- * |        |          |111 = PDMA channel n time-out clock source is HCLK/215.
- * |[14:12] |TOUTPSC3  |PDMA Channel n Time-out Clock Source Prescaler Bits
- * |        |          |000 = PDMA channel n time-out clock source is HCLK/28.
- * |        |          |001 = PDMA channel n time-out clock source is HCLK/29.
- * |        |          |010 = PDMA channel n time-out clock source is HCLK/210.
- * |        |          |011 = PDMA channel n time-out clock source is HCLK/211.
- * |        |          |100 = PDMA channel n time-out clock source is HCLK/212.
- * |        |          |101 = PDMA channel n time-out clock source is HCLK/213.
- * |        |          |110 = PDMA channel n time-out clock source is HCLK/214.
- * |        |          |111 = PDMA channel n time-out clock source is HCLK/215.
- * |[18:16] |TOUTPSC4  |PDMA Channel n Time-out Clock Source Prescaler Bits
- * |        |          |000 = PDMA channel n time-out clock source is HCLK/28.
- * |        |          |001 = PDMA channel n time-out clock source is HCLK/29.
- * |        |          |010 = PDMA channel n time-out clock source is HCLK/210.
- * |        |          |011 = PDMA channel n time-out clock source is HCLK/211.
- * |        |          |100 = PDMA channel n time-out clock source is HCLK/212.
- * |        |          |101 = PDMA channel n time-out clock source is HCLK/213.
- * |        |          |110 = PDMA channel n time-out clock source is HCLK/214.
- * |        |          |111 = PDMA channel n time-out clock source is HCLK/215.
- * |[22:20] |TOUTPSC5  |PDMA Channel n Time-out Clock Source Prescaler Bits
- * |        |          |000 = PDMA channel n time-out clock source is HCLK/28.
- * |        |          |001 = PDMA channel n time-out clock source is HCLK/29.
- * |        |          |010 = PDMA channel n time-out clock source is HCLK/210.
- * |        |          |011 = PDMA channel n time-out clock source is HCLK/211.
- * |        |          |100 = PDMA channel n time-out clock source is HCLK/212.
- * |        |          |101 = PDMA channel n time-out clock source is HCLK/213.
- * |        |          |110 = PDMA channel n time-out clock source is HCLK/214.
- * |        |          |111 = PDMA channel n time-out clock source is HCLK/215.
- * |[26:24] |TOUTPSC6  |PDMA Channel n Time-out Clock Source Prescaler Bits
- * |        |          |000 = PDMA channel n time-out clock source is HCLK/28.
- * |        |          |001 = PDMA channel n time-out clock source is HCLK/29.
- * |        |          |010 = PDMA channel n time-out clock source is HCLK/210.
- * |        |          |011 = PDMA channel n time-out clock source is HCLK/211.
- * |        |          |100 = PDMA channel n time-out clock source is HCLK/212.
- * |        |          |101 = PDMA channel n time-out clock source is HCLK/213.
- * |        |          |110 = PDMA channel n time-out clock source is HCLK/214.
- * |        |          |111 = PDMA channel n time-out clock source is HCLK/215.
- * |[30:28] |TOUTPSC7  |PDMA Channel n Time-out Clock Source Prescaler Bits
- * |        |          |000 = PDMA channel n time-out clock source is HCLK/28.
- * |        |          |001 = PDMA channel n time-out clock source is HCLK/29.
- * |        |          |010 = PDMA channel n time-out clock source is HCLK/210.
- * |        |          |011 = PDMA channel n time-out clock source is HCLK/211.
- * |        |          |100 = PDMA channel n time-out clock source is HCLK/212.
- * |        |          |101 = PDMA channel n time-out clock source is HCLK/213.
- * |        |          |110 = PDMA channel n time-out clock source is HCLK/214.
- * |        |          |111 = PDMA channel n time-out clock source is HCLK/215.
- * @var PDMA_T::TOUTPSC1
- * Offset: 0x474  PDMA Time-out Prescaler Register1
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[2:0]   |TOUTPSC8  |PDMA Channel n Time-out Clock Source Prescaler Bits
- * |        |          |000 = PDMA channel n time-out clock source is HCLK/28.
- * |        |          |001 = PDMA channel n time-out clock source is HCLK/29.
- * |        |          |010 = PDMA channel n time-out clock source is HCLK/210.
- * |        |          |011 = PDMA channel n time-out clock source is HCLK/211.
- * |        |          |100 = PDMA channel n time-out clock source is HCLK/212.
- * |        |          |101 = PDMA channel n time-out clock source is HCLK/213.
- * |        |          |110 = PDMA channel n time-out clock source is HCLK/214.
- * |        |          |111 = PDMA channel n time-out clock source is HCLK/215.
- * |[6:4]   |TOUTPSC9  |PDMA Channel n Time-out Clock Source Prescaler Bits
- * |        |          |000 = PDMA channel n time-out clock source is HCLK/28.
- * |        |          |001 = PDMA channel n time-out clock source is HCLK/29.
- * |        |          |010 = PDMA channel n time-out clock source is HCLK/210.
- * |        |          |011 = PDMA channel n time-out clock source is HCLK/211.
- * |        |          |100 = PDMA channel n time-out clock source is HCLK/212.
- * |        |          |101 = PDMA channel n time-out clock source is HCLK/213.
- * |        |          |110 = PDMA channel n time-out clock source is HCLK/214.
- * |        |          |111 = PDMA channel n time-out clock source is HCLK/215.
+     * @var PDMA_T::TOUTPSC
+     * Offset: 0x470  PDMA Time-out Prescaler Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[2:0]   |TOUTPSC0  |PDMA Channel n Time-out Clock Source Prescaler Bits
+     * |        |          |000 = PDMA channel n time-out clock source is HCLK/28.
+     * |        |          |001 = PDMA channel n time-out clock source is HCLK/29.
+     * |        |          |010 = PDMA channel n time-out clock source is HCLK/210.
+     * |        |          |011 = PDMA channel n time-out clock source is HCLK/211.
+     * |        |          |100 = PDMA channel n time-out clock source is HCLK/212.
+     * |        |          |101 = PDMA channel n time-out clock source is HCLK/213.
+     * |        |          |110 = PDMA channel n time-out clock source is HCLK/214.
+     * |        |          |111 = PDMA channel n time-out clock source is HCLK/215.
+     * |[6:4]   |TOUTPSC1  |PDMA Channel n Time-out Clock Source Prescaler Bits
+     * |        |          |000 = PDMA channel n time-out clock source is HCLK/28.
+     * |        |          |001 = PDMA channel n time-out clock source is HCLK/29.
+     * |        |          |010 = PDMA channel n time-out clock source is HCLK/210.
+     * |        |          |011 = PDMA channel n time-out clock source is HCLK/211.
+     * |        |          |100 = PDMA channel n time-out clock source is HCLK/212.
+     * |        |          |101 = PDMA channel n time-out clock source is HCLK/213.
+     * |        |          |110 = PDMA channel n time-out clock source is HCLK/214.
+     * |        |          |111 = PDMA channel n time-out clock source is HCLK/215.
+     * |[10:8]  |TOUTPSC2  |PDMA Channel n Time-out Clock Source Prescaler Bits
+     * |        |          |000 = PDMA channel n time-out clock source is HCLK/28.
+     * |        |          |001 = PDMA channel n time-out clock source is HCLK/29.
+     * |        |          |010 = PDMA channel n time-out clock source is HCLK/210.
+     * |        |          |011 = PDMA channel n time-out clock source is HCLK/211.
+     * |        |          |100 = PDMA channel n time-out clock source is HCLK/212.
+     * |        |          |101 = PDMA channel n time-out clock source is HCLK/213.
+     * |        |          |110 = PDMA channel n time-out clock source is HCLK/214.
+     * |        |          |111 = PDMA channel n time-out clock source is HCLK/215.
+     * |[14:12] |TOUTPSC3  |PDMA Channel n Time-out Clock Source Prescaler Bits
+     * |        |          |000 = PDMA channel n time-out clock source is HCLK/28.
+     * |        |          |001 = PDMA channel n time-out clock source is HCLK/29.
+     * |        |          |010 = PDMA channel n time-out clock source is HCLK/210.
+     * |        |          |011 = PDMA channel n time-out clock source is HCLK/211.
+     * |        |          |100 = PDMA channel n time-out clock source is HCLK/212.
+     * |        |          |101 = PDMA channel n time-out clock source is HCLK/213.
+     * |        |          |110 = PDMA channel n time-out clock source is HCLK/214.
+     * |        |          |111 = PDMA channel n time-out clock source is HCLK/215.
+     * |[18:16] |TOUTPSC4  |PDMA Channel n Time-out Clock Source Prescaler Bits
+     * |        |          |000 = PDMA channel n time-out clock source is HCLK/28.
+     * |        |          |001 = PDMA channel n time-out clock source is HCLK/29.
+     * |        |          |010 = PDMA channel n time-out clock source is HCLK/210.
+     * |        |          |011 = PDMA channel n time-out clock source is HCLK/211.
+     * |        |          |100 = PDMA channel n time-out clock source is HCLK/212.
+     * |        |          |101 = PDMA channel n time-out clock source is HCLK/213.
+     * |        |          |110 = PDMA channel n time-out clock source is HCLK/214.
+     * |        |          |111 = PDMA channel n time-out clock source is HCLK/215.
+     * |[22:20] |TOUTPSC5  |PDMA Channel n Time-out Clock Source Prescaler Bits
+     * |        |          |000 = PDMA channel n time-out clock source is HCLK/28.
+     * |        |          |001 = PDMA channel n time-out clock source is HCLK/29.
+     * |        |          |010 = PDMA channel n time-out clock source is HCLK/210.
+     * |        |          |011 = PDMA channel n time-out clock source is HCLK/211.
+     * |        |          |100 = PDMA channel n time-out clock source is HCLK/212.
+     * |        |          |101 = PDMA channel n time-out clock source is HCLK/213.
+     * |        |          |110 = PDMA channel n time-out clock source is HCLK/214.
+     * |        |          |111 = PDMA channel n time-out clock source is HCLK/215.
+     * |[26:24] |TOUTPSC6  |PDMA Channel n Time-out Clock Source Prescaler Bits
+     * |        |          |000 = PDMA channel n time-out clock source is HCLK/28.
+     * |        |          |001 = PDMA channel n time-out clock source is HCLK/29.
+     * |        |          |010 = PDMA channel n time-out clock source is HCLK/210.
+     * |        |          |011 = PDMA channel n time-out clock source is HCLK/211.
+     * |        |          |100 = PDMA channel n time-out clock source is HCLK/212.
+     * |        |          |101 = PDMA channel n time-out clock source is HCLK/213.
+     * |        |          |110 = PDMA channel n time-out clock source is HCLK/214.
+     * |        |          |111 = PDMA channel n time-out clock source is HCLK/215.
+     * |[30:28] |TOUTPSC7  |PDMA Channel n Time-out Clock Source Prescaler Bits
+     * |        |          |000 = PDMA channel n time-out clock source is HCLK/28.
+     * |        |          |001 = PDMA channel n time-out clock source is HCLK/29.
+     * |        |          |010 = PDMA channel n time-out clock source is HCLK/210.
+     * |        |          |011 = PDMA channel n time-out clock source is HCLK/211.
+     * |        |          |100 = PDMA channel n time-out clock source is HCLK/212.
+     * |        |          |101 = PDMA channel n time-out clock source is HCLK/213.
+     * |        |          |110 = PDMA channel n time-out clock source is HCLK/214.
+     * |        |          |111 = PDMA channel n time-out clock source is HCLK/215.
+     * @var PDMA_T::TOUTPSC1
+     * Offset: 0x474  PDMA Time-out Prescaler Register1
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[2:0]   |TOUTPSC8  |PDMA Channel n Time-out Clock Source Prescaler Bits
+     * |        |          |000 = PDMA channel n time-out clock source is HCLK/28.
+     * |        |          |001 = PDMA channel n time-out clock source is HCLK/29.
+     * |        |          |010 = PDMA channel n time-out clock source is HCLK/210.
+     * |        |          |011 = PDMA channel n time-out clock source is HCLK/211.
+     * |        |          |100 = PDMA channel n time-out clock source is HCLK/212.
+     * |        |          |101 = PDMA channel n time-out clock source is HCLK/213.
+     * |        |          |110 = PDMA channel n time-out clock source is HCLK/214.
+     * |        |          |111 = PDMA channel n time-out clock source is HCLK/215.
+     * |[6:4]   |TOUTPSC9  |PDMA Channel n Time-out Clock Source Prescaler Bits
+     * |        |          |000 = PDMA channel n time-out clock source is HCLK/28.
+     * |        |          |001 = PDMA channel n time-out clock source is HCLK/29.
+     * |        |          |010 = PDMA channel n time-out clock source is HCLK/210.
+     * |        |          |011 = PDMA channel n time-out clock source is HCLK/211.
+     * |        |          |100 = PDMA channel n time-out clock source is HCLK/212.
+     * |        |          |101 = PDMA channel n time-out clock source is HCLK/213.
+     * |        |          |110 = PDMA channel n time-out clock source is HCLK/214.
+     * |        |          |111 = PDMA channel n time-out clock source is HCLK/215.
      * @var PDMA_T::REQSEL0_3
      * Offset: 0x480  PDMA Request Source Select Register 0
      * ---------------------------------------------------------------------------------------------------
@@ -739,13 +739,19 @@ typedef struct
      * |        |          |Note: The channel configuration is the same as REQSRC0 field
      * |        |          |Please refer to the explanation of REQSRC0.
      */
-    DSCT_T DSCT[16];
-    __I  uint32_t CURSCAT[16];              /*!< [0x0100] Current Scatter-Gather Descriptor Table Address of PDMA Channel n */
+    DSCT_T DSCT[10];
     /// @cond HIDDEN_SYMBOLS
-    __I  uint32_t RESERVE1[176];
+    DSCT_T RESERVE1[6];
+    /// @endcond //HIDDEN_SYMBOLS
+    __I  uint32_t CURSCAT[10];           /*!< [0x00A0] Current Scatter-Gather Descriptor Table Address of PDMA Channel n */
+    /// @cond HIDDEN_SYMBOLS
+    __I  uint32_t RESERVE2[6];
+    /// @endcond //HIDDEN_SYMBOLS
+    /// @cond HIDDEN_SYMBOLS
+    __I  uint32_t RESERVE3[176];
     /// @endcond //HIDDEN_SYMBOLS
     __IO uint32_t CHCTL;                 /*!< [0x0400] PDMA Channel Control Register                                    */
-    __O  uint32_t PAUSE;                 /*!< [0x0404] PDMA Transfer Pause Control Register                              */
+    __O  uint32_t PAUSE;                 /*!< [0x0404] PDMA Transfer Pause Control Register                             */
     __O  uint32_t SWREQ;                 /*!< [0x0408] PDMA Software Request Register                                   */
     __I  uint32_t TRGSTS;                /*!< [0x040c] PDMA Channel Request Status Register                             */
     __IO uint32_t PRISET;                /*!< [0x0410] PDMA Fixed Priority Setting Register                             */
@@ -756,28 +762,40 @@ typedef struct
     __IO uint32_t TDSTS;                 /*!< [0x0424] PDMA Channel Transfer Done Flag Register                         */
     __IO uint32_t ALIGN;                 /*!< [0x0428] PDMA Transfer Alignment Status Register                          */
     __I  uint32_t TACTSTS;               /*!< [0x042c] PDMA Transfer Active Flag Register                               */
-    __IO uint32_t TOUTPSC;               /*!< [0x0430] PDMA Time-out Prescaler Register                                 */
+    /// @cond HIDDEN_SYMBOLS
+    __I  uint32_t RESERVE4[1];
+    /// @endcond //HIDDEN_SYMBOLS
     __IO uint32_t TOUTEN;                /*!< [0x0434] PDMA Time-out Enable Register                                    */
     __IO uint32_t TOUTIEN;               /*!< [0x0438] PDMA Time-out Interrupt Enable Register                          */
-    __IO uint32_t SCATBA;                /*!< [0x043c] PDMA Scatter-Gather Descriptor Table Base Address Register       */
-    __IO uint32_t TOC0_1;                /*!< [0x0440] PDMA Time-out Counter Ch1 and Ch0 Register                       */
     /// @cond HIDDEN_SYMBOLS
-    __I  uint32_t RESERVE2[7];
+    __IO uint32_t RESERVE5[1];
+    /// @endcond //HIDDEN_SYMBOLS
+    __IO uint32_t TOC0_1;                /*!< [0x0440] PDMA Time-out Counter Ch1 and Ch0 Register                       */
+    __IO uint32_t TOC2_3;                /*!< [0x0444] PDMA Time-out Counter Ch3 and Ch2 Register                       */
+    __IO uint32_t TOC4_5;                /*!< [0x0448] PDMA Time-out Counter Ch5 and Ch4 Register                       */
+    __IO uint32_t TOC6_7;                /*!< [0x044C] PDMA Time-out Counter Ch7 and Ch6 Register                       */
+    __IO uint32_t TOC8_9;                /*!< [0x0450] PDMA Time-out Counter Ch9 and Ch8 Register                       */
+    /// @cond HIDDEN_SYMBOLS
+    __I  uint32_t RESERVE6[3];
     /// @endcond //HIDDEN_SYMBOLS
     __IO uint32_t CHRST;                 /*!< [0x0460] PDMA Channel Reset Register                                      */
     /// @cond HIDDEN_SYMBOLS
-    __I  uint32_t RESERVE3[7];
+    __I  uint32_t RESERVE7[3];
+    /// @endcond //HIDDEN_SYMBOLS
+    __IO uint32_t TOUTPSC;               /*!< [0x0470] PDMA Time-out Prescaler Register                                 */
+    __IO uint32_t TOUTPSC1;              /*!< [0x0474] PDMA Time-out Prescaler Register1                                */
+    /// @cond HIDDEN_SYMBOLS
+    __I  uint32_t RESERVE8[2];
     /// @endcond //HIDDEN_SYMBOLS
     __IO uint32_t REQSEL0_3;             /*!< [0x0480] PDMA Request Source Select Register 0                            */
     __IO uint32_t REQSEL4_7;             /*!< [0x0484] PDMA Request Source Select Register 1                            */
     __IO uint32_t REQSEL8_11;            /*!< [0x0488] PDMA Request Source Select Register 2                            */
-    __IO uint32_t REQSEL12_15;           /*!< [0x048c] PDMA Request Source Select Register 3                            */
     /// @cond HIDDEN_SYMBOLS
-    __I  uint32_t RESERVE4[28];
+    __I  uint32_t RESERVE9[29];
     /// @endcond //HIDDEN_SYMBOLS
     STRIDE_T     STRIDE[6];
     /// @cond HIDDEN_SYMBOLS
-    __IO uint32_t RESERVE5[52];
+    __IO uint32_t RESERVE10[52];
     /// @endcond //HIDDEN_SYMBOLS
     REPEAT_T    REPEAT[2];
 } PDMA_T;
@@ -833,25 +851,25 @@ typedef struct
 #define PDMA_CURSCAT_CURADDR_Msk        (0xfffffffful << PDMA_CURSCAT_CURADDR_Pos)        /*!< PDMA_T::CURSCAT: CURADDR Mask         */
 
 #define PDMA_CHCTL_CHENn_Pos            (0)                                               /*!< PDMA_T::CHCTL: CHENn Position          */
-#define PDMA_CHCTL_CHENn_Msk            (0xfffful << PDMA_CHCTL_CHENn_Pos)                /*!< PDMA_T::CHCTL: CHENn Mask              */
+#define PDMA_CHCTL_CHENn_Msk            (0x3fful << PDMA_CHCTL_CHENn_Pos)                 /*!< PDMA_T::CHCTL: CHENn Mask              */
 
 #define PDMA_PAUSE_PAUSEn_Pos           (0)                                               /*!< PDMA_T::PAUSE: PAUSEn Position           */
-#define PDMA_PAUSE_PAUSEn_Msk           (0xfffful << PDMA_PAUSE_PAUSEn_Pos)              /*!< PDMA_T::PAUSE: PAUSEn Mask               */
+#define PDMA_PAUSE_PAUSEn_Msk           (0x3fful << PDMA_PAUSE_PAUSEn_Pos)                /*!< PDMA_T::PAUSE: PAUSEn Mask               */
 
 #define PDMA_SWREQ_SWREQn_Pos            (0)                                               /*!< PDMA_T::SWREQ: SWREQn Position         */
-#define PDMA_SWREQ_SWREQn_Msk            (0xfffful << PDMA_SWREQ_SWREQn_Pos)               /*!< PDMA_T::SWREQ: SWREQn Mask             */
+#define PDMA_SWREQ_SWREQn_Msk            (0x3fful << PDMA_SWREQ_SWREQn_Pos)                /*!< PDMA_T::SWREQ: SWREQn Mask             */
 
 #define PDMA_TRGSTS_REQSTSn_Pos          (0)                                               /*!< PDMA_T::TRGSTS: REQSTSn Position       */
-#define PDMA_TRGSTS_REQSTSn_Msk          (0xfffful << PDMA_TRGSTS_REQSTSn_Pos)             /*!< PDMA_T::TRGSTS: REQSTSn Mask           */
+#define PDMA_TRGSTS_REQSTSn_Msk          (0x3fful << PDMA_TRGSTS_REQSTSn_Pos)              /*!< PDMA_T::TRGSTS: REQSTSn Mask           */
 
 #define PDMA_PRISET_FPRISETn_Pos         (0)                                               /*!< PDMA_T::PRISET: FPRISETn Position      */
-#define PDMA_PRISET_FPRISETn_Msk         (0xfffful << PDMA_PRISET_FPRISETn_Pos)            /*!< PDMA_T::PRISET: FPRISETn Mask          */
+#define PDMA_PRISET_FPRISETn_Msk         (0x3fful << PDMA_PRISET_FPRISETn_Pos)             /*!< PDMA_T::PRISET: FPRISETn Mask          */
 
 #define PDMA_PRICLR_FPRICLRn_Pos         (0)                                               /*!< PDMA_T::PRICLR: FPRICLRn Position      */
-#define PDMA_PRICLR_FPRICLRn_Msk         (0xfffful << PDMA_PRICLR_FPRICLRn_Pos)            /*!< PDMA_T::PRICLR: FPRICLRn Mask          */
+#define PDMA_PRICLR_FPRICLRn_Msk         (0x3fful << PDMA_PRICLR_FPRICLRn_Pos)             /*!< PDMA_T::PRICLR: FPRICLRn Mask          */
 
 #define PDMA_INTEN_INTENn_Pos            (0)                                               /*!< PDMA_T::INTEN: INTENn Position         */
-#define PDMA_INTEN_INTENn_Msk            (0xfffful << PDMA_INTEN_INTENn_Pos)               /*!< PDMA_T::INTEN: INTENn Mask             */
+#define PDMA_INTEN_INTENn_Msk            (0x3fful << PDMA_INTEN_INTENn_Pos)                /*!< PDMA_T::INTEN: INTENn Mask             */
 
 #define PDMA_INTSTS_ABTIF_Pos            (0)                                               /*!< PDMA_T::INTSTS: ABTIF Position         */
 #define PDMA_INTSTS_ABTIF_Msk            (0x1ul << PDMA_INTSTS_ABTIF_Pos)                  /*!< PDMA_T::INTSTS: ABTIF Mask             */
@@ -953,10 +971,10 @@ typedef struct
 #define PDMA_TDSTS_TDIF9_Msk           (0x1ul << PDMA_TDSTS_TDIF9_Pos)                   /*!< PDMA_T::TDSTS: TDIF9 Mask            */
 
 #define PDMA_ALIGN_ALIGNn_Pos           (0)                                                /*!< PDMA_T::ALIGN: ALIGNn Position        */
-#define PDMA_ALIGN_ALIGNn_Msk           (0xfffful << PDMA_ALIGN_ALIGNn_Pos)                /*!< PDMA_T::ALIGN: ALIGNn Mask            */
+#define PDMA_ALIGN_ALIGNn_Msk           (0x3fful << PDMA_ALIGN_ALIGNn_Pos)                /*!< PDMA_T::ALIGN: ALIGNn Mask            */
 
 #define PDMA_TACTSTS_TXACTFn_Pos         (0)                                               /*!< PDMA_T::TACTSTS: TXACTFn Position      */
-#define PDMA_TACTSTS_TXACTFn_Msk         (0xfffful << PDMA_TACTSTS_TXACTFn_Pos)            /*!< PDMA_T::TACTSTS: TXACTFn Mask          */
+#define PDMA_TACTSTS_TXACTFn_Msk         (0x3fful << PDMA_TACTSTS_TXACTFn_Pos)            /*!< PDMA_T::TACTSTS: TXACTFn Mask          */
 
 #define PDMA_TOUTPSC_TOUTPSC0_Pos        (0)                                               /*!< PDMA_T::TOUTPSC: TOUTPSC0 Position     */
 #define PDMA_TOUTPSC_TOUTPSC0_Msk        (0x7ul << PDMA_TOUTPSC_TOUTPSC0_Pos)              /*!< PDMA_T::TOUTPSC: TOUTPSC0 Mask         */
@@ -1004,7 +1022,7 @@ typedef struct
 #define PDMA_TOC8_9_TOC9_Msk             (0xfffful << PDMA_TOC8_9_TOC9_Pos)                /*!< PDMA_T::TOC8_9: TOC9 Mask              */
 
 #define PDMA_CHRST_CHnRST_Pos            (0)                                               /*!< PDMA_T::CHRST: CHnRST Position         */
-#define PDMA_CHRST_CHnRST_Msk            (0xfffful << PDMA_CHRST_CHnRST_Pos)               /*!< PDMA_T::CHRST: CHnRST Mask             */
+#define PDMA_CHRST_CHnRST_Msk            (0x3fful << PDMA_CHRST_CHnRST_Pos)                /*!< PDMA_T::CHRST: CHnRST Mask             */
 
 #define PDMA_TOUTPSC_TOUTPSC0_Pos        (0)                                               /*!< PDMA_T::TOUTPSC: TOUTPSC0 Position     */
 #define PDMA_TOUTPSC_TOUTPSC0_Msk        (0x7ul << PDMA_TOUTPSC_TOUTPSC0_Pos)              /*!< PDMA_T::TOUTPSC: TOUTPSC0 Mask         */

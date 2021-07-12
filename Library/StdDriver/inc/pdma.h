@@ -25,7 +25,7 @@ extern "C"
 /** @addtogroup PDMA_EXPORTED_CONSTANTS PDMA Exported Constants
   @{
 */
-#define PDMA_CH_MAX    16UL   /*!< Specify Maximum Channels of PDMA  \hideinitializer */
+#define PDMA_CH_MAX    10UL   /*!< Specify Maximum Channels of PDMA  \hideinitializer */
 
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Operation Mode Constant Definitions                                                                    */
