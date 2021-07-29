@@ -1050,7 +1050,7 @@ void CLK_DisableSysTick(void)
 uint32_t CLK_GetPLLClockFreq(uint32_t u32PllIdx)
 {
     uint32_t u32M, u32N, u32P, u32X, u32Mode;
-    uint32_t u32CTLVal0, u32CTLVal1, u32PllClk;
+    uint32_t u32CTLVal0, u32CTLVal1, u32PllClk, u32RefClk;
 
     u32Mode = CLK_GetPLLOpMode(u32PllIdx);
 
@@ -1063,8 +1063,10 @@ uint32_t CLK_GetPLLClockFreq(uint32_t u32PllIdx)
         u32M = (u32CTLVal0 & CLK_PLL0CTL0_INDIV_Msk) >> (CLK_PLL0CTL0_INDIV_Pos);
         u32P = (u32CTLVal1 & CLK_PLL0CTL1_OUTDIV_Msk) >> (CLK_PLL0CTL1_OUTDIV_Pos);
 
+        /* u32RefClk is shifted to avoid overflow */
+        u32RefClk = __HXT / 100;
         /* Actual PLL output clock frequency */
-        u32PllClk = (__HXT * u32N) / (u32P * (u32M));
+        u32PllClk = ((u32RefClk * u32N) / (u32P * u32M)) * 100;
 
     }
     else if (u32Mode == 1)
