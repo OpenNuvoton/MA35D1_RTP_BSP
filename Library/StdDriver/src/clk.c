@@ -933,22 +933,7 @@ void CLK_DisableModuleClock(uint32_t u32ModuleIdx)
   */
 uint32_t CLK_GetPLLOpMode(uint32_t u32PllIdx)
 {
-    uint32_t u32Mode;
-
-    if (u32PllIdx == CAPLL)
-        u32Mode = (CLK->PLL0CTL0 & ~(CLK_PLL0CTL0_MODE_Msk)) >> CLK_PLL0CTL0_MODE_Pos;
-    else if (u32PllIdx == SYSPLL)
-        u32Mode = (CLK->PLL1CTL0 & ~(CLK_PLL0CTL0_MODE_Msk)) >> CLK_PLL0CTL0_MODE_Pos;
-    else if (u32PllIdx == DDRPLL)
-        u32Mode = (CLK->PLL2CTL0 & ~(CLK_PLL0CTL0_MODE_Msk)) >> CLK_PLL0CTL0_MODE_Pos;
-    else if (u32PllIdx == APLL)
-        u32Mode = (CLK->PLL3CTL0 & ~(CLK_PLL0CTL0_MODE_Msk)) >> CLK_PLL0CTL0_MODE_Pos;
-    else if (u32PllIdx == EPLL)
-        u32Mode = (CLK->PLL4CTL0 & ~(CLK_PLL0CTL0_MODE_Msk)) >> CLK_PLL0CTL0_MODE_Pos;
-    else
-        u32Mode = (CLK->PLL5CTL0 & ~(CLK_PLL0CTL0_MODE_Msk)) >> CLK_PLL0CTL0_MODE_Pos;
-
-    return u32Mode;
+    return (CLK->PLL[u32PllIdx].CTL0 & CLK_PLL0CTL0_MODE_Msk) >> CLK_PLL0CTL0_MODE_Pos;
 }
 
 /**
@@ -1074,7 +1059,7 @@ uint32_t CLK_GetPLLClockFreq(uint32_t u32PllIdx)
         u32N = (u32CTLVal0 & CLK_PLL0CTL0_FBDIV_Msk);
         u32M = (u32CTLVal0 & CLK_PLL0CTL0_INDIV_Msk) >> (CLK_PLL0CTL0_INDIV_Pos);
         u32P = (u32CTLVal1 & CLK_PLL0CTL1_OUTDIV_Msk) >> (CLK_PLL0CTL1_OUTDIV_Pos);
-        u32X =	(u32CTLVal1 & CLK_PLL0CTL1_FRAC_Msk) >> (CLK_PLL0CTL1_FRAC_Pos);
+        u32X = (u32CTLVal1 & CLK_PLL0CTL1_FRAC_Msk) >> (CLK_PLL0CTL1_FRAC_Pos);
 
         /* Actual PLL output clock frequency */
         u32X = (((u32X * 1000) + 500) >> 24);
@@ -1087,7 +1072,7 @@ uint32_t CLK_GetPLLClockFreq(uint32_t u32PllIdx)
         //u32SR = (u32CTLVal0 & CLK_PLL0CTL0_SSRATE_Msk) >> (CLK_PLL0CTL0_SSRATE_Pos);
 
         u32P = (u32CTLVal1 & CLK_PLL0CTL1_OUTDIV_Msk) >> (CLK_PLL0CTL1_OUTDIV_Pos);
-        u32X =	(u32CTLVal1 & CLK_PLL0CTL1_FRAC_Msk) >> (CLK_PLL0CTL1_FRAC_Pos);
+        u32X = (u32CTLVal1 & CLK_PLL0CTL1_FRAC_Msk) >> (CLK_PLL0CTL1_FRAC_Pos);
 
         /* Actual PLL output clock frequency */
         u32X = ((u32X * 1000) >> 24);

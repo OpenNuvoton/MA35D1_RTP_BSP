@@ -17,6 +17,99 @@
    @{
 */
 
+typedef struct
+{
+    /**
+     * @var PLL_T::CTL0
+     * Offset: 0x0  PLL Control Register 0(Write Protect)
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[10:0]  |FBDIV     |PLL Feedback Divider Control (Write Protect)
+     * |        |          |Set the feedback divider factor (N) from 16 to 2047.
+     * |        |          |The N = FBDIV[10:0].
+     * |        |          |Note: This bit is write protected
+     * |        |          |Refer to the SYS_RLKTZS register
+     * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+     * |[17:12] |INDIV     |PLL Reference Input Divider Control (Write Protect)
+     * |        |          |Set the reference divider factor (M) from 1 to 63.
+     * |        |          |The M = INDIV[5:0].
+     * |        |          |Note: This bit is write protected
+     * |        |          |Refer to the SYS_RLKTZS register
+     * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+     * |[19:18] |MODE      |Operation Mode Selection(Write Protect)
+     * |        |          |00 = Integer mode.
+     * |        |          |In this mode, the rising edges of the two clocks at the input of PFD are phase aligned
+     * |        |          |And the output clock frequency is at multiples of the input clock frequency contingent on the configuration of OUTDIV, INDIV and FBDIV.
+     * |        |          |01 = Fractional mode.
+     * |        |          |This mode is suitable for applications which need small output frequency steps, like 20 kHz
+     * |        |          |The jitter performance in this mode may be worse than in Integer Mode.
+     * |        |          |In this mode, the output clock frequency is at the fractional multiples of the input clock frequency
+     * |        |          |By setting the control pins FRAC [23:0], a small output frequency step is achieved..
+     * |        |          |10 = Spread Spectrum Mode.
+     * |        |          |This mode is suitable for In this mode the output frequency of PLL will be modulated by triangle wave
+     * |        |          |It is for EMI consideration.
+     * |        |          |By setting SSRATE [10:0] and SLOPE [23:0], the modulation index and the modulation frequency can be programmed.
+     * |        |          |Note: This bit is write protected
+     * |        |          |Refer to the SYS_RLKTZS register
+     * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+     * |[30:20] |SSRATE    |Spreading Frequency Control (Write Protect)
+     * |        |          |Set the spread step factor SSRATE from 0 to 2047,
+     * |        |          |SSRATE = SSRATE [10:0].
+     * |        |          |Note: This bit is write protected
+     * |        |          |Refer to the SYS_RLKTZS register
+     * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+     * @var PLL_T::CTL1
+     * Offset: 0x4  PLL Control Register 1(Write Protect)
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |PD        |Power-down Mode (Write Protect)
+     * |        |          |0 = PLL is enable (in normal mode).
+     * |        |          |1 = PLL is disable (in Power-down mode) (default).
+     * |        |          |Note: This bit is write protected
+     * |        |          |Refer to the SYS_RLKTZS register
+     * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+     * |[1]     |BP        |PLL Bypass Control (Write Protect)
+     * |        |          |0 = PLL is in normal mode (default).
+     * |        |          |1 = PLL clock output is same as PLL input clock Fref.
+     * |        |          |Note: This bit is write protected
+     * |        |          |Refer to the SYS_RLKTZS register
+     * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+     * |[6:4]   |OUTDIV    |PLL Output Divider Control (Write Protect)
+     * |        |          |Set the output divider factor (P) from 1 to 7.
+     * |        |          |P = OUTDIV[2:0].
+     * |        |          |Note: This bit is write protected
+     * |        |          |Refer to the SYS_RLKTZS register
+     * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+     * |[31:8]  |FRAC      |PLL Fractional Portion of DN Value (Write Protect)
+     * |        |          |Set the fraction part (X) of Fractional Portion of DN Value factor.
+     * |        |          |The X = FRAC[23:0] / 224.
+     * |        |          |Note: This bit is write protected
+     * |        |          |Refer to the SYS_RLKTZS register
+     * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+     * @var PLL_T::CTL2
+     * Offset: 0x8  PLL Control Register 2(Write Protect)
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[23:0]  |SLOPE     |PLL Stable Counter Selection (Write Protect)
+     * |        |          |Set the spread step factor SLOPE from 0 to 16777215,
+     * |        |          |SLOPE = SLOPE[23:0].
+     * |        |          |Note 1: This bit is write protected
+     * |        |          |Refer to the SYS_RLKTZS register
+     * |        |          |For PLL3, PLL4, and PLL5, user can also refer to the SYS_RLKTZNS register if SYSSIAEN is 1.
+     * @var PLL_T::RESERVE
+     * Offset: 0xC
+     * ---------------------------------------------------------------------------------------------------
+     */
+    __IO uint32_t CTL0;              /*!< [0x0000] PLL Control Register 0 of PLL Channel n.(Write Protect)          */
+    __IO uint32_t CTL1;              /*!< [0x0004] PLL Control Register 1 of PLL Channel n.(Write Protect)          */
+    __IO uint32_t CTL2;              /*!< [0x0008] PLL Control Register 2 of PLL Channel n.(Write Protect)          */
+    __IO uint32_t RESERVE;           /*!< [0x000c] Reserved                                                         */
+
+} PLL_T;
+
 /**
     @addtogroup CLK System Clock Controller(CLK)
     Memory Mapped Structure for CLK Controller
@@ -1662,30 +1755,7 @@ typedef struct
     __I  uint32_t RESERVE0[3];
     __I  uint32_t STATUS;                /*!< [0x0050] Clock Status Monitor Register                                    */
     __I  uint32_t RESERVE1[3];
-    __IO uint32_t PLL0CTL0;              /*!< [0x0060] CA-PLL Control Register 0(Write Protect)                         */
-    __IO uint32_t PLL0CTL1;              /*!< [0x0064] CA-PLL Control Register 1(Write Protect)                         */
-    __IO uint32_t PLL0CTL2;              /*!< [0x0068] CA-PLL Control Register 2(Write Protect)                         */
-    __I  uint32_t RESERVE2[1];
-    __IO uint32_t PLL1CTL0;              /*!< [0x0070] SYS-PLL Control Register 0(Write Protect)                        */
-    __IO uint32_t PLL1CTL1;              /*!< [0x0074] SYS-PLL Control Register 1(Write Protect)                        */
-    __IO uint32_t PLL1CTL2;              /*!< [0x0078] SYS-PLL Control Register 2(Write Protect)                        */
-    __I  uint32_t RESERVE3[1];
-    __IO uint32_t PLL2CTL0;              /*!< [0x0080] DDR-PLL Control Register 0(Write Protect)                        */
-    __IO uint32_t PLL2CTL1;              /*!< [0x0084] DDR-PLL Control Register 1(Write Protect)                        */
-    __IO uint32_t PLL2CTL2;              /*!< [0x0088] DDR-PLL Control Register 2(Write Protect)                        */
-    __I  uint32_t RESERVE4[1];
-    __IO uint32_t PLL3CTL0;              /*!< [0x0090] APLL Control Register 0(Write Protect)                           */
-    __IO uint32_t PLL3CTL1;              /*!< [0x0094] APLL Control Register 1(Write Protect)                           */
-    __IO uint32_t PLL3CTL2;              /*!< [0x0098] APLL Control Register 2(Write Protect)                           */
-    __I  uint32_t RESERVE5[1];
-    __IO uint32_t PLL4CTL0;              /*!< [0x00a0] EPLL Control Register 0(Write Protect)                           */
-    __IO uint32_t PLL4CTL1;              /*!< [0x00a4] EPLL Control Register 1(Write Protect)                           */
-    __IO uint32_t PLL4CTL2;              /*!< [0x00a8] EPLL Control Register 2(Write Protect)                           */
-    __I  uint32_t RESERVE6[1];
-    __IO uint32_t PLL5CTL0;              /*!< [0x00b0] VPLL Control Register 0(Write Protect)                           */
-    __IO uint32_t PLL5CTL1;              /*!< [0x00b4] VPLL Control Register 1(Write Protect)                           */
-    __IO uint32_t PLL5CTL2;              /*!< [0x00b8] VPLL Control Register 2(Write Protect)                           */
-    __I  uint32_t RESERVE7[1];
+    PLL_T PLL[6];                        /*!< [0x0060] PLL Control Registers (Write Protect)                            */
     __IO uint32_t CLKDCTL;               /*!< [0x00c0] Clock Fail Detector Control Register(Write Protect)              */
     __IO uint32_t CLKDSTS;               /*!< [0x00c4] Clock Fail Detector Status Register(Write Protect)               */
     __IO uint32_t CDUPB;                 /*!< [0x00c8] Clock Frequency Detector Upper Boundary Register(Write Protect)  */
