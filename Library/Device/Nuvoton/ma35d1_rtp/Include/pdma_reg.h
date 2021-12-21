@@ -740,10 +740,10 @@ typedef struct
      * |        |          |Please refer to the explanation of REQSRC0.
      */
     DSCT_T DSCT[10];
+    __I  uint32_t CURSCAT[10];           /*!< [0x00A0] Current Scatter-Gather Descriptor Table Address of PDMA Channel n */
     /// @cond HIDDEN_SYMBOLS
     DSCT_T RESERVE1[6];
     /// @endcond //HIDDEN_SYMBOLS
-    __I  uint32_t CURSCAT[10];           /*!< [0x00A0] Current Scatter-Gather Descriptor Table Address of PDMA Channel n */
     /// @cond HIDDEN_SYMBOLS
     __I  uint32_t RESERVE2[6];
     /// @endcond //HIDDEN_SYMBOLS
