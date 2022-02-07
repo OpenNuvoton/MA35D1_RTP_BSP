@@ -35,7 +35,8 @@ void SYS_Init(void)
     CLK_SetModuleClock(UART16_MODULE, CLK_CLKSEL3_UART16SEL_HXT, CLK_CLKDIV1_UART16(1));
     CLK_EnableModuleClock(UART16_MODULE);
     CLK_EnableModuleClock(TMR2_MODULE);
-
+    /* To update the variable SystemCoreClock */
+    SystemCoreClockUpdate();
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/

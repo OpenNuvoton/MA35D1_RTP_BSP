@@ -33,7 +33,7 @@
 #define Shere_Memory_Size 128*2
 static uint32_t Shere_Memory__[Shere_Memory_Size];
 
-#define SHM_START_ADDRESS       (metal_phys_addr_t)(0x24000000)
+#define SHM_START_ADDRESS       (metal_phys_addr_t)(0x2401ff00)
 #define SHM_SIZE                (size_t)Shere_Memory_Size
 #define SHM_TX_RX_SIZE          (size_t)(Shere_Memory_Size/2)
 #define SHM_RX_START_ADDRESS    SHM_START_ADDRESS
@@ -43,7 +43,7 @@ static uint32_t Shere_Memory__[Shere_Memory_Size];
 #define Shere_Memory_Size 128*2
 static uint32_t Shere_Memory__[Shere_Memory_Size];
 
-#define SHM_START_ADDRESS       (metal_phys_addr_t)(0x24000000)
+#define SHM_START_ADDRESS       (metal_phys_addr_t)(0x2401ff00)
 #define SHM_SIZE                (size_t)Shere_Memory_Size
 #define SHM_TX_RX_SIZE          (size_t)(Shere_Memory_Size/2)
 #define SHM_RX_START_ADDRESS    SHM_START_ADDRESS

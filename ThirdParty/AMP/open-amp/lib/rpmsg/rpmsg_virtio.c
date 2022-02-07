@@ -223,22 +223,7 @@ static void *rpmsg_virtio_get_rx_buffer(struct rpmsg_virtio_device *rvdev,
  */
 static int rpmsg_virtio_wait_remote_ready(struct rpmsg_virtio_device *rvdev)
 {
-	uint8_t status;
-
-	while (1) {
-		status = rpmsg_virtio_get_status(rvdev);
-		/* Busy wait until the remote is ready */
-		if (status & VIRTIO_CONFIG_STATUS_NEEDS_RESET) {
-			rpmsg_virtio_set_status(rvdev, 0);
-			/* TODO notify remote processor */
-		} else if (status & VIRTIO_CONFIG_STATUS_DRIVER_OK) {
-			return true;
-		}
-		/* TODO: clarify metal_cpu_yield usage*/
-		metal_cpu_yield();
-	}
-
-	return false;
+	return true;
 }
 #endif /*!VIRTIO_MASTER_ONLY*/
 

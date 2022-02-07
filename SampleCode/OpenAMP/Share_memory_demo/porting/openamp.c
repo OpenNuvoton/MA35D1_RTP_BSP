@@ -178,7 +178,7 @@ int OPENAMP_send_data(struct rpmsg_endpoint *ept, const void *data, int len)
 
 int OPENAMP_check_TxAck(struct rpmsg_endpoint *ept)
 {
-    if(Mbox_Poll(ept) == TX_ACK)
+    if(WHC0_TX_Flag == TX_ACK)
         return 1;
     else
         return 0;
