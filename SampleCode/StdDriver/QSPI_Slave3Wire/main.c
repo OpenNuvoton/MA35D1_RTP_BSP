@@ -1,6 +1,6 @@
 /**************************************************************************//**
  * @file     main.c
- * @brief    Configure QSPI0 as Slave 3 wire mode and demonstrate how to
+ * @brief    Configure QSPI1 as Slave 3 wire mode and demonstrate how to
  *           communicate with an off-chip SPI Master device with FIFO mode.
  *           This sample code needs to work with SPI_MasterFifoMode sample code.
  *
@@ -39,7 +39,7 @@ void SYS_Init(void)
     /* Select UART module clock source as HXT and UART module clock divider as 1 */
     CLK_SetModuleClock(UART16_MODULE, CLK_CLKSEL3_UART16SEL_HXT, CLK_CLKDIV1_UART16(1));
     
-    /* Select PCLK0 as the clock source of QSPI0 */
+    /* Select PCLK0 as the clock source of QSPI1 */
     CLK_SetModuleClock(QSPI1_MODULE, CLK_CLKSEL4_QSPI1SEL_HXT, MODULE_NoMsk);
 
     /* Enable QSPI1 peripheral clock */
@@ -62,7 +62,7 @@ void QSPI_Init(void)
 {
 
     /* Configure as a slave, clock idle low, 32-bit transaction, drive output on falling clock edge and latch input on rising edge. */
-    /* Configure QSPI0 as a low level active device. */
+    /* Configure QSPI1 as a low level active device. */
     QSPI_Open(QSPI1, SPI_SLAVE, SPI_MODE_0, 32, (uint32_t)NULL);
 
     /* Enable slave 3 wire mode */
@@ -87,13 +87,13 @@ int main(void)
 
     printf("\n\n");
     printf("+----------------------------------------------------------------------+\n");
-    printf("|           QSPI0 Slave 3 Wire Mode Sample Code                        |\n");
+    printf("|           QSPI1 Slave 3 Wire Mode Sample Code                        |\n");
     printf("+----------------------------------------------------------------------+\n");
     printf("\n");
-    printf("Configure QSPI0 as a slave.\n");
+    printf("Configure QSPI1 as a slave.\n");
     printf("Bit length of a transaction: 32\n");
-    printf("The I/O connection for QSPI0:\n");
-    printf("    QSPI0_CLK(PD9)\n    QSPI0_MISO(PD10)\n    QSPI0_MOSI(PD11)\n\n");
+    printf("The I/O connection for QSPI1:\n");
+    printf("    QSPI1_CLK(PD9)\n    QSPI1_MISO(PD10)\n    QSPI1_MOSI(PD11)\n\n");
     printf("SPI controller will enable FIFO mode and transfer %d data to a off-chip master device.\n", TEST_COUNT);
     printf("In the meanwhile the SPI controller will receive %d data from the off-chip master device.\n", TEST_COUNT);
     printf("After the transfer is done, the %d received data will be printed out.\n", TEST_COUNT);
@@ -136,7 +136,7 @@ int main(void)
 
     printf("\n\nExit QSPI driver sample code.\n");
 
-    /* Reset QSPI0 */
+    /* Reset QSPI1 */
     QSPI_Close(QSPI1);
     while(1);
 }
