@@ -178,7 +178,7 @@ typedef struct
  * |        |          |When READ:
  * |        |          |0 = No key release.
  * |        |          |1 = At least one key release.
- * |        |          |Note: To clear RKEYINT, software must clear each releasing event that are shown on u201Ckey releasing eventu201D.
+ * |        |          |Note: To clear RKEYINT, software must clear each releasing event that are shown on "key releasing event".
  * |        |          |C code example:
  * |        |          |DWORD RKE0, RKE1
  * |        |          |PKE0 = reg_read(KPIKRE0); PKE1 = reg_read(KPIKRE1);.
@@ -188,7 +188,7 @@ typedef struct
  * |        |          |When READ:
  * |        |          |0 = No key press.
  * |        |          |1 = At least one key press.
- * |        |          |Note: To clear PKEYINT, software must clear each pressing event that are shown on u201CKPIKPE1, KPIKPE0u201D.
+ * |        |          |Note: To clear PKEYINT, software must clear each pressing event that are shown on "KPIKPE1, KPIKPE0".
  * |        |          |C code example:
  * |        |          |DWORD PKE0, PKE1
  * |        |          |PKE0 = reg_read(KPIKPE0); PKE1 = reg_read(KPIKPE1);.

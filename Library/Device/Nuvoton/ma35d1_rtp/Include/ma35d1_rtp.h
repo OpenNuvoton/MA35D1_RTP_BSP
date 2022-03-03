@@ -240,7 +240,7 @@ IRQn_Type;
 #include "timer_reg.h"
 #include "ebi_reg.h"
 #include "epwm_reg.h"
-//#include "kpi_reg.h"
+#include "kpi_reg.h"
 #include "canfd_reg.h"
 
 /** @addtogroup PERIPHERAL_MEM_MAP Peripheral Memory Base
@@ -662,7 +662,7 @@ typedef volatile uint64_t vu64;       ///< Define 64-bit unsigned volatile data 
 #include "spi.h"
 #include "qspi.h"
 #include "rtc.h"
-//#include "kpi.h"
+#include "kpi.h"
 #include "canfd.h"
 
 #ifdef __cplusplus

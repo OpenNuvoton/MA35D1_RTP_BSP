@@ -30,9 +30,11 @@
 /**
   * @brief   Open KPI function.
   *
-  * @return   TRUE:  Success  \n
-  *           FALSE:  KPI function already open
+  * @param[in]    kpi       The pointer of the specified KPI module.
+  * @param[in]    u32Row    KPI row number.
+  * @param[in]    u32Col    KPI column number.
   *
+  * @return       None
   */
 void KPI_Open(KPI_T* kpi, uint32_t u32Row, uint32_t u32Col)
 {
@@ -63,8 +65,9 @@ void KPI_Open(KPI_T* kpi, uint32_t u32Row, uint32_t u32Col)
 /**
   * @brief   Close KPI function.
   *
-  * @return   Successful:  Success   \n
-  *           kpiNotOpen:  KPI function not open
+  * @param[in]    kpi    The pointer of the specified KPI module.
+  *
+  * @return       None
   */
 void KPI_Close(KPI_T* kpi)
 {
@@ -75,16 +78,16 @@ void KPI_Close(KPI_T* kpi)
 /**
   * @brief   Config KPI scan key timing.
   *
-  * @param[in]    u32PreScale: Row Scan Cycle Pre-scale Value. The divided number is from 1 to 256
-  * @param[in]    u32Debounce:  De-bounce Sampling Cycle. The value is from 3 to 13
-  * @param[in]    u32ScanDelay: Setting delay cycle when row change:
+  * @param[in]    kpi            The pointer of the specified KPI module.
+  * @param[in]    u32PreScale    Row Scan Cycle Pre-scale Value. The divided number is from 1 to 256
+  * @param[in]    u32Debounce    De-bounce Sampling Cycle. The value is from 3 to 13
+  * @param[in]    u32ScanDelay   Setting delay cycle when row change:
   *               \ref KPI_ROW_SCAN_DELAY4CLK
   *               \ref KPI_ROW_SCAN_DELAY8CLK
   *               \ref KPI_ROW_SCAN_DELAY16CLK
   *               \ref KPI_ROW_SCAN_DELAY32CLK
   *
   * @return   None
-  *
   */
 void KPI_ConfigKeyScanTiming(KPI_T* kpi, uint32_t u32PreScale, uint32_t u32Debounce, uint32_t u32ScanDelay)
 {
@@ -99,6 +102,7 @@ void KPI_ConfigKeyScanTiming(KPI_T* kpi, uint32_t u32PreScale, uint32_t u32Debou
 /**
   * @brief   Read KPI Release key Status.
   *
+  * @param[in]    kpi      The pointer of the specified KPI module.
   * @param[in]    u32Key1: \ref KPI_KEY00 ~ \ref KPI_KEY58
   * @param[in]    u32Key2: \ref KPI_KEY00 ~ \ref KPI_KEY58
   * @param[in]    u32Key3: \ref KPI_KEY00 ~ \ref KPI_KEY58
