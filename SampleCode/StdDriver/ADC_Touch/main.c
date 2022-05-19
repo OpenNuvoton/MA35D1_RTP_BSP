@@ -8,12 +8,13 @@
 #include <stdio.h>
 #include "NuMicro.h"
 
+#define Z_TH    20
 
-uint32_t u32PenDown = 0;
+volatile uint32_t u32PenDown = 2;
 
-void ADC_IRQHandler(void)
+void ADC0_IRQHandler(void)
 {
-    if(!u32PenDown)
+    if(u32PenDown == 0)
     {
         // Clear interrupt flag
         ADC_CLR_INT_FLAG(ADC0, ADC_ISR_PEDEF_Msk);
@@ -22,22 +23,23 @@ void ADC_IRQHandler(void)
         ADC_EnableInt(ADC0, ADC_IER_MIEN_Msk);
         ADC_CONVERT_XY_MODE(ADC0);
         u32PenDown = 1;
+        ADC_START_CONV(ADC0);
     }
-    else{
+    else if (u32PenDown == 1){
         // Clear interrupt flag
         ADC_CLR_INT_FLAG(ADC0, ADC_ISR_MF_Msk);
         // Get ADC convert result
-        printf("Convert result: X=%d, Y=%d\n", 
+        printf("Convert result: X=%d, Y=%d, Z=%d\n",
                (uint32_t)ADC_GET_CONVERSION_XDATA(ADC0),
-               (uint32_t)ADC_GET_CONVERSION_YDATA(ADC0));
-        if(ADC_GET_CONVERSION_Z1DATA(ADC0) == 0 && ADC_GET_CONVERSION_Z2DATA(ADC0) == 0xFFF)
+               (uint32_t)ADC_GET_CONVERSION_YDATA(ADC0),
+               (uint32_t)ADC_GET_CONVERSION_Z1DATA(ADC0));
+        if(ADC_GET_CONVERSION_Z1DATA(ADC0) < Z_TH)
         {
             // Pen up, switch from convert X/Y value to detect pen down event
             ADC_DisableInt(ADC0, ADC_IER_MIEN_Msk);
-            ADC_EnableInt(ADC0, ADC_IER_PEDEIEN_Msk);
-            ADC_DETECT_PD_MODE(ADC0);
-            u32PenDown = 0;
-        }
+            u32PenDown = 2;
+        }else
+             ADC_START_CONV(ADC0);
     }
 }
 
@@ -101,26 +103,25 @@ int32_t main (void)
     // Enable channel 0
     ADC_Open(ADC0, ADC_INPUT_MODE_4WIRE_TOUCH, ADC_HIGH_SPEED_MODE, ADC_CH_0_MASK);
 
-    // Power on ADC
-    ADC_POWER_ON(ADC0);
-
-
-    // Enable ADC pen down complete interrupt
-    ADC_EnableInt(ADC0, ADC_IER_PEDEIEN_Msk);
     NVIC_EnableIRQ(ADC0_IRQn);
-    // Start to detect pen down event
-    ADC_DETECT_PD_MODE(ADC0);
 
     while(1)
     {
         // Convert X/Y value if touch detected
-        if(!u32PenDown)
+        if(u32PenDown == 2)
         {
-            ADC_START_CONV(ADC0);
-            // Convert 100 coordinate every 1 second
-            TIMER_Delay(TIMER2, 100);
+            // Start to detect pen down event
+            ADC_DETECT_PD_MODE(ADC0);
+            TIMER_Delay(TIMER2, 200);
+            ADC_CLR_INT_FLAG(ADC0, ADC_ISR_PEDEF_Msk|ADC_ISR_PEUEF_Msk);
+
+            // Enable ADC pen down complete interrupt
+            ADC_EnableInt(ADC0, ADC_IER_PEDEIEN_Msk);
+
+            // Power on ADC
+            ADC_POWER_ON(ADC0);
+            u32PenDown = 0;
         }
     }
-
 }
 

@@ -82,7 +82,7 @@ extern "C"
   * @return  Latest ADC conversion Z1 data
   * \hideinitializer
   */
-#define ADC_GET_CONVERSION_Z1DATA(adc) ((adc)->DATA & ADC_ZDATA_Z1DATA_Msk)
+#define ADC_GET_CONVERSION_Z1DATA(adc) ((adc)->ZDATA & ADC_ZDATA_Z1DATA_Msk)
 
 /**
   * @brief Get the latest ADC conversion Z2 data
@@ -90,7 +90,7 @@ extern "C"
   * @return  Latest ADC conversion Z2 data
   * \hideinitializer
   */
-#define ADC_GET_CONVERSION_Z2DATA(adc) ((adc)->DATA >> ADC_ZDATA_Z2DATA_Pos)
+#define ADC_GET_CONVERSION_Z2DATA(adc) ((adc)->ZDATA >> ADC_ZDATA_Z2DATA_Pos)
 
 /**
   * @brief Return the user-specified interrupt flags
