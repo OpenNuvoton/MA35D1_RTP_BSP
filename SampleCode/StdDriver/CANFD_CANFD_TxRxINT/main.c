@@ -50,9 +50,9 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
 
     /* Enable IP clock */
-    CLK_SetModuleClock(CAN0_MODULE, CLK_CLKSEL4_CAN0SEL_APLL, 0);
-    CLK_EnableModuleClock(CAN0_MODULE);
-    CLK_SetModuleClock(UART16_MODULE, CLK_CLKSEL3_UART16SEL_HXT, CLK_CLKDIV1_UART16(1));
+    CLK_SetModuleClock(CANFD0_MODULE, CLK_CLKSEL4_CANFD0SEL_APLL, 0);
+    CLK_EnableModuleClock(CANFD0_MODULE);
+    CLK_SetModuleClock(UART16_MODULE, CLK_CLKSEL3_UART16SEL_HXT, CLK_CLKDIV3_UART16(1));
     CLK_EnableModuleClock(UART16_MODULE);
 
     /*---------------------------------------------------------------------------------------------------------*/

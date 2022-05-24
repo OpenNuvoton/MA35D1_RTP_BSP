@@ -110,81 +110,49 @@ uint32_t SPI_Open(SPI_T *spi,
         /* Check clock source of SPI */
         if(spi == SPI0)
         {
-            if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI0SEL_Msk) == CLK_CLKSEL4_SPI0SEL_HXT)
+            if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI0SEL_Msk) == CLK_CLKSEL4_SPI0SEL_APLL)
             {
-                u32ClkSrc = __HXT; /* Clock source is HXT */
-            }
-            else if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI0SEL_Msk) == CLK_CLKSEL4_SPI0SEL_EPLL_DIV4)
-            {
-                u32ClkSrc = CLK_GetPLLClockFreq(EPLL)/4; /* Clock source is PLL */
+                u32ClkSrc = CLK_GetPLLClockFreq(APLL); /* Clock source is APLL */
             }
             else if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI0SEL_Msk) == CLK_CLKSEL4_SPI0SEL_PCLK1)
             {
                 /* Clock source is PCLK1 */
                 u32ClkSrc = CLK_GetPCLK1Freq();
             }
-            else
-            {
-                u32ClkSrc = __HIRC; /* Clock source is HIRC */
-            }
         }
         else if(spi == SPI1)
         {
-            if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI1SEL_Msk) == CLK_CLKSEL4_SPI1SEL_HXT)
+            if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI1SEL_Msk) == CLK_CLKSEL4_SPI1SEL_APLL)
             {
-                u32ClkSrc = __HXT; /* Clock source is HXT */
-            }
-            else if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI1SEL_Msk) == CLK_CLKSEL4_SPI1SEL_EPLL_DIV4)
-            {
-                u32ClkSrc = CLK_GetPLLClockFreq(EPLL)/4; /* Clock source is PLL */
+                u32ClkSrc = CLK_GetPLLClockFreq(APLL); /* Clock source is APLL */
             }
             else if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI1SEL_Msk) == CLK_CLKSEL4_SPI1SEL_PCLK2)
             {
                 /* Clock source is PCLK2 */
                 u32ClkSrc = CLK_GetPCLK2Freq();
             }
-            else
-            {
-                u32ClkSrc = __HIRC; /* Clock source is HIRC */
-            }
         }
         else if(spi == SPI2)
         {
-            if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI2SEL_Msk) == CLK_CLKSEL4_SPI2SEL_HXT)
+            if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI2SEL_Msk) == CLK_CLKSEL4_SPI2SEL_APLL)
             {
-                u32ClkSrc = __HXT; /* Clock source is HXT */
-            }
-            else if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI2SEL_Msk) == CLK_CLKSEL4_SPI2SEL_EPLL_DIV4)
-            {
-                u32ClkSrc = CLK_GetPLLClockFreq(EPLL)/4; /* Clock source is PLL */
+                u32ClkSrc = CLK_GetPLLClockFreq(APLL); /* Clock source is APLL */
             }
             else if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI2SEL_Msk) == CLK_CLKSEL4_SPI2SEL_PCLK1)
             {
                 u32ClkSrc = CLK_GetPCLK1Freq();
             }
-            else
-            {
-                u32ClkSrc = __HIRC; /* Clock source is HIRC */
-            }
         }
         else
         {
-            if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI3SEL_Msk) == CLK_CLKSEL4_SPI3SEL_HXT)
+            if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI3SEL_Msk) == CLK_CLKSEL4_SPI3SEL_APLL)
             {
-                u32ClkSrc = __HXT; /* Clock source is HXT */
-            }
-            else if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI3SEL_Msk) == CLK_CLKSEL4_SPI3SEL_EPLL_DIV4)
-            {
-                u32ClkSrc = CLK_GetPLLClockFreq(EPLL)/4; /* Clock source is PLL */
+                u32ClkSrc = CLK_GetPLLClockFreq(APLL); /* Clock source is APLL */
             }
             else if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI3SEL_Msk) == CLK_CLKSEL4_SPI3SEL_PCLK2)
             {
                 /* Clock source is PCLK2 */
                 u32ClkSrc = CLK_GetPCLK2Freq();
-            }
-            else
-            {
-                u32ClkSrc = __HIRC; /* Clock source is HIRC */
             }
         }
 
@@ -386,82 +354,50 @@ uint32_t SPI_SetBusClock(SPI_T *spi, uint32_t u32BusClock)
     /* Check clock source of SPI */
     if(spi == SPI0)
     {
-        if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI0SEL_Msk) == CLK_CLKSEL4_SPI0SEL_HXT)
+        if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI0SEL_Msk) == CLK_CLKSEL4_SPI0SEL_APLL)
         {
-            u32ClkSrc = __HXT; /* Clock source is HXT */
-        }
-        else if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI0SEL_Msk) == CLK_CLKSEL4_SPI0SEL_EPLL_DIV4)
-        {
-            u32ClkSrc = CLK_GetPLLClockFreq(EPLL)/4; /* Clock source is PLL */
+            u32ClkSrc = CLK_GetPLLClockFreq(APLL); /* Clock source is APLL */
         }
         else if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI0SEL_Msk) == CLK_CLKSEL4_SPI0SEL_PCLK1)
         {
             /* Clock source is PCLK1 */
             u32ClkSrc = CLK_GetPCLK1Freq();
         }
-        else
-        {
-            u32ClkSrc = __HIRC; /* Clock source is HIRC */
-        }
     }
     else if(spi == SPI1)
     {
-        if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI1SEL_Msk) == CLK_CLKSEL4_SPI1SEL_HXT)
+        if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI1SEL_Msk) == CLK_CLKSEL4_SPI1SEL_APLL)
         {
-            u32ClkSrc = __HXT; /* Clock source is HXT */
-        }
-        else if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI1SEL_Msk) == CLK_CLKSEL4_SPI1SEL_EPLL_DIV4)
-        {
-            u32ClkSrc = CLK_GetPLLClockFreq(EPLL)/4; /* Clock source is PLL */
+            u32ClkSrc = CLK_GetPLLClockFreq(APLL); /* Clock source is APLL */
         }
         else if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI1SEL_Msk) == CLK_CLKSEL4_SPI1SEL_PCLK2)
         {
             /* Clock source is PCLK2 */
             u32ClkSrc = CLK_GetPCLK2Freq();
         }
-        else
-        {
-            u32ClkSrc = __HIRC; /* Clock source is HIRC */
-        }
     }
     else if(spi == SPI2)
     {
-        if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI2SEL_Msk) == CLK_CLKSEL4_SPI2SEL_HXT)
+        if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI2SEL_Msk) == CLK_CLKSEL4_SPI2SEL_APLL)
         {
-            u32ClkSrc = __HXT; /* Clock source is HXT */
-        }
-        else if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI2SEL_Msk) == CLK_CLKSEL4_SPI2SEL_EPLL_DIV4)
-        {
-            u32ClkSrc = CLK_GetPLLClockFreq(EPLL)/4; /* Clock source is PLL */
+            u32ClkSrc = CLK_GetPLLClockFreq(APLL); /* Clock source is APLL */
         }
         else if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI2SEL_Msk) == CLK_CLKSEL4_SPI2SEL_PCLK1)
         {
             /* Clock source is PCLK1 */
             u32ClkSrc = CLK_GetPCLK1Freq();
         }
-        else
-        {
-            u32ClkSrc = __HIRC; /* Clock source is HIRC */
-        }
     }
     else
     {
-        if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI3SEL_Msk) == CLK_CLKSEL4_SPI3SEL_HXT)
+        if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI3SEL_Msk) == CLK_CLKSEL4_SPI3SEL_APLL)
         {
-            u32ClkSrc = __HXT; /* Clock source is HXT */
-        }
-        else if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI3SEL_Msk) == CLK_CLKSEL4_SPI3SEL_EPLL_DIV4)
-        {
-            u32ClkSrc = CLK_GetPLLClockFreq(EPLL)/4; /* Clock source is PLL */
+            u32ClkSrc = CLK_GetPLLClockFreq(APLL); /* Clock source is APLL */
         }
         else if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI3SEL_Msk) == CLK_CLKSEL4_SPI3SEL_PCLK2)
         {
             /* Clock source is PCLK2 */
             u32ClkSrc = CLK_GetPCLK2Freq();
-        }
-        else
-        {
-            u32ClkSrc = __HIRC; /* Clock source is HIRC */
         }
     }
 
@@ -539,82 +475,50 @@ uint32_t SPI_GetBusClock(SPI_T *spi)
     /* Check clock source of SPI */
     if(spi == SPI0)
     {
-        if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI0SEL_Msk) == CLK_CLKSEL4_SPI0SEL_HXT)
+        if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI0SEL_Msk) == CLK_CLKSEL4_SPI0SEL_APLL)
         {
-            u32ClkSrc = __HXT; /* Clock source is HXT */
-        }
-        else if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI0SEL_Msk) == CLK_CLKSEL4_SPI0SEL_EPLL_DIV4)
-        {
-            u32ClkSrc = CLK_GetPLLClockFreq(EPLL)/4; /* Clock source is PLL */
+            u32ClkSrc = CLK_GetPLLClockFreq(APLL); /* Clock source is APLL */
         }
         else if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI0SEL_Msk) == CLK_CLKSEL4_SPI0SEL_PCLK1)
         {
             /* Clock source is PCLK1 */
             u32ClkSrc = CLK_GetPCLK1Freq();
         }
-        else
-        {
-            u32ClkSrc = __HIRC; /* Clock source is HIRC */
-        }
     }
     else if(spi == SPI1)
     {
-        if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI1SEL_Msk) == CLK_CLKSEL4_SPI1SEL_HXT)
+        if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI1SEL_Msk) == CLK_CLKSEL4_SPI1SEL_APLL)
         {
-            u32ClkSrc = __HXT; /* Clock source is HXT */
-        }
-        else if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI1SEL_Msk) == CLK_CLKSEL4_SPI1SEL_EPLL_DIV4)
-        {
-            u32ClkSrc = CLK_GetPLLClockFreq(EPLL)/4; /* Clock source is PLL */
+            u32ClkSrc = CLK_GetPLLClockFreq(APLL); /* Clock source is APLL */
         }
         else if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI1SEL_Msk) == CLK_CLKSEL4_SPI1SEL_PCLK2)
         {
             /* Clock source is PCLK2 */
             u32ClkSrc = CLK_GetPCLK2Freq();
         }
-        else
-        {
-            u32ClkSrc = __HIRC; /* Clock source is HIRC */
-        }
     }
     else if(spi == SPI2)
     {
-        if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI2SEL_Msk) == CLK_CLKSEL4_SPI2SEL_HXT)
+        if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI2SEL_Msk) == CLK_CLKSEL4_SPI2SEL_APLL)
         {
-            u32ClkSrc = __HXT; /* Clock source is HXT */
-        }
-        else if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI2SEL_Msk) == CLK_CLKSEL4_SPI2SEL_EPLL_DIV4)
-        {
-            u32ClkSrc = CLK_GetPLLClockFreq(EPLL)/4; /* Clock source is PLL */
+            u32ClkSrc = CLK_GetPLLClockFreq(APLL); /* Clock source is APLL */
         }
         else if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI2SEL_Msk) == CLK_CLKSEL4_SPI2SEL_PCLK1)
         {
             /* Clock source is PCLK1 */
             u32ClkSrc = CLK_GetPCLK1Freq();
         }
-        else
-        {
-            u32ClkSrc = __HIRC; /* Clock source is HIRC */
-        }
     }
     else
     {
-        if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI3SEL_Msk) == CLK_CLKSEL4_SPI3SEL_HXT)
+        if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI3SEL_Msk) == CLK_CLKSEL4_SPI3SEL_APLL)
         {
-            u32ClkSrc = __HXT; /* Clock source is HXT */
-        }
-        else if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI3SEL_Msk) == CLK_CLKSEL4_SPI3SEL_EPLL_DIV4)
-        {
-            u32ClkSrc = CLK_GetPLLClockFreq(EPLL)/4; /* Clock source is PLL */
+            u32ClkSrc = CLK_GetPLLClockFreq(APLL); /* Clock source is APLL */
         }
         else if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI3SEL_Msk) == CLK_CLKSEL4_SPI3SEL_PCLK2)
         {
             /* Clock source is PCLK2 */
             u32ClkSrc = CLK_GetPCLK2Freq();
-        }
-        else
-        {
-            u32ClkSrc = __HIRC; /* Clock source is HIRC */
         }
     }
 
@@ -1040,82 +944,50 @@ static uint32_t SPII2S_GetSourceClockFreq(SPI_T *i2s)
 
     if(i2s == SPI0)
     {
-        if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI0SEL_Msk) == CLK_CLKSEL4_SPI0SEL_HXT)
+        if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI0SEL_Msk) == CLK_CLKSEL4_SPI0SEL_APLL)
         {
-            u32Freq = __HXT; /* Clock source is HXT */
-        }
-        else if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI0SEL_Msk) == CLK_CLKSEL4_SPI0SEL_EPLL_DIV4)
-        {
-            u32Freq = CLK_GetPLLClockFreq(EPLL)/4; /* Clock source is PLL */
+            u32Freq = CLK_GetPLLClockFreq(APLL); /* Clock source is APLL */
         }
         else if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI0SEL_Msk) == CLK_CLKSEL4_SPI0SEL_PCLK1)
         {
             /* Clock source is PCLK1 */
             u32Freq = CLK_GetPCLK1Freq();
         }
-        else
-        {
-            u32Freq = __HIRC; /* Clock source is HIRC */
-        }
     }
     else if(i2s == SPI1)
     {
-        if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI1SEL_Msk) == CLK_CLKSEL4_SPI1SEL_HXT)
+        if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI1SEL_Msk) == CLK_CLKSEL4_SPI1SEL_APLL)
         {
-            u32Freq = __HXT; /* Clock source is HXT */
-        }
-        else if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI1SEL_Msk) == CLK_CLKSEL4_SPI1SEL_EPLL_DIV4)
-        {
-            u32Freq = CLK_GetPLLClockFreq(EPLL)/4; /* Clock source is PLL */
+            u32Freq = CLK_GetPLLClockFreq(APLL); /* Clock source is APLL */
         }
         else if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI1SEL_Msk) == CLK_CLKSEL4_SPI1SEL_PCLK2)
         {
             /* Clock source is PCLK2 */
             u32Freq = CLK_GetPCLK2Freq();
         }
-        else
-        {
-            u32Freq = __HIRC; /* Clock source is HIRC */
-        }
     }
     else if(i2s == SPI2)
     {
-        if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI2SEL_Msk) == CLK_CLKSEL4_SPI2SEL_HXT)
+        if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI2SEL_Msk) == CLK_CLKSEL4_SPI2SEL_APLL)
         {
-            u32Freq = __HXT; /* Clock source is HXT */
-        }
-        else if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI2SEL_Msk) == CLK_CLKSEL4_SPI2SEL_EPLL_DIV4)
-        {
-            u32Freq = CLK_GetPLLClockFreq(EPLL)/4; /* Clock source is PLL */
+            u32Freq = CLK_GetPLLClockFreq(APLL); /* Clock source is APLL */
         }
         else if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI2SEL_Msk) == CLK_CLKSEL4_SPI2SEL_PCLK1)
         {
             /* Clock source is PCLK1 */
             u32Freq = CLK_GetPCLK1Freq();
         }
-        else
-        {
-            u32Freq = __HIRC; /* Clock source is HIRC */
-        }
     }
     else
     {
-        if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI3SEL_Msk) == CLK_CLKSEL4_SPI3SEL_HXT)
+        if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI3SEL_Msk) == CLK_CLKSEL4_SPI3SEL_APLL)
         {
-            u32Freq = __HXT; /* Clock source is HXT */
-        }
-        else if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI3SEL_Msk) == CLK_CLKSEL4_SPI3SEL_EPLL_DIV4)
-        {
-            u32Freq = CLK_GetPLLClockFreq(EPLL)/4; /* Clock source is PLL */
+            u32Freq = CLK_GetPLLClockFreq(APLL); /* Clock source is APLL */
         }
         else if((CLK->CLKSEL4 & CLK_CLKSEL4_SPI3SEL_Msk) == CLK_CLKSEL4_SPI3SEL_PCLK2)
         {
             /* Clock source is PCLK2 */
             u32Freq = CLK_GetPCLK2Freq();
-        }
-        else
-        {
-            u32Freq = __HIRC; /* Clock source is HIRC */
         }
     }
 

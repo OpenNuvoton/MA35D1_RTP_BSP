@@ -13,7 +13,7 @@
 #include "config.h"
 
 #define NAU8822     1
-#define PLL_CLOCK   192000000
+#define PLL_CLOCK   180000000
 
 uint32_t PcmRxBuff[2][BUFF_LEN] = {0};
 uint32_t PcmTxBuff[2][BUFF_LEN] = {0};
@@ -260,7 +260,7 @@ void SYS_Init(void)
     CLK_EnableModuleClock(UART16_MODULE);
 
     /* Select UART module clock source as HXT and UART module clock divider as 1 */
-    CLK_SetModuleClock(UART16_MODULE, CLK_CLKSEL3_UART16SEL_HXT, CLK_CLKDIV1_UART16(1));
+    CLK_SetModuleClock(UART16_MODULE, CLK_CLKSEL3_UART16SEL_HXT, CLK_CLKDIV3_UART16(1));
 
     /* Enable I2S0 module clock */
     CLK_EnableModuleClock(I2S0_MODULE);
@@ -375,7 +375,7 @@ int32_t main (void)
     PD13 = 0;
 
     // select source from HXT(12MHz)
-    CLK_SetModuleClock(I2S0_MODULE, CLK_CLKSEL4_I2S0SEL_HXT, 0);
+    CLK_SetModuleClock(I2S0_MODULE, CLK_CLKSEL4_I2S0SEL_APLL, 0);
 
     /* Set MCLK and enable MCLK */
     I2S_EnableMCLK(I2S0, 12000000);

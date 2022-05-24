@@ -57,7 +57,7 @@ uint32_t TPWM_ConfigOutputFreqAndDuty(TIMER_T *timer, uint32_t u32Frequency, uin
     uint32_t u32PWMClockFreq, u32TargetFreq;
     uint32_t u32Prescaler = 0x1000UL, u32Period, u32CMP;
 
-    u32PWMClockFreq = CLK_GetPLLClockFreq(SYSPLL);
+    u32PWMClockFreq = CLK_GetSYSCLK1Freq();
 
     /* Calculate u16PERIOD and u16PSC */
     for (u32Prescaler = 1UL; u32Prescaler <= 0x1000UL; u32Prescaler++)

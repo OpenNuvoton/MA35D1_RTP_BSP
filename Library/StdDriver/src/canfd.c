@@ -557,13 +557,13 @@ void CANFD_Open(CANFD_T *psCanfd, CANFD_FD_T *psCanfdStr)
         SYS_ResetModule(CANFD0_RST);
         NVIC_EnableIRQ(CANFD00_IRQn);
         NVIC_EnableIRQ(CANFD01_IRQn);
-        if(CLK_GetModuleClockSource(CAN0_MODULE) == 1)
+        if(CLK_GetModuleClockSource(CANFD0_MODULE) == 1)
         {
-            u32CANFD_CLK = CLK_GetPLLClockFreq(VPLL)/((CLK_GetModuleClockDivider(CAN0_MODULE) + 1)<<1);
+            u32CANFD_CLK = CLK_GetPLLClockFreq(VPLL)/((CLK_GetModuleClockDivider(CANFD0_MODULE) + 1)<<1);
         }
         else
         {
-            u32CANFD_CLK = CLK_GetPLLClockFreq(APLL)/((CLK_GetModuleClockDivider(CAN0_MODULE) + 1)<<1);
+            u32CANFD_CLK = CLK_GetPLLClockFreq(APLL)/((CLK_GetModuleClockDivider(CANFD0_MODULE) + 1)<<1);
         }
     }
     else if (psCanfd == (CANFD_T *)CANFD1)
@@ -571,13 +571,13 @@ void CANFD_Open(CANFD_T *psCanfd, CANFD_FD_T *psCanfdStr)
         SYS_ResetModule(CANFD1_RST);
         NVIC_EnableIRQ(CANFD10_IRQn);
         NVIC_EnableIRQ(CANFD11_IRQn);
-        if(CLK_GetModuleClockSource(CAN1_MODULE) == 1)
+        if(CLK_GetModuleClockSource(CANFD1_MODULE) == 1)
         {
-            u32CANFD_CLK = CLK_GetPLLClockFreq(VPLL)/((CLK_GetModuleClockDivider(CAN1_MODULE) + 1)<<1);
+            u32CANFD_CLK = CLK_GetPLLClockFreq(VPLL)/((CLK_GetModuleClockDivider(CANFD1_MODULE) + 1)<<1);
         }
         else
         {
-            u32CANFD_CLK = CLK_GetPLLClockFreq(APLL)/((CLK_GetModuleClockDivider(CAN1_MODULE) + 1)<<1);
+            u32CANFD_CLK = CLK_GetPLLClockFreq(APLL)/((CLK_GetModuleClockDivider(CANFD1_MODULE) + 1)<<1);
         }
     }
     else if (psCanfd == (CANFD_T *)CANFD2)
@@ -585,13 +585,13 @@ void CANFD_Open(CANFD_T *psCanfd, CANFD_FD_T *psCanfdStr)
         SYS_ResetModule(CANFD2_RST);
         NVIC_EnableIRQ(CANFD20_IRQn);
         NVIC_EnableIRQ(CANFD21_IRQn);
-        if(CLK_GetModuleClockSource(CAN2_MODULE) == 0)
+        if(CLK_GetModuleClockSource(CANFD2_MODULE) == 0)
         {
-            u32CANFD_CLK = CLK_GetPLLClockFreq(VPLL)/((CLK_GetModuleClockDivider(CAN2_MODULE) + 1)<<1);
+            u32CANFD_CLK = CLK_GetPLLClockFreq(VPLL)/((CLK_GetModuleClockDivider(CANFD2_MODULE) + 1)<<1);
         }
         else
         {
-            u32CANFD_CLK = CLK_GetPLLClockFreq(APLL)/((CLK_GetModuleClockDivider(CAN2_MODULE) + 1)<<1);
+            u32CANFD_CLK = CLK_GetPLLClockFreq(APLL)/((CLK_GetModuleClockDivider(CANFD2_MODULE) + 1)<<1);
         }
     }
     else if (psCanfd == (CANFD_T *)CANFD3)
@@ -599,13 +599,13 @@ void CANFD_Open(CANFD_T *psCanfd, CANFD_FD_T *psCanfdStr)
         SYS_ResetModule(CANFD3_RST);
         NVIC_EnableIRQ(CANFD30_IRQn);
         NVIC_EnableIRQ(CANFD31_IRQn);
-        if(CLK_GetModuleClockSource(CAN3_MODULE) == 1)
+        if(CLK_GetModuleClockSource(CANFD3_MODULE) == 1)
         {
-            u32CANFD_CLK = CLK_GetPLLClockFreq(VPLL)/((CLK_GetModuleClockDivider(CAN3_MODULE) + 1)<<1);
+            u32CANFD_CLK = CLK_GetPLLClockFreq(VPLL)/((CLK_GetModuleClockDivider(CANFD3_MODULE) + 1)<<1);
         }
         else
         {
-            u32CANFD_CLK = CLK_GetPLLClockFreq(APLL)/((CLK_GetModuleClockDivider(CAN3_MODULE) + 1)<<1);
+            u32CANFD_CLK = CLK_GetPLLClockFreq(APLL)/((CLK_GetModuleClockDivider(CANFD3_MODULE) + 1)<<1);
         }
     }
 

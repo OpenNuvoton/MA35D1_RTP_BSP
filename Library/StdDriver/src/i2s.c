@@ -37,24 +37,16 @@ static uint32_t I2S_GetSourceClockFreq(I2S_T *i2s)
 
     switch (u32ClkSrcSel)
     {
-    case CLK_CLKSEL4_I2S0SEL_HXT:
-        u32Freq = __HXT;
-        break;
-
     case CLK_CLKSEL4_I2S0SEL_APLL:
         u32Freq = CLK_GetPLLClockFreq(APLL);
         break;
 
-    case CLK_CLKSEL4_I2S0SEL_HIRC:
-        u32Freq = __HIRC;
-        break;
-
-    case CLK_CLKSEL4_I2S0SEL_PCLK0:
-        u32Freq = (uint32_t)CLK_GetPCLK0Freq();
+    case CLK_CLKSEL4_I2S0SEL_SYSCLK1:
+        u32Freq = CLK_GetSYSCLK1Freq() / 2;
         break;
 
     default:
-        u32Freq = __HIRC;
+        u32Freq = CLK_GetPLLClockFreq(APLL);
         break;
     }
 

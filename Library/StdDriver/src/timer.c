@@ -287,7 +287,7 @@ uint32_t TIMER_GetModuleClock(TIMER_T *timer)
 
     if (u32Src == 2UL)
     {
-        u32Clk = CLK_GetPLLClockFreq(SYSPLL);
+        u32Clk = CLK_GetSYSCLK1Freq();
     }
     else
     {
