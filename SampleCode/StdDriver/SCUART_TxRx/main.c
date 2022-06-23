@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file     main.c
  *
- * @brief    Demonstrate smartcard UART mode by connecting PA.0 and PA.1 pins.
+ * @brief    Demonstrate smartcard UART mode by connecting PK.12 and PK.13 pins.
  *
  *
  * @copyright (C) 2020 Nuvoton Technology Corp. All rights reserved.
@@ -48,9 +48,10 @@ void SYS_Init(void)
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Set PF.10 and PF.11 pin for SC UART mode */
+    /* Set PK.12 and PK.13 pin for SC UART mode */
     /* Smartcard CLK pin is used for TX, and DAT pin is used for Rx */
-    SYS->GPF_MFPH |= (SYS_GPF_MFPH_PF10MFP_SC0_CLK | SYS_GPF_MFPH_PF11MFP_SC0_DAT);
+    SYS->GPK_MFPH |= (SYS_GPK_MFPH_PK12MFP_SC0_CLK | SYS_GPK_MFPH_PK13MFP_SC0_DAT);
+
     /* Set multi-function pins for UART */
     SYS->GPK_MFPL &= ~(SYS_GPK_MFPL_PK2MFP_Msk | SYS_GPK_MFPL_PK3MFP_Msk);
     SYS->GPK_MFPL |= (SYS_GPK_MFPL_PK2MFP_UART16_RXD | SYS_GPK_MFPL_PK3MFP_UART16_TXD);

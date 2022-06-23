@@ -40,30 +40,31 @@ void SYS_Init(void)
 {
     /* Unlock protected registers */
     SYS_UnlockReg();
+
     /* Enable IP clock */
     CLK_EnableModuleClock(SC0_MODULE);
     CLK_EnableModuleClock(UART16_MODULE);
 
     /* Select IP clock source */
-    // Valid smartcard clock rate is from 1MHz to 4MHz, we set it to 4MHz
+    /* Valid smartcard clock rate is from 1MHz to 4MHz, we set it to 4MHz */
     CLK_SetModuleClock(SC0_MODULE, CLK_CLKSEL4_SC0SEL_HXT, CLK_CLKDIV1_SC0(6));
     /* Select UART clock source from HXT */
     CLK_SetModuleClock(UART16_MODULE, CLK_CLKSEL3_UART16SEL_HXT, CLK_CLKDIV3_UART16(1));
-
+	
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
 
-    /* Set MFP for SC0 interface */
-    SYS->GPF_MFPH |= SYS_GPF_MFPH_PF10MFP_SC0_CLK |
-                     SYS_GPF_MFPH_PF11MFP_SC0_DAT |
-                     SYS_GPF_MFPH_PF12MFP_SC0_RST |
-                     SYS_GPF_MFPH_PF13MFP_SC0_PWR;
-    SYS->GPI_MFPL |= SYS_GPI_MFPL_PI0MFP_SC0_nCD;
+    /* Set MFP for SC0 interface */		
+    SYS->GPK_MFPH |= SYS_GPK_MFPH_PK12MFP_SC0_CLK |
+                     SYS_GPK_MFPH_PK13MFP_SC0_DAT |
+                     SYS_GPK_MFPH_PK14MFP_SC0_RST |
+                     SYS_GPK_MFPH_PK15MFP_SC0_PWR;
+    SYS->GPN_MFPH |= SYS_GPN_MFPH_PN15MFP_SC0_nCD;
 
-    /* Set multi-function pins for UART */
-    SYS->GPK_MFPL &= ~(SYS_GPK_MFPL_PK2MFP_Msk | SYS_GPK_MFPL_PK3MFP_Msk);
-    SYS->GPK_MFPL |= (SYS_GPK_MFPL_PK2MFP_UART16_RXD | SYS_GPK_MFPL_PK3MFP_UART16_TXD);
+	/* Set multi-function pins for UART */
+	SYS->GPK_MFPL &= ~(SYS_GPK_MFPL_PK2MFP_Msk | SYS_GPK_MFPL_PK3MFP_Msk);
+    SYS->GPK_MFPL |= SYS_GPK_MFPL_PK2MFP_UART16_RXD | SYS_GPK_MFPL_PK3MFP_UART16_TXD;
 
     /* Lock protected registers */
     SYS_LockReg();
