@@ -274,6 +274,18 @@ void SYS_Init(void)
     /* Enable GPIOD module clock */
     CLK_EnableModuleClock(GPD_MODULE);
 
+    /* Reset I2S0 module */
+    SYS_ResetModule(I2S0_RST);
+
+    /* Reset I2C2 module */
+    SYS_ResetModule(I2C2_RST);
+
+    /* Reset PDMA2 module */
+    SYS_ResetModule(PDMA2_RST);
+
+    /* Reset GPIO module */
+    SYS_ResetModule(GPIO_RST);
+
     /* Set GPK multi-function pins for UART16 RXD and TXD */
     SYS->GPK_MFPL &= ~(SYS_GPK_MFPL_PK2MFP_Msk | SYS_GPK_MFPL_PK3MFP_Msk);
     SYS->GPK_MFPL |= (SYS_GPK_MFPL_PK2MFP_UART16_RXD | SYS_GPK_MFPL_PK3MFP_UART16_TXD);
