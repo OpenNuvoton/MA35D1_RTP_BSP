@@ -38,15 +38,6 @@ extern "C"
 */
 
 /**
-  * @brief      Reset hardware semaphore
-  *
-  * @param[in]  hwsem         The pointer of the specified HWSEM module.
-  * @param[in]  u32Num        HWSEM number, valid values are between 0~7
-  * \hideinitializer
-  */
-#define HWSEM_RESET(hwsem, u32Num)          ((hwsem)->CTL |= (HWSEM_CTL_SEM0RST_Msk << (u32Num)))
-
-/**
   * @brief
   *
   * @param[in]  hwsem         The pointer of the specified HWSEM module.
@@ -106,7 +97,7 @@ extern "C"
 
 
 /**
-  * @brief        Unlock specified semaphore
+  * @brief        Lock/Unlock specified semaphore
   *
   * @param[in]  hwsem         The pointer of the specified HWSEM module.
   * @param[in]  u32Num        HWSEM number, valid values are between 0~7
@@ -115,6 +106,7 @@ extern "C"
   *    \hideinitializer
   */
 #define HWSEM_UNLOCK(hwsem, u32Num, u8Key)    ((hwsem)->SEM[(u32Num)] = ((u8Key) << HWSEM_SEM_KEY_Pos) & HWSEM_SEM_KEY_Msk)
+#define HWSEM_LOCK    HWSEM_UNLOCK
 
 /* Declare these inline functions here to avoid MISRA C 2004 rule 8.1 error */
 __STATIC_INLINE int32_t HWSEM_Try_Lock(HWSEM_T *hwsem, uint32_t u32Num, uint8_t u8Key);
@@ -132,7 +124,7 @@ __STATIC_INLINE void HWSEM_Spin_Lock(HWSEM_T *hwsem, uint32_t u32Num, uint8_t u8
   */
 __STATIC_INLINE int32_t HWSEM_Try_Lock(HWSEM_T *hwsem, uint32_t u32Num, uint8_t u8Key)
 {
-    hwsem->SEM[u32Num] = (u8Key << HWSEM_SEM_KEY_Pos);
+    HWSEM_LOCK(hwsem, u32Num, u8Key);
     if((hwsem->SEM[u32Num] & HWSEM_SEM_ID_Msk) == HWSEM_LOCK_BY_M4 &&
        (hwsem->SEM[u32Num] & HWSEM_SEM_KEY_Msk) == (u8Key << HWSEM_SEM_KEY_Pos))
         return 0;
@@ -153,7 +145,7 @@ __STATIC_INLINE void HWSEM_Spin_Lock(HWSEM_T *hwsem, uint32_t u32Num, uint8_t u8
 {
     while(1)
     {
-        hwsem->SEM[u32Num] = (u8Key << HWSEM_SEM_KEY_Pos);
+        HWSEM_LOCK(hwsem, u32Num, u8Key);
         if((hwsem->SEM[u32Num] & HWSEM_SEM_ID_Msk) == HWSEM_LOCK_BY_M4 &&
            (hwsem->SEM[u32Num] & HWSEM_SEM_KEY_Msk) == (u8Key << HWSEM_SEM_KEY_Pos))
             break;
