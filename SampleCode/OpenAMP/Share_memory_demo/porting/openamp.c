@@ -128,7 +128,6 @@ int MA35D1_OpenAMP_Init(int RPMsgRole, rpmsg_ns_bind_cb ns_bind_cb)
     }
 
     rpmsg_virtio_init_shm_pool(&shpool, (void *)VRING_BUF_ADDR, (size_t)SHM_SIZE);
-    rpmsg_init_vdev(&rvdev, vdev, ns_bind_cb, shm_io, &shpool);
 
     return 0;
 }
