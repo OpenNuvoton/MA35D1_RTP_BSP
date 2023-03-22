@@ -25,6 +25,7 @@
 
 /*CANFD max nominal bit rate*/
 #define MAX_NOMINAL_BAUDRATE (1000000UL)
+#define MAX_DATA_BAUDRATE    (8000000UL)
 
 /* Tx Event FIFO Element ESI(Error State Indicator)  */
 #define TX_FIFO_E0_EVENT_ESI_Pos   (31)
@@ -164,6 +165,26 @@
 
 #define CANFD_RXFS_RFL CANFD_RXF0S_RF0L_Msk
 
+/* CANFD Normal Bit-Rate Parameter */
+#define N_TSEG1_MIN 2ul
+#define N_TSEG1_MAX 256ul
+#define N_TSEG2_MIN 2ul
+#define N_TSEG2_MAX 128ul
+#define N_BRP_MIN   1ul
+#define N_BRP_MAX   512ul
+#define N_SJW_MAX   128ul
+#define N_BRP_INC   1ul
+
+/* CANFD Data Bit-Rate Parameter */
+#define D_TSEG1_MIN 1ul
+#define D_TSEG1_MAX 32ul
+#define D_TSEG2_MIN 1ul
+#define D_TSEG2_MAX 16ul
+#define D_BRP_MIN   1ul
+#define D_BRP_MAX   32ul
+#define D_SJW_MAX   16ul
+#define D_BRP_INC   1ul
+/// @endcond HIDDEN_SYMBOLS
 
 /** @addtogroup Standard_Driver Standard Driver
   @{
@@ -237,7 +258,6 @@ static void CANFD_CalculateRamAddress(CANFD_RAM_PART_T *psConfigAddr, CANFD_ELEM
     if (psConfigSize->u32TxEventFifo > 0)
     {
         psConfigAddr->u32TXEFC_EFSA = u32RamAddrOffset;
-        u32RamAddrOffset += psConfigSize->u32TxEventFifo *  sizeof(CANFD_EXT_FILTER_T);
     }
 }
 
@@ -280,7 +300,7 @@ void CANFD_GetDefaultConfig(CANFD_FD_T *psConfig, uint8_t u8OpMode)
     }
     else
     {
-        psConfig->sBtConfig.sDataBitRate.u32BitRate = 10000000;
+        psConfig->sBtConfig.sDataBitRate.u32BitRate = 1000000;
         psConfig->sBtConfig.bFDEn = TRUE;
         psConfig->sBtConfig.bBitRateSwitch = TRUE;
     }
@@ -290,20 +310,20 @@ void CANFD_GetDefaultConfig(CANFD_FD_T *psConfig, uint8_t u8OpMode)
     /*Get the CAN FD memory address*/
     psConfig->u32MRamSize  = (uint32_t)CANFD_SRAM_SIZE;
 
-    /* CAN FD Standard message ID elements as 64 elements    */
-    psConfig->sElemSize.u32SIDFC = 64;
-    /* CAN FD Extended message ID elements as 32 elements    */
-    psConfig->sElemSize.u32XIDFC = 32;
-    /* CAN FD RX FIFO0 elements as 32 elements    */
-    psConfig->sElemSize.u32RxFifo0 = 32;
-    /* CAN FD RX FIFO1 elements as 32 elements    */
-    psConfig->sElemSize.u32RxFifo1 = 32;
-    /* CAN FD RX Buffer elements as 32 elements    */
-    psConfig->sElemSize.u32RxBuf = 32;
-    /* CAN FD TX Buffer elements as 16 elements    */
-    psConfig->sElemSize.u32TxBuf = 16;
-    /* CAN FD TX Event FIFO elements as 16 elements    */
-    psConfig->sElemSize.u32TxEventFifo = 16;
+    /* CAN FD Standard message ID elements as 32 elements    */
+    psConfig->sElemSize.u32SIDFC = 32;
+    /* CAN FD Extended message ID elements as 16 elements    */
+    psConfig->sElemSize.u32XIDFC = 16;
+    /* CAN FD RX FIFO0 elements as 16 elements    */
+    psConfig->sElemSize.u32RxFifo0 = 16;
+    /* CAN FD RX FIFO1 elements as 16 elements    */
+    psConfig->sElemSize.u32RxFifo1 = 16;
+    /* CAN FD RX Buffer elements as 16 elements    */
+    psConfig->sElemSize.u32RxBuf = 16;
+    /* CAN FD TX Buffer elements as 8 elements    */
+    psConfig->sElemSize.u32TxBuf = 8;
+    /* CAN FD TX Event FIFO elements as 8 elements    */
+    psConfig->sElemSize.u32TxEventFifo = 8;
     /*Calculates the CAN FD RAM buffer address*/
     CANFD_CalculateRamAddress(&psConfig->sMRamStartAddr, &psConfig->sElemSize);
 }
@@ -330,7 +350,6 @@ static uint8_t CANFD_EncodeDLC(uint8_t u8NumberOfBytes)
     else return 15;
 }
 
-
 /**
  * @brief       Decode the Data Length Code.
  *
@@ -352,102 +371,232 @@ static uint8_t CANFD_DecodeDLC(uint8_t u8Dlc)
     else return 64;
 }
 
-
 /**
- * @brief       Sets the CAN FD protocol timing characteristic.
- *
- * @param[in]   psCanfd     The pointer of the specified CANFD module.
- * @param[in]   psConfig    Pointer to the timing configuration structure.
- *
- * @return      None.
- *
- * @details     This function gives user settings to CAN bus timing characteristic.
- *              The function is for an experienced user. For less experienced users, call
- *              the CANFD_Open() and fill the baud rate field with a desired value.
- *              This provides the default timing characteristics to the module.
- */
-static void CANFD_SetTimingConfig(CANFD_T *psCanfd, const CANFD_TIMEING_CONFIG_T *psConfig)
+  * @brief Check if the sample point is suitable.
+  *
+  * @param[in] sampl_pt The sample point position in bit timing.
+  * @param[in] tseg  Current tseg value in bit timing.
+  * @param[in] tseg1 Current tseg1 value in bit timing.
+  * @param[in] tseg2 Current tseg2 value in bit timing.
+  * @param[in] u32Set_NBTP Set normal bit time or data bit time.
+  *
+  * @return The sample point position in bit timing.
+  *
+  */
+static int CANFD_Update_Spt(int sampl_pt, int tseg, int *tseg1, int *tseg2, uint32_t u32Set_NBTP)
 {
-    uint32_t *pu32DBTP;
+    int tseg2_max = 0, tseg2_min = 0;
+    int tseg1_max = 0;
 
-    /* configuration change enable */
-    psCanfd->CCCR |= CANFD_CCCR_CCE_Msk;
-
-    /* nominal bit rate */
-    psCanfd->NBTP = (((psConfig->u8NominalRJumpwidth & 0x7F) - 1) << 25) +
-                    (((psConfig->u16NominalPrescaler & 0x1FF) - 1) << 16) +
-                    ((((psConfig->u8NominalPhaseSeg1 + psConfig->u8NominalPropSeg) & 0xFF) - 1) << 8) +
-                    (((psConfig->u8NominalPhaseSeg2 & 0x7F) - 1) << 0);
-
-    /* canfd->DBTP */
-    pu32DBTP = (((uint32_t *)psCanfd) + 0x03);
-    *pu32DBTP = (((psConfig->u8DataPrescaler & 0x1F) - 1) << 16) +
-                ((((psConfig->u8DataPhaseSeg1 + psConfig->u8DataPropSeg) & 0x1F) - 1) << 8) +
-                (((psConfig->u8DataPhaseSeg2 & 0xF) - 1) << 4) +
-                (((psConfig->u8DataRJumpwidth & 0xF) - 1) << 0);
-}
-
-
-/**
- * @brief       Get the segment values.
- *
- * @param[in]   u32NominalBaudRate  The nominal speed in bps.
- * @param[in]   u32DataBaudRate     The data speed in bps.
- * @param[in]   u32Ntq              Number of nominal time quanta per bit.
- * @param[in]   u32Dtq              Number of data time quanta per bit.
- * @param[in]   psConfig            Passed is a configuration structure, on return the configuration is stored in the structure
- *
- * @return      None.
- *
- * @details     Calculates the segment values for a single bit time for nominal and data baudrates.
- */
-static void CANFD_GetSegments(uint32_t u32NominalBaudRate, uint32_t u32DataBaudRate, uint32_t u32Ntq, uint32_t u32Dtq, CANFD_TIMEING_CONFIG_T *psConfig)
-{
-    float ideal_sp;
-    int int32P1;
-
-    /* get ideal sample point */
-    if (u32NominalBaudRate >= 1000000)     ideal_sp = 0.750;
-    else if (u32NominalBaudRate >= 800000) ideal_sp = 0.800;
-    else                                   ideal_sp = 0.875;
-
-    /* distribute time quanta */
-    int32P1 = (int)(u32Ntq * ideal_sp);
-    /* can controller doesn't separate prop seg and phase seg 1 */
-    psConfig->u8NominalPropSeg = 0;
-    /* subtract one TQ for sync seg */
-    psConfig->u8NominalPhaseSeg1 = int32P1 - 1;
-    psConfig->u8NominalPhaseSeg2 = u32Ntq - int32P1;
-    /* sjw is 20% of total TQ, rounded to nearest int */
-    psConfig->u8NominalRJumpwidth = (u32Ntq + (5 - 1)) / 5;
-
-    /* if using baud rate switching then distribute time quanta for data rate */
-    if (u32Dtq > 0)
+    if(u32Set_NBTP)
     {
-        /* get ideal sample point */
-        if (u32DataBaudRate >= 1000000)     ideal_sp = 0.750;
-        else if (u32DataBaudRate >= 800000) ideal_sp = 0.800;
-        else                             ideal_sp = 0.875;
-
-        /* distribute time quanta */
-        int32P1 = (int)(u32Dtq * ideal_sp);
-        /* can controller doesn't separate prop seg and phase seg 1 */
-        psConfig->u8DataPropSeg = 0;
-        /* subtract one TQ for sync seg */
-        psConfig->u8DataPhaseSeg1 = int32P1 - 1;
-        psConfig->u8DataPhaseSeg2 = u32Dtq - int32P1;
-        /* sjw is 20% of total TQ, rounded to nearest int */
-        psConfig->u8DataRJumpwidth = (u32Dtq + (5 - 1)) / 5;
+        tseg1_max = N_TSEG1_MAX;
+        tseg2_min = N_TSEG2_MIN;
+        tseg2_max = N_TSEG2_MAX;
     }
     else
     {
-        psConfig->u8DataPropSeg = 0;
-        psConfig->u8DataPhaseSeg1 = 0;
-        psConfig->u8DataPhaseSeg2 = 0;
-        psConfig->u8DataRJumpwidth = 0;
+        tseg1_max = D_TSEG1_MAX;
+        tseg2_min = D_TSEG2_MIN;
+        tseg2_max = D_TSEG2_MAX;
     }
+
+    *tseg2 = tseg + 1 - (sampl_pt * (tseg + 1)) / 1000;
+    if (*tseg2 < tseg2_min)
+        *tseg2 = tseg2_min;
+
+    if (*tseg2 > tseg2_max)
+        *tseg2 = tseg2_max;
+
+    *tseg1 = tseg - *tseg2;
+    if (*tseg1 > tseg1_max)
+    {
+        *tseg1 = tseg1_max;
+        *tseg2 = tseg - *tseg1;
+    }
+
+    return 1000 * (tseg + 1 - *tseg2) / (tseg + 1);
 }
 
+/**
+  * @brief Set bus baud-rate.
+  *
+  * @param[in] psCanfd The pointer to CAN module base address.
+  * @param[in] u32BaudRate The target CAN baud-rate. The range of u32BaudRate is 1~1000KHz.
+  * @param[in] u32SourceClock_Hz CAN clock source frequency
+  * @param[in] u32Set_NBTP Set normal bit time or data bit time.
+  *
+  * @return Real baud-rate value.
+  *
+  * @details The function is used to set bus timing parameter according current clock and target baud-rate.
+  */
+uint32_t CANFD_SetBitRate(CANFD_T *psCanfd, uint32_t u32BaudRate, int32_t u32SourceClock_Hz, uint32_t u32Set_NBTP)
+{
+    long rate;
+    long best_error = 1000000000, error = 0;
+    int best_tseg = 0, best_brp = 0, brp = 0;
+    int tsegall, tseg = 0, tseg1 = 0, tseg2 = 0;
+    int spt_error = 1000, spt = 0, sampl_pt;
+    uint64_t clock_freq = (uint64_t)0; //u64PCLK_DIV = (uint64_t)1;
+    int sjw = (uint32_t)2;
+    int reg_btp = 0;
+    int tseg1_min = 0, tseg2_min = 0;
+    int tseg1_max = 0, tseg2_max = 0;
+    int brp_max = 0, brp_min = 0;
+    int sjw_max = 0, brp_inc = 0;
+
+    if(u32Set_NBTP)
+    {
+        tseg1_min = N_TSEG1_MIN;
+        tseg1_max = N_TSEG1_MAX;
+        tseg2_min = N_TSEG2_MIN;
+        tseg2_max = N_TSEG2_MAX;
+        brp_min = N_BRP_MIN;
+        brp_max = N_BRP_MAX;
+        sjw_max = N_SJW_MAX;
+        brp_inc = N_BRP_INC;
+    }
+    else
+    {
+        tseg1_min = D_TSEG1_MIN;
+        tseg1_max = D_TSEG1_MAX;
+        tseg2_min = D_TSEG2_MIN;
+        tseg2_max = D_TSEG2_MAX;
+        brp_min = D_BRP_MIN;
+        brp_max = D_BRP_MAX;
+        sjw_max = D_SJW_MAX;
+        brp_inc = D_BRP_INC;
+    }
+
+    clock_freq = u32SourceClock_Hz;
+
+    /* Use CIA recommended sample points */
+    if (u32BaudRate > (uint32_t)800000)
+    {
+        sampl_pt = (int)750;
+    }
+    else if (u32BaudRate > (uint32_t)500000)
+    {
+        sampl_pt = (int)800;
+    }
+    else
+    {
+        sampl_pt = (int)875;
+    }
+
+    /* tseg even = round down, odd = round up */
+    for (tseg = (tseg1_max + tseg2_max) * 2ul + 1ul; tseg >= (tseg1_min + tseg2_min) * 2ul; tseg--)
+    {
+        tsegall = 1ul + tseg / 2ul;
+        /* Compute all possible tseg choices (tseg=tseg1+tseg2) */
+        brp = clock_freq / (tsegall * u32BaudRate) + tseg % 2;
+        /* chose brp step which is possible in system */
+        brp = (brp / brp_inc) * brp_inc;
+
+        if ((brp < brp_min) || (brp > brp_max))
+        {
+            continue;
+        }
+        rate = clock_freq / (brp * tsegall);
+
+        error = u32BaudRate - rate;
+
+        /* tseg brp biterror */
+        if (error < 0)
+        {
+            error = -error;
+        }
+        if (error > best_error)
+        {
+            continue;
+        }
+        best_error = error;
+        if (error == 0)
+        {
+            spt = CANFD_Update_Spt(sampl_pt, tseg / 2, &tseg1, &tseg2, u32Set_NBTP);
+            error = sampl_pt - spt;
+            if (error < 0)
+            {
+                error = -error;
+            }
+            if (error > spt_error)
+            {
+                continue;
+            }
+            spt_error = error;
+        }
+        best_tseg = tseg / 2;
+        best_brp = brp;
+
+        if (error == 0)
+        {
+            break;
+        }
+    }
+
+    spt = CANFD_Update_Spt(sampl_pt, best_tseg, &tseg1, &tseg2, u32Set_NBTP);
+
+    /* check for sjw user settings */
+    /* bt->sjw is at least 1 -> sanitize upper bound to sjw_max */
+    if (sjw > sjw_max)
+    {
+        sjw = sjw_max;
+    }
+    /* bt->sjw must not be higher than tseg2 */
+    if (tseg2 < sjw)
+    {
+        sjw = tseg2;
+    }
+
+    best_brp = best_brp - 1;
+    sjw = sjw - 1;
+    tseg1 = tseg1 - 1;
+    tseg2 = tseg2 - 1;
+
+    u32BaudRate = clock_freq / (best_brp * (tseg1 + tseg2 + 1));
+
+    if(u32Set_NBTP)
+    {
+        reg_btp = (best_brp << CANFD_NBTP_NBRP_Pos) | (sjw << CANFD_NBTP_NSJW_Pos) |
+                  (tseg1 << CANFD_NBTP_NTSEG1_Pos) | (tseg2 << CANFD_NBTP_NTSEG2_Pos);
+        psCanfd->NBTP = reg_btp;
+    }
+    else
+    {
+        /* TDC is only needed for bitrates beyond 2.5 MBit/s.
+         * This is mentioned in the "Bit Time Requirements for CAN FD"
+         * paper presented at the International CAN Conference 2013
+         */
+        if (best_brp > 2500000)
+        {
+            uint32_t tdco, ssp;
+
+            /* Use the same value of secondary sampling point
+             * as the data sampling point
+             */
+            ssp = sampl_pt;
+
+            /* Equation based on Bosch's M_CAN User Manual's
+             * Transmitter Delay Compensation Section
+             */
+            tdco = (clock_freq / 1000) * ssp / u32BaudRate;
+
+            /* Max valid TDCO value is 127 */
+            if (tdco > 127)
+                tdco = 127;
+
+            reg_btp |= (0x1 << 23); //DBTP_TDC;
+            psCanfd->TDCR = tdco << CANFD_TDCR_TDCO_Pos;
+        }
+
+        reg_btp |= (best_brp << CANFD_DBTP_DBRP_Pos) | (sjw << CANFD_DBTP_DSJW_Pos) |
+                    (tseg1 << CANFD_DBTP_DTSEG1_Pos) | (tseg2 << CANFD_DBTP_DTSEG2_Pos);
+
+        psCanfd->DBTP = reg_btp;
+    }
+
+    return u32BaudRate;
+}
 
 /**
  * @brief       Calculates the CAN controller timing values for specific baudrates.
@@ -461,75 +610,53 @@ static void CANFD_GetSegments(uint32_t u32NominalBaudRate, uint32_t u32DataBaudR
  *
  * @details     Calculates the CAN controller timing values for specific baudrates.
  */
-static uint32_t CANFD_CalculateTimingValues(uint32_t u32NominalBaudRate, uint32_t u32DataBaudRate, uint32_t u32SourceClock_Hz, CANFD_TIMEING_CONFIG_T *psConfig)
+void CANFD_CalculateTimingValues(CANFD_T *psCanfd,
+               uint32_t u32NominalBaudRate, uint32_t u32DataBaudRate,
+               uint32_t u32SourceClock_Hz, CANFD_TIMEING_CONFIG_T *psConfig)
 {
-    int i32Nclk;
-    int i32Nclk2;
-    int i32Ntq;
-    int i32Dclk;
-    int i32Dclk2;
-    int i32Dtq;
-
     /* observe baud rate maximums */
     if (u32NominalBaudRate > MAX_NOMINAL_BAUDRATE) u32NominalBaudRate = MAX_NOMINAL_BAUDRATE;
+    if (u32DataBaudRate    > MAX_DATA_BAUDRATE   ) u32DataBaudRate    = MAX_DATA_BAUDRATE   ;
 
-    for (i32Ntq = MAX_TIME_QUANTA; i32Ntq >= MIN_TIME_QUANTA; i32Ntq--)
+    CANFD_SetBitRate(psCanfd, u32NominalBaudRate, u32SourceClock_Hz, 1);
+
+    if (psCanfd->CCCR & CANFD_CCCR_FDOE_Msk)
     {
-        i32Nclk = u32NominalBaudRate * i32Ntq;
-
-        for (psConfig->u16NominalPrescaler = 0x001; psConfig->u16NominalPrescaler <= 0x400; (psConfig->u16NominalPrescaler)++)
-        {
-            i32Nclk2 = i32Nclk * psConfig->u16NominalPrescaler;
-
-            if (((u32SourceClock_Hz / i32Nclk2) <= 1) && ((float)(u32SourceClock_Hz) / i32Nclk2) == (u32SourceClock_Hz / i32Nclk2))
-            {
-                /* if not using baudrate switch then we are done */
-                if (!u32DataBaudRate)
-                {
-                    i32Dtq = 0;
-                    psConfig->u8DataPrescaler = 0;
-                    CANFD_GetSegments(u32NominalBaudRate, u32DataBaudRate, i32Ntq, i32Dtq, psConfig);
-                    return TRUE;
-                }
-
-                /* if baudrates are the same and the solution for nominal will work for
-                data, then use the nominal settings for both */
-                if ((u32DataBaudRate == u32NominalBaudRate) && psConfig->u16NominalPrescaler <= 0x20)
-                {
-                    i32Dtq = i32Ntq;
-                    psConfig->u8DataPrescaler = (uint8_t)psConfig->u16NominalPrescaler;
-                    CANFD_GetSegments(u32NominalBaudRate, u32DataBaudRate, i32Ntq, i32Dtq, psConfig);
-                    return TRUE;
-                }
-
-                /* calculate data settings */
-                for (i32Dtq = MAX_TIME_QUANTA; i32Dtq >= MIN_TIME_QUANTA; i32Dtq--)
-                {
-                    i32Dclk = u32DataBaudRate * i32Dtq;
-
-                    for (psConfig->u8DataPrescaler = 0x01; psConfig->u8DataPrescaler <= 0x20; (psConfig->u8DataPrescaler)++)
-                    {
-                        i32Dclk2 = i32Dclk * psConfig->u8DataPrescaler;
-
-                        if ((float)(u32SourceClock_Hz) / i32Dclk2 == psConfig->u8PreDivider)
-                        {
-                            CANFD_GetSegments(u32NominalBaudRate, u32DataBaudRate, i32Ntq, i32Dtq, psConfig);
-                            return TRUE;
-                        }
-                    }
-                }
-
-                if (u32DataBaudRate == 0)
-                {
-                    CANFD_GetSegments(u32NominalBaudRate, 0, i32Ntq, 0, psConfig);
-                    return TRUE;
-                }
-            }
-        }
+        CANFD_SetBitRate(psCanfd, u32DataBaudRate, u32SourceClock_Hz, 0);
     }
+}
 
-    /* failed to find solution */
-    return 0;
+/**
+ * @brief       Get CAN clock source divider.
+ *
+ * @param[in]   u32CAN_Port  The CAN port number.
+ *
+ * @return      CAN clock source divider.
+ *
+ * @details     Get CAN clock source divider from clock register.
+ */
+uint32_t CANFD_GetClockDiv(uint32_t u32CAN_Port)
+{
+    uint32_t u32Div = 0;
+    u32Div = (CLK->CLKDIV0 & (0x7 << (4*u32CAN_Port))) >> (4*u32CAN_Port);
+    return u32Div;
+}
+
+/**
+ * @brief       Get CAN clock source.
+ *
+ * @param[in]   u32CAN_Port  The CAN port number.
+ *
+ * @return      0: CAN clock source is APLL.
+ *              1: CAN clock source is VPLL
+ *
+ * @details     Get CAN clock source from clock register.
+ */
+uint32_t CANFD_GetClockSource(uint32_t u32CAN_Port)
+{
+    uint32_t u32Clk_Source = 0;
+    u32Clk_Source = (CLK->CLKSEL4 & (0x1 << (16+u32CAN_Port))) >> (16+u32CAN_Port);
+    return u32Clk_Source;
 }
 
 
@@ -624,11 +751,8 @@ void CANFD_Open(CANFD_T *psCanfd, CANFD_FD_T *psCanfdStr)
     psCanfd->RXF1C = 0;
 
     /* calculate and apply timing */
-    if (CANFD_CalculateTimingValues(psCanfdStr->sBtConfig.sNormBitRate.u32BitRate, psCanfdStr->sBtConfig.sDataBitRate.u32BitRate,
-                                    u32CANFD_CLK, &psCanfdStr->sBtConfig.sConfigBitTing))
-    {
-        CANFD_SetTimingConfig(psCanfd, &psCanfdStr->sBtConfig.sConfigBitTing);
-    }
+    CANFD_CalculateTimingValues(psCanfd, psCanfdStr->sBtConfig.sNormBitRate.u32BitRate,
+                                psCanfdStr->sBtConfig.sDataBitRate.u32BitRate, u32CANFD_CLK, &psCanfdStr->sBtConfig.sConfigBitTing);
 
     /* Configures the Standard ID Filter element */
     if (psCanfdStr->sElemSize.u32SIDFC != 0)
@@ -639,7 +763,7 @@ void CANFD_Open(CANFD_T *psCanfd, CANFD_FD_T *psCanfdStr)
         CANFD_ConfigXIDFC(psCanfd, &psCanfdStr->sMRamStartAddr, &psCanfdStr->sElemSize);
 
     /*Configures the Tx Buffer element */
-    if (psCanfdStr->sElemSize.u32RxBuf != 0)
+    if (psCanfdStr->sElemSize.u32TxBuf != 0)
         CANFD_InitTxDBuf(psCanfd, &psCanfdStr->sMRamStartAddr, &psCanfdStr->sElemSize, eCANFD_BYTE64);
 
     /*Configures the Rx Buffer element */
@@ -702,7 +826,6 @@ void CANFD_Close(CANFD_T *psCanfd)
     }
 }
 
-
 /**
  * @brief       Get the element's address when read transmit buffer.
  *
@@ -729,7 +852,6 @@ static uint32_t CANFD_GetTxBufferElementAddress(CANFD_T *psCanfd, uint32_t u32Id
 
     return (CANFD_ReadReg((uint32_t)&psCanfd->TXBC) & CANFD_TXBC_TBSA_Msk) + u32Idx * u32Size * 4U;
 }
-
 
 /**
  * @brief       Enables CAN FD interrupts according to provided mask .
@@ -982,7 +1104,6 @@ void CANFD_SetGFC(CANFD_T *psCanfd, E_CANFD_ACC_NON_MATCH_FRM eNMStdFrm, E_CANFD
     psCanfd->GFC = (eNMStdFrm << CANFD_GFC_ANFS_Pos) | (eEMExtFrm << CANFD_GFC_ANFE_Pos)
                    | (u32RejRmtStdFrm << CANFD_GFC_RRFS_Pos) | (u32RejRmtExtFrm << CANFD_GFC_RRFE_Pos);
 }
-
 
 /**
  * @brief       Rx FIFO Configuration for RX_FIFO_0 and RX_FIFO_1.
