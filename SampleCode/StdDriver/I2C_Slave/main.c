@@ -10,16 +10,16 @@
 #include <stdio.h>
 #include "NuMicro.h"
 
-uint32_t slave_buff_addr;
-uint8_t g_u8SlvData[256];
-uint8_t g_au8RxData[3];
+volatile uint32_t slave_buff_addr;
+volatile uint8_t g_u8SlvData[256];
+volatile uint8_t g_au8RxData[3];
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
-uint8_t g_u8DeviceAddr;
-uint8_t g_au8TxData[3];
-uint8_t g_u8RxData;
-uint8_t g_u8DataLen;
+volatile uint8_t g_u8DeviceAddr;
+volatile uint8_t g_au8TxData[3];
+volatile uint8_t g_u8RxData;
+volatile uint8_t g_u8DataLen;
 
 typedef void (*I2C_FUNC)(uint32_t u32Status);
 

@@ -12,15 +12,15 @@
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
-uint32_t slave_buff_addr;
-uint8_t g_au8SlvData[256];
-uint8_t g_au8SlvRxData[3];
-uint8_t g_u8DeviceAddr;
-uint8_t g_au8MstTxData[3];
-uint8_t g_u8MstRxData;
-uint8_t g_u8MstDataLen;
-uint8_t g_u8SlvDataLen;
-uint8_t g_u8MstEndFlag = 0;
+volatile uint32_t slave_buff_addr;
+volatile uint8_t g_au8SlvData[256];
+volatile uint8_t g_au8SlvRxData[3];
+volatile uint8_t g_u8DeviceAddr;
+volatile uint8_t g_au8MstTxData[3];
+volatile uint8_t g_u8MstRxData;
+volatile uint8_t g_u8MstDataLen;
+volatile uint8_t g_u8SlvDataLen;
+volatile uint8_t g_u8MstEndFlag = 0;
 
 typedef void (*I2C_FUNC)(uint32_t u32Status);
 

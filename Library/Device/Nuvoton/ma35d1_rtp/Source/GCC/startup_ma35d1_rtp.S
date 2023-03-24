@@ -112,7 +112,7 @@ __Vectors:
 	.long	0                     /*  44      */
 	.long	I2C1_IRQHandler       /*  45      */
 	.long	I2S0_IRQHandler       /*  46      */
-	.long	MCAN00_IRQHandler     /*  47      */
+	.long	CANFD00_IRQHandler    /*  47      */
 	.long	SC0_IRQHandler        /*  48      */
 	.long	GPE_IRQHandler        /*  49      */
 	.long	GPF_IRQHandler        /*  50      */
@@ -143,7 +143,7 @@ __Vectors:
 	.long	I2C2_IRQHandler       /*  75      */
 	.long	I2C3_IRQHandler       /*  76      */
 	.long	I2S1_IRQHandler       /*  77      */
-	.long	MACN10_IRQHandler     /*  78      */
+	.long	CANFD10_IRQHandler    /*  78      */
 	.long	SC1_IRQHandler        /*  79      */
 	.long	GPK_IRQHandler        /*  80      */
 	.long	GPL_IRQHandler        /*  81      */
@@ -168,13 +168,13 @@ __Vectors:
 	.long	UART16_IRQHandler     /* 100      */
 	.long	I2C4_IRQHandler       /* 101      */
 	.long	I2C5_IRQHandler       /* 102      */
-	.long	MCAN20_IRQHandler     /* 103      */
-	.long	MCAN30_IRQHandler     /* 104      */
+	.long	CANFD20_IRQHandler     /* 103      */
+	.long	CANFD30_IRQHandler     /* 104      */
 	.long	KPI_IRQHandler        /* 105      */
-	.long	MCAN01_IRQHandler     /* 106      */
-	.long	MCAN11_IRQHandler     /* 107      */
-	.long	MCAN21_IRQHandler     /* 108      */
-	.long	MCAN31_IRQHandler     /* 109      */
+	.long	CANFD01_IRQHandler     /* 106      */
+	.long	CANFD11_IRQHandler     /* 107      */
+	.long	CANFD21_IRQHandler     /* 108      */
+	.long	CANFD31_IRQHandler     /* 109      */
 	.long	ADC0_IRQHandler       /* 110      */
 	.size	__Vectors, . - __Vectors
 
@@ -377,7 +377,7 @@ Default_Handler:
 	def_irq_handler	EADC03_IRQHandler
 	def_irq_handler	I2C1_IRQHandler
 	def_irq_handler	I2S0_IRQHandler
-	def_irq_handler	MCAN00_IRQHandler
+	def_irq_handler	CANFD00_IRQHandler
 	def_irq_handler	SC0_IRQHandler
 	def_irq_handler	GPE_IRQHandler
 	def_irq_handler	GPF_IRQHandler
@@ -408,7 +408,7 @@ Default_Handler:
 	def_irq_handler	I2C2_IRQHandler
 	def_irq_handler	I2C3_IRQHandler
 	def_irq_handler	I2S1_IRQHandler
-	def_irq_handler	MACN10_IRQHandler
+	def_irq_handler	CANFD10_IRQHandler
 	def_irq_handler	SC1_IRQHandler
 	def_irq_handler	GPK_IRQHandler
 	def_irq_handler	GPL_IRQHandler
@@ -433,12 +433,12 @@ Default_Handler:
 	def_irq_handler	UART16_IRQHandler
 	def_irq_handler	I2C4_IRQHandler
 	def_irq_handler	I2C5_IRQHandler
-	def_irq_handler	MCAN20_IRQHandler
-	def_irq_handler	MCAN30_IRQHandler
+	def_irq_handler	CANFD20_IRQHandler
+	def_irq_handler	CANFD30_IRQHandler
 	def_irq_handler	KPI_IRQHandler
-	def_irq_handler	MCAN01_IRQHandler
-	def_irq_handler	MCAN11_IRQHandler
-	def_irq_handler	MCAN21_IRQHandler
-	def_irq_handler	MCAN31_IRQHandler
+	def_irq_handler	CANFD01_IRQHandler
+	def_irq_handler	CANFD11_IRQHandler
+	def_irq_handler	CANFD21_IRQHandler
+	def_irq_handler	CANFD31_IRQHandler
 	def_irq_handler	ADC0_IRQHandler
 	.end
