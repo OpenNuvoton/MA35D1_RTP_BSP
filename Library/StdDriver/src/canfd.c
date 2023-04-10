@@ -706,7 +706,7 @@ void CANFD_Open(CANFD_T *psCanfd, CANFD_FD_T *psCanfdStr)
         SYS_ResetModule(CANFD2_RST);
         NVIC_EnableIRQ(CANFD20_IRQn);
         NVIC_EnableIRQ(CANFD21_IRQn);
-        if(CLK_GetModuleClockSource(CANFD2_MODULE) == 0)
+        if(CLK_GetModuleClockSource(CANFD2_MODULE) == 1)
         {
             u32CANFD_CLK = CLK_GetPLLClockFreq(VPLL)/((CLK_GetModuleClockDivider(CANFD2_MODULE) + 1)<<1);
         }
