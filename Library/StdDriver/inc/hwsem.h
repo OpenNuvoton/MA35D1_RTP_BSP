@@ -95,6 +95,15 @@ extern "C"
   */
 #define HWSEM_CLR_INT_FLAG(hwsem, u32Num)    ((hwsem)->INTSTSM4 = (HWSEM_INTSTSM4_SEM0IF_Msk << (u32Num)))
 
+/**
+  * @brief Check specified interrupt flag (M4 R/O)
+  *
+  * @param[in]  hwsem         The pointer of the specified HWSEM module.
+  * @param[in]  u32Num        HWSEM number, valid values are between 0~7
+  *
+  *    \hideinitializer
+  */
+#define HWSEM_CHK_INT_FLAG(hwsem, u32Num)    ((hwsem)->INTSTSA35 & (HWSEM_INTSTSA35_SEM0IF_Msk << (u32Num)))
 
 /**
   * @brief        Lock/Unlock specified semaphore
