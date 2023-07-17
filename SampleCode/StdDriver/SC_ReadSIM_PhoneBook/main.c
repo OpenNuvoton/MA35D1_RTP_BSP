@@ -273,7 +273,7 @@ int main(void)
     printf("\nThis sample code reads phone book from SIM card\n");
 
     // Open smartcard interface 1. CD pin state low indicates card insert and PWR pin high raise VCC pin to card
-    SC_Open(SC0, SC_PIN_STATE_LOW, SC_PIN_STATE_HIGH);
+    SC_Open(SC0, SC_PIN_STATE_IGNORE, SC_PIN_STATE_HIGH);
     NVIC_EnableIRQ(SC0_IRQn);
 
     // Wait 'til card insert

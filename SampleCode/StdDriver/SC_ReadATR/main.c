@@ -89,7 +89,7 @@ int main(void)
         Open smartcard interface 0. CD pin state low indicates card insert and PWR pin low raise VCC pin to card
         The second and third parameter needs to be set according to the board design
     */
-    SC_Open(SC0, SC_PIN_STATE_LOW, SC_PIN_STATE_HIGH);
+    SC_Open(SC0, SC_PIN_STATE_IGNORE, SC_PIN_STATE_HIGH);
     NVIC_EnableIRQ(SC0_IRQn);
 
     // Wait 'til card insert
