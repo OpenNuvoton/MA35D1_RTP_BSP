@@ -429,8 +429,8 @@ extern "C"
 #define I2C5_MODULE      ((3UL<<29)|(MODULE_NoMsk<<26)|(MODULE_NoMsk<<22)|(MODULE_NoMsk<<17)|(MODULE_NoMsk<<14)|(MODULE_NoMsk<<10)|(MODULE_NoMsk<<5)|(5UL<<0))  /*!< I2C5 Module \hideinitializer */
 #define QSPI0_MODULE     ((3UL<<29)|(MODULE_NoMsk<<26)|(MODULE_NoMsk<<22)|(MODULE_NoMsk<<17)|(MODULE_NoMsk<<14)|(MODULE_NoMsk<<10)|(MODULE_NoMsk<<5)|(6UL<<0))  /*!< QSPI0 Module \hideinitializer */
 #define QSPI1_MODULE     ((3UL<<29)|(MODULE_NoMsk<<26)|(MODULE_NoMsk<<22)|(MODULE_NoMsk<<17)|(MODULE_NoMsk<<14)|(MODULE_NoMsk<<10)|(MODULE_NoMsk<<5)|(7UL<<0))  /*!< QSPI1 Module \hideinitializer */
-#define SC0_MODULE       ((1UL<<29)|(4UL<<26)|(1UL<<22)|(28UL<<17)|(1UL<<14)|(0xFUL<<10)|(0UL<<5)|(12UL<<0)) /*!< SC0 Module \hideinitializer */
-#define SC1_MODULE       ((1UL<<29)|(4UL<<26)|(1UL<<22)|(29UL<<17)|(1UL<<14)|(0xFUL<<10)|(4UL<<5)|(13UL<<0)) /*!< SC1 Module \hideinitializer */
+#define SC0_MODULE       ((3UL<<29)|(4UL<<26         )|(1UL<<22         )|(28UL<<17        )|(1UL<<14         )|(0xFUL<<10       )|(0UL<<5         )|(12UL<<0)) /*!< SC0 Module \hideinitializer */
+#define SC1_MODULE       ((3UL<<29)|(4UL<<26         )|(1UL<<22         )|(29UL<<17        )|(1UL<<14         )|(0xFUL<<10       )|(4UL<<5         )|(13UL<<0)) /*!< SC1 Module \hideinitializer */
 #define WDT0_MODULE      ((3UL<<29)|(MODULE_NoMsk<<26)|(MODULE_NoMsk<<22)|(MODULE_NoMsk<<17)|(MODULE_NoMsk<<14)|(MODULE_NoMsk<<10)|(MODULE_NoMsk<<5)|(16UL<<0)) /*!< WDT0 Module \hideinitializer */
 #define WDT1_MODULE      ((3UL<<29)|(MODULE_NoMsk<<26)|(MODULE_NoMsk<<22)|(MODULE_NoMsk<<17)|(MODULE_NoMsk<<14)|(MODULE_NoMsk<<10)|(MODULE_NoMsk<<5)|(17UL<<0)) /*!< WDT1 Module \hideinitializer */
 #define WDT2_MODULE      ((3UL<<29)|(MODULE_NoMsk<<26)|(MODULE_NoMsk<<22)|(MODULE_NoMsk<<17)|(MODULE_NoMsk<<14)|(MODULE_NoMsk<<10)|(MODULE_NoMsk<<5)|(18UL<<0)) /*!< WDT2 Module \hideinitializer */
