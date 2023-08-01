@@ -437,7 +437,7 @@ uint32_t CANFD_SetBitRate(CANFD_T *psCanfd, uint32_t u32BaudRate, int32_t u32Sou
     int best_tseg = 0, best_brp = 0, brp = 0;
     int tsegall, tseg = 0, tseg1 = 0, tseg2 = 0;
     int spt_error = 1000, spt = 0, sampl_pt;
-    uint64_t clock_freq = (uint64_t)0; //u64PCLK_DIV = (uint64_t)1;
+    uint64_t clock_freq = (uint64_t)0;
     int sjw = (uint32_t)2;
     int reg_btp = 0;
     int tseg1_min = 0, tseg2_min = 0;
@@ -553,7 +553,7 @@ uint32_t CANFD_SetBitRate(CANFD_T *psCanfd, uint32_t u32BaudRate, int32_t u32Sou
     tseg1 = tseg1 - 1;
     tseg2 = tseg2 - 1;
 
-    u32BaudRate = clock_freq / (best_brp * (tseg1 + tseg2 + 1));
+    u32BaudRate = clock_freq / ((best_brp +1) * (tseg1 + tseg2 + 3));
 
     if(u32Set_NBTP)
     {
@@ -567,7 +567,7 @@ uint32_t CANFD_SetBitRate(CANFD_T *psCanfd, uint32_t u32BaudRate, int32_t u32Sou
          * This is mentioned in the "Bit Time Requirements for CAN FD"
          * paper presented at the International CAN Conference 2013
          */
-        if (best_brp > 2500000)
+        if (u32BaudRate > 2500000)
         {
             uint32_t tdco, ssp;
 
@@ -752,7 +752,8 @@ void CANFD_Open(CANFD_T *psCanfd, CANFD_FD_T *psCanfdStr)
 
     /* calculate and apply timing */
     CANFD_CalculateTimingValues(psCanfd, psCanfdStr->sBtConfig.sNormBitRate.u32BitRate,
-                                psCanfdStr->sBtConfig.sDataBitRate.u32BitRate, u32CANFD_CLK, &psCanfdStr->sBtConfig.sConfigBitTing);
+                                psCanfdStr->sBtConfig.sDataBitRate.u32BitRate,
+                                u32CANFD_CLK, &psCanfdStr->sBtConfig.sConfigBitTing);
 
     /* Configures the Standard ID Filter element */
     if (psCanfdStr->sElemSize.u32SIDFC != 0)
@@ -903,6 +904,8 @@ void CANFD_EnableInt(CANFD_T *psCanfd, uint32_t u32IntLine0, uint32_t u32IntLine
     {
         /*Setting the CANFD0_IRQ0 Interrupt*/
         psCanfd->IE |= u32IntLine0;
+        /*Setting Interrupt Line selection*/
+        psCanfd->ILS &= ~u32IntLine0;
         /* Enable CAN FD specified interrupt */
         psCanfd->ILE |= ((uint32_t)1U << 0);
     }
@@ -910,6 +913,8 @@ void CANFD_EnableInt(CANFD_T *psCanfd, uint32_t u32IntLine0, uint32_t u32IntLine
     if (u32IntLine1 != 0)
     {
         /*Setting the CANFD0_IRQ1 Interrupt*/
+    	psCanfd->IE |= u32IntLine1;
+    	/*Setting Interrupt Line selection*/
         psCanfd->ILS |= u32IntLine1;
         /* Enable CAN FD specified interrupt */
         psCanfd->ILE |= ((uint32_t)1U << 1);
@@ -979,7 +984,7 @@ void CANFD_DisableInt(CANFD_T *psCanfd, uint32_t u32IntLine0, uint32_t u32IntLin
     if (u32IntLine1 != 0)
     {
         /*Clear the CANFD0_IRQ1 Interrupt*/
-        psCanfd->ILS &= ~u32IntLine1;
+        psCanfd->IE &= ~u32IntLine1;
         /* Disable CAN FD specified interrupt */
         psCanfd->ILE &= ~((uint32_t)1U << 1);
     }
