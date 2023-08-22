@@ -389,8 +389,7 @@ typedef struct
     uint8_t             bBitRateSwitch;  /*!< Bit Rate Switch */
 } CANFD_TX_EVNT_ELEM_T;
 
-#define CANFD_READ_REG_TIMEOUT    48                 /*!< CANFD read register time-out count */
-#define CANFD_REG_READ_TIME       2
+#define CANFD_REG_READ_TIME       3                 /*!< CANFD read register time count */
 
 __STATIC_INLINE uint32_t CANFD_ReadReg(uint32_t u32RegAddr);
 
@@ -398,47 +397,25 @@ __STATIC_INLINE uint32_t CANFD_ReadReg(uint32_t u32RegAddr)
 {
     uint32_t u32ReadReg;
     uint32_t u32ReadReg_1;
-    uint32_t u32TimeOutCnt = CANFD_READ_REG_TIMEOUT;
-    uint32_t u32TimeOutCnt_1 = 0;
+    uint32_t u32TimeOutCnt = 0;
     u32ReadReg = 0UL;
 
-    do{
-        u32ReadReg = inpw((uint32_t *)u32RegAddr);
+    u32ReadReg = inpw((uint32_t *)u32RegAddr);
 
-        if(u32ReadReg != 0x0)
+    while(u32TimeOutCnt < CANFD_REG_READ_TIME)
+    {
+        u32ReadReg_1 = inpw((uint32_t *)u32RegAddr);
+
+        if(u32ReadReg_1 == u32ReadReg)
         {
-            while(1)
-            {
-                u32ReadReg_1 = inpw((uint32_t *)u32RegAddr);
-
-                if(u32ReadReg_1 == 0x0)
-                {
-                    u32TimeOutCnt_1 = 0;
-                    break;
-                }
-
-                if(u32ReadReg_1 == u32ReadReg)
-                {
-                    u32TimeOutCnt_1++;
-                }
-                else
-                {
-                    u32ReadReg = u32ReadReg_1;
-                    u32TimeOutCnt_1 = 0;
-                }
-
-                if(u32TimeOutCnt_1 > CANFD_REG_READ_TIME)
-                {
-                    return u32ReadReg;
-                }
-            }
+            u32TimeOutCnt++;
         }
-
-        if(--u32TimeOutCnt == 0UL)
+        else
         {
-            break;
+            u32ReadReg = u32ReadReg_1;
+            u32TimeOutCnt = 0;
         }
-      }while(u32ReadReg == 0UL);
+    }
 
     return u32ReadReg;
 }
