@@ -14,6 +14,9 @@
 #pragma anon_unions
 #endif
 
+#include "stdint.h"
+#include <cmsis_armcc.h>
+
 /** @addtogroup Standard_Driver Standard Driver
   @{
 */
@@ -395,10 +398,13 @@ __STATIC_INLINE uint32_t CANFD_ReadReg(uint32_t u32RegAddr);
 
 __STATIC_INLINE uint32_t CANFD_ReadReg(uint32_t u32RegAddr)
 {
-    uint32_t u32ReadReg;
+    uint32_t u32ReadReg = 0UL;
     uint32_t u32ReadReg_1;
     uint32_t u32TimeOutCnt = 0;
-    u32ReadReg = 0UL;
+    uint32_t u32IRQ_state = __get_PRIMASK();
+
+    // disable all interrupt
+    __set_PRIMASK(1);
 
     u32ReadReg = inpw((uint32_t *)u32RegAddr);
 
@@ -416,6 +422,9 @@ __STATIC_INLINE uint32_t CANFD_ReadReg(uint32_t u32RegAddr)
             u32TimeOutCnt = 0;
         }
     }
+
+    // enable interrupt
+    __set_PRIMASK(u32IRQ_state);
 
     return u32ReadReg;
 }
