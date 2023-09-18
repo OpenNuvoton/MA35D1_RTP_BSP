@@ -15,7 +15,10 @@
 #endif
 
 #include "stdint.h"
+
+#ifdef __CC_ARM
 #include <cmsis_armcc.h>
+#endif
 
 /** @addtogroup Standard_Driver Standard Driver
   @{
