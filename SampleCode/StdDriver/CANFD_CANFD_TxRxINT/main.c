@@ -281,6 +281,11 @@ void CANFD_Init(void)
     sCANFD_Config.sBtConfig.sNormBitRate.u32BitRate = 1000000;
     sCANFD_Config.sBtConfig.sDataBitRate.u32BitRate = 4000000;
 
+    /* Reset CAN IP */
+    SYS_UnlockReg();
+    SYS_ResetModule(CANFD0_RST);
+    SYS_LockReg();
+
     /*Open the CAN FD feature*/
     CANFD_Open(CANFD0, &sCANFD_Config);
 
