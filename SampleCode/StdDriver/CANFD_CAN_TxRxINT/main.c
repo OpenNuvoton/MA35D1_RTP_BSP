@@ -41,7 +41,7 @@ void CANFD00_IRQHandler(void)
     CANFD_ReadRxFifoMsg(CANFD0, 0, &g_sRxMsgFrame);
     g_u8RxFifO0CompleteFlag = 1;
 
-    if(CANFD0->IR == CANFD_IR_BO_Msk)
+    if(CANFD0->IR & CANFD_IR_BO_Msk)
     {
         CANFD_ClearStatusFlag(CANFD0, CANFD_IR_BO_Msk);
         CANFD0->CCCR &= ~CANFD_CCCR_INIT_Msk;
