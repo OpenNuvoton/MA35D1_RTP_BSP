@@ -14,6 +14,7 @@
 #define M4_COMMAND_ACK 0x81
 
 static volatile uint32_t rx_status = 0;
+static volatile uint32_t stop_cmd = 0;
 
 #define tx_rx_size 128
 uint8_t received_rpmsg[tx_rx_size];
@@ -124,6 +125,9 @@ int32_t main (void)
 				printf("TX ACK time-out!\n");
 				break;
 			}
+
+			if (stop_cmd)
+				break;
 		}
 		printf("\n Test END !!\n");
 	}
@@ -133,6 +137,7 @@ static int rx_callback(struct rpmsg_endpoint *rp_chnl, void *data, size_t len, u
 {
 	uint32_t *u32Command = (uint32_t *)data;
 	uint32_t i;
+	unsigned char stopCode[10] = "TERMINATE";
 
 	if (*u32Command == COMMAND_RECEIVE_A35_MSG)
 	{
@@ -144,6 +149,12 @@ static int rx_callback(struct rpmsg_endpoint *rp_chnl, void *data, size_t len, u
 			printf(" 0x%x \n", received_rpmsg[i]);
 		}
 		rx_status = 1;
+		
+		if((len == 10) && (!memcmp(received_rpmsg, stopCode, len)))
+		{
+			stop_cmd = 1;
+			printf("\n terminated!! \n");
+		}
 	}
 	else
 	{
