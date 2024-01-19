@@ -167,6 +167,9 @@ void I2C_MasterTx(uint32_t u32Status)
 /*---------------------------------------------------------------------------------------------------------*/
 void I2C_SlaveTRx(uint32_t u32Status)
 {
+    uint8_t u8SlvDataLenTemp;
+    uint8_t u8SlvRxDataTemp0, u8SlvRxDataTemp1, u8SlvRxDataTemp2;
+
     if(u32Status == 0x60)                       /* Own SLA+W has been receive; ACK has been return */
     {
         g_u8SlvDataLen = 0;
@@ -175,16 +178,20 @@ void I2C_SlaveTRx(uint32_t u32Status)
     else if(u32Status == 0x80)                 /* Previously address with own SLA address
                                                    Data has been received; ACK has been returned*/
     {
-        g_au8SlvRxData[g_u8SlvDataLen] = I2C_GET_DATA(I2C1);
+        u8SlvDataLenTemp = g_u8SlvDataLen;
+        g_au8SlvRxData[u8SlvDataLenTemp] = I2C_GET_DATA(I2C1);
         g_u8SlvDataLen++;
 
         if(g_u8SlvDataLen == 2)
         {
-            slave_buff_addr = (g_au8SlvRxData[0] << 8) + g_au8SlvRxData[1];
+            u8SlvRxDataTemp0 = g_au8SlvRxData[0];
+            u8SlvRxDataTemp1 = g_au8SlvRxData[1];
+            slave_buff_addr = (u8SlvRxDataTemp0 << 8) + u8SlvRxDataTemp1;
         }
         if(g_u8SlvDataLen == 3)
         {
-            g_au8SlvData[slave_buff_addr] = g_au8SlvRxData[2];
+            u8SlvRxDataTemp2 = g_au8SlvRxData[2];
+            g_au8SlvData[slave_buff_addr] = u8SlvRxDataTemp2;
             g_u8SlvDataLen = 0;
         }
 
@@ -336,6 +343,7 @@ void I2C1_Close(void)
 int32_t I2C2_Read_Write_SLAVE(uint8_t slvaddr)
 {
     uint32_t i;
+    uint8_t u8MstRxDataTemp;
 
     g_u8DeviceAddr = slvaddr;
 
@@ -370,7 +378,8 @@ int32_t I2C2_Read_Write_SLAVE(uint8_t slvaddr)
         while(g_u8MstEndFlag == 0);
 
         /* Compare data */
-        if(g_u8MstRxData != g_au8MstTxData[2])
+        u8MstRxDataTemp = g_u8MstRxData;
+        if(u8MstRxDataTemp != g_au8MstTxData[2])
         {
             printf("I2C Byte Write/Read Failed, Data 0x%x\n", g_u8MstRxData);
             return -1;
@@ -383,6 +392,7 @@ int32_t I2C2_Read_Write_SLAVE(uint8_t slvaddr)
 int32_t I2C2_Read_Write_Slave(uint8_t slvaddr)
 {
     uint32_t i;
+    uint8_t u8MstRxDataTemp;
 
     g_u8DeviceAddr = slvaddr;
 
@@ -417,7 +427,8 @@ int32_t I2C2_Read_Write_Slave(uint8_t slvaddr)
         while(g_u8MstEndFlag == 0);
 
         /* Compare data */
-        if(g_u8MstRxData != g_au8MstTxData[2])
+        u8MstRxDataTemp = g_u8MstRxData;
+        if(u8MstRxDataTemp != g_au8MstTxData[2])
         {
             printf("I2C2 Byte Write/Read Failed, Data 0x%x\n", g_u8MstRxData);
             return -1;

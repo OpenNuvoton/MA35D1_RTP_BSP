@@ -194,6 +194,7 @@ void I2C0_Init(void)
 int32_t main (void)
 {
     uint32_t i;
+    uint8_t u8TxTemp;
 
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
@@ -255,7 +256,8 @@ int32_t main (void)
         while(I2C1->CTL0 & I2C_CTL0_STO_Msk);
 
         /* Compare data */
-        if (g_u8RxData != g_au8TxData[2])
+        u8TxTemp = g_au8TxData[2];
+        if (g_u8RxData != u8TxTemp)
         {
             printf("I2C Byte Write/Read Failed, Data 0x%x\n", g_u8RxData);
             return -1;

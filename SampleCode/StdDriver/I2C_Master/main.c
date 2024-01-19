@@ -191,6 +191,7 @@ void I2C1_Init(void)
 int32_t Read_Write_SLAVE(uint8_t slvaddr)
 {
     uint32_t i;
+    uint8_t u8RxDataTemp;
 
     g_u8DeviceAddr = slvaddr;
 
@@ -225,7 +226,8 @@ int32_t Read_Write_SLAVE(uint8_t slvaddr)
         while (g_u8EndFlag == 0);
 
         /* Compare data */
-        if (g_u8RxData != g_au8TxData[2])
+        u8RxDataTemp = g_u8RxData;
+        if (u8RxDataTemp != g_au8TxData[2])
         {
             printf("I2C Byte Write/Read Failed, Data 0x%x\n", g_u8RxData);
             return -1;
