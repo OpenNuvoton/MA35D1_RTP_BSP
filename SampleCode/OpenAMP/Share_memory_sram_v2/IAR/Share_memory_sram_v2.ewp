@@ -661,7 +661,7 @@
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
-                    <state>Share_memory_demo_v2.bin</state>
+                    <state>Share_memory_sram_v2.bin</state>
                 </option>
                 <option>
                     <name>OOCCommandLineProducer</name>
@@ -1013,7 +1013,7 @@
                 </option>
                 <option>
                     <name>IlinkTrustzoneImportLibraryOut</name>
-                    <state>Share_memory_demo_v2_import_lib.o</state>
+                    <state>Share_memory_sram_v2_import_lib.o</state>
                 </option>
                 <option>
                     <name>OILinkExtraOption</name>

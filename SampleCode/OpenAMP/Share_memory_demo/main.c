@@ -16,7 +16,7 @@
 static volatile uint32_t rx_status = 0;
 static volatile uint32_t stop_cmd = 0;
 
-#define tx_rx_size 128
+#define tx_rx_size     Share_Memory_Size/2
 uint8_t received_rpmsg[tx_rx_size];
 uint8_t transmit_rpmsg[tx_rx_size];
 
