@@ -32,11 +32,11 @@
                 </option>
                 <option>
                     <name>Input description</name>
-                    <state>No specifier n, no float nor long long, no scan set, no assignment suppressing.</state>
+                    <state>No specifier n, no float nor long long, no scan set, no assignment suppressing, with multibyte support.</state>
                 </option>
                 <option>
                     <name>Output description</name>
-                    <state>No specifier a, A, no specifier n, no float nor long long.</state>
+                    <state>No specifier a, A, no specifier n, no float nor long long, with multibyte support.</state>
                 </option>
                 <option>
                     <name>GOutputBinary</name>
@@ -117,7 +117,7 @@
                 <option>
                     <name>GBECoreSlave</name>
                     <version>26</version>
-                    <state>40</state>
+                    <state>39</state>
                 </option>
                 <option>
                     <name>OGUseCmsis</name>
@@ -224,7 +224,11 @@
                 </option>
                 <option>
                     <name>CCDefines</name>
-                    <state></state>
+                    <state>NO_ATOMIC_64_SUPPORT</state>
+                    <state>CORE_CM4</state>
+                    <state>METAL_INTERNAL</state>
+                    <state>METAL_MAX_DEVICE_REGIONS=2</state>
+                    <state>VIRTIO_SLAVE_ONLY</state>
                 </option>
                 <option>
                     <name>CCPreprocFile</name>
@@ -232,7 +236,7 @@
                 </option>
                 <option>
                     <name>CCPreprocComments</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>CCPreprocLine</name>
@@ -341,7 +345,7 @@
                 </option>
                 <option>
                     <name>PreInclude</name>
-                    <state></state>
+                    <state>$PROJ_DIR$\..\..\..\..\ThirdParty\AMP\libmetal\lib\include\metal\compiler\iar\errno.h</state>
                 </option>
                 <option>
                     <name>CompilerMisraOverride</name>
@@ -352,7 +356,12 @@
                     <state>$PROJ_DIR$\..\..\..\..\Library\CMSIS\Include</state>
                     <state>$PROJ_DIR$\..\..\..\..\Library\Device\Nuvoton\ma35d1_rtp\Include</state>
                     <state>$PROJ_DIR$\..\..\..\..\Library\StdDriver\inc</state>
-                    <state>$PROJ_DIR$\..\..\..\..\Library\SmartcardLib\Include</state>
+                    <state>$PROJ_DIR$\..\porting</state>
+                    <state>$PROJ_DIR$\RTE</state>
+                    <state>$PROJ_DIR$\..\..\..\..\ThirdParty\AMP\open-amp\lib\include</state>
+                    <state>$PROJ_DIR$\..\..\..\..\ThirdParty\AMP\libmetal\lib\include</state>
+                    <state>$PROJ_DIR$\..\..\..\..\ThirdParty\AMP\virtual_driver</state>
+                    <state>$PROJ_DIR$\..\..\..\..\ThirdParty\AMP\open-amp\lib\include\openamp</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -415,7 +424,7 @@
                 </option>
                 <option>
                     <name>IccStaticDestr</name>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>IccCppInlineSemantics</name>
@@ -652,7 +661,7 @@
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
-                    <state>SC_ReadATR.bin</state>
+                    <state>Share_memory_dram_v2.bin</state>
                 </option>
                 <option>
                     <name>OOCCommandLineProducer</name>
@@ -707,7 +716,7 @@
                 </option>
                 <option>
                     <name>IlinkOutputFile</name>
-                    <state>SC_ReadATR.out</state>
+                    <state>Template.out</state>
                 </option>
                 <option>
                     <name>IlinkDebugInfoEnable</name>
@@ -771,7 +780,7 @@
                 </option>
                 <option>
                     <name>IlinkIcfFile</name>
-                    <state>$PROJ_DIR$\SC_ReadATR.icf</state>
+                    <state>$PROJ_DIR$\..\..\..\..\Script\ma35d1_rtp.icf</state>
                 </option>
                 <option>
                     <name>IlinkIcfFileSlave</name>
@@ -1004,7 +1013,7 @@
                 </option>
                 <option>
                     <name>IlinkTrustzoneImportLibraryOut</name>
-                    <state>###Unitialized###</state>
+                    <state>Share_memory_dram_v2_import_lib.o</state>
                 </option>
                 <option>
                     <name>OILinkExtraOption</name>
@@ -1040,6 +1049,57 @@
         </settings>
     </configuration>
     <group>
+        <name>AMP</name>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\AMP\libmetal\lib\system\generic\condition.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\AMP\libmetal\lib\system\generic\device.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\AMP\libmetal\lib\device_.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\AMP\libmetal\lib\system\generic\init.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\AMP\libmetal\lib\init_.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\AMP\libmetal\lib\system\generic\io.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\AMP\libmetal\lib\io_.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\AMP\libmetal\lib\log_.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\AMP\open-amp\lib\remoteproc\remoteproc_virtio.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\AMP\open-amp\lib\rpmsg\rpmsg.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\AMP\open-amp\lib\rpmsg\rpmsg_virtio.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\AMP\libmetal\lib\system\generic\shmem.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\AMP\libmetal\lib\shmem_.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\AMP\libmetal\lib\system\generic\cortexm\sys_.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\AMP\open-amp\lib\virtio\virtio.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\ThirdParty\AMP\open-amp\lib\virtio\virtqueue.c</name>
+        </file>
+    </group>
+    <group>
         <name>CMSIS</name>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\Device\Nuvoton\ma35d1_rtp\Source\IAR\startup_ma35d1_rtp.s</name>
@@ -1057,22 +1117,28 @@
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\retarget.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\sc.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\..\..\..\Library\SmartcardLib\SmartCardLib_IAR.a</name>
-        </file>
-        <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\sys.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\uart.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\whc.c</name>
         </file>
     </group>
     <group>
         <name>User</name>
         <file>
             <name>$PROJ_DIR$\..\main.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\porting\mbox_whc.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\porting\openamp.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\porting\rsc_table.c</name>
         </file>
     </group>
 </project>

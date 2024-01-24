@@ -30,22 +30,22 @@
 
 #if defined(__CC_ARM) || (defined(__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050))
 
-#define Shere_Memory_Size 128*2
-static uint32_t Shere_Memory__[Shere_Memory_Size];
+#define Share_Memory_Size 128*2
+static uint32_t Shere_Memory__[Share_Memory_Size];
 
 #define SHM_START_ADDRESS       (metal_phys_addr_t)(0x2401ff00)
-#define SHM_SIZE                (size_t)Shere_Memory_Size
-#define SHM_TX_RX_SIZE          (size_t)(Shere_Memory_Size/2)
+#define SHM_SIZE                (size_t)Share_Memory_Size
+#define SHM_TX_RX_SIZE          (size_t)(Share_Memory_Size/2)
 #define SHM_RX_START_ADDRESS    SHM_START_ADDRESS
 #define SHM_TX_START_ADDRESS    SHM_RX_START_ADDRESS+SHM_TX_RX_SIZE
 
 #else
-#define Shere_Memory_Size 128*2
-static uint32_t Shere_Memory__[Shere_Memory_Size];
+#define Share_Memory_Size 128*2
+static uint32_t Shere_Memory__[Share_Memory_Size];
 
 #define SHM_START_ADDRESS       (metal_phys_addr_t)(0x2401ff00)
-#define SHM_SIZE                (size_t)Shere_Memory_Size
-#define SHM_TX_RX_SIZE          (size_t)(Shere_Memory_Size/2)
+#define SHM_SIZE                (size_t)Share_Memory_Size
+#define SHM_TX_RX_SIZE          (size_t)(Share_Memory_Size/2)
 #define SHM_RX_START_ADDRESS    SHM_START_ADDRESS
 #define SHM_TX_START_ADDRESS    SHM_RX_START_ADDRESS+SHM_TX_RX_SIZE
 #endif

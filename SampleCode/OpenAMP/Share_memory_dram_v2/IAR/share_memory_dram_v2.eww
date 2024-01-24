@@ -2,7 +2,7 @@
 
 <workspace>
   <project>
-    <path>$WS_DIR$\Share_memory_demo_v2.ewp</path>
+    <path>$WS_DIR$\Share_memory_dram_v2.ewp</path>
   </project>
   <batchBuild/>
 </workspace>

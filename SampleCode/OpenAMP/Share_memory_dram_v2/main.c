@@ -47,7 +47,7 @@ static uint32_t rx_server_seq = 0, tx_client_seq = 0; // M4 as client
 volatile uint32_t status_flag = 0;
 volatile uint32_t rpmsg_wnd = 1;
 
-#define tx_rx_size 128
+#define tx_rx_size     Share_Memory_Size/2 // 0x80 ~ 0x4000
 uint8_t received_rpmsg[tx_rx_size];
 uint8_t transmit_rpmsg[tx_rx_size];
 

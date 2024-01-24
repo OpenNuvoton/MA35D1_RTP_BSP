@@ -88,7 +88,9 @@ void WHC0_IRQHandler(void)
 			if (au32RxCom[0] == COMMAND_RECEIVE_A35_MSG)
 			{
 				WHC0_RX_Flag = RX_NEW_MSG;
-
+#ifdef RPMSG_V2_ARCH
+				WHC0_TX_Flag = TX_ACK;
+#endif
 				for (i = 0; i < 4; i++)
 					au32RxBuf[i] = au32RxCom[i];
 			}

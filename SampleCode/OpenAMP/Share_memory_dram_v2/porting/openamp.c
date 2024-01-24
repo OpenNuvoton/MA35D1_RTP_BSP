@@ -165,7 +165,7 @@ int OPENAMP_send_data(struct rpmsg_endpoint *ept, const void *data, int len)
         u32TX_Length = SHM_TX_RX_SIZE;
 
     WHC0_TX_Flag = TX_NO_ACK;
-    memcpy((void *)(uint32_t)SHM_TX_START_ADDRESS, data, u32TX_Length);
+    memcpy((unsigned long *)SHM_TX_START_ADDRESS, data, u32TX_Length);
 
     au32TxBuf[0] = COMMAND_SEND_MSG_TO_A35;
     au32TxBuf[1] = u32TX_Length;
