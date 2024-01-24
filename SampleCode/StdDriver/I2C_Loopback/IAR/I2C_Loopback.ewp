@@ -770,7 +770,7 @@
                 </option>
                 <option>
                     <name>IlinkIcfFile</name>
-                    <state>C:\[Company]\workbench\ma35d1\rtp_20240119\RTP\Script\ma35d1_rtp.icf</state>
+                    <state>$PROJ_DIR$\..\..\..\..\Script\ma35d1_rtp.icf</state>
                 </option>
                 <option>
                     <name>IlinkIcfFileSlave</name>
