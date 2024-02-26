@@ -12,14 +12,14 @@
 #define PDMA                   ((PDMA_T *)  PDMA2_BASE)
 
 #define ENABLE_PDMA_INTERRUPT 1
-#define PDMA_TEST_LENGTH 100
+#define PDMA_TEST_LENGTH 128
 #define PDMA_TIME 0x5555
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
-static uint8_t g_u8Tx_Buffer[PDMA_TEST_LENGTH];
-static uint8_t g_u8Rx_Buffer[PDMA_TEST_LENGTH];
+static uint8_t g_u8Tx_Buffer[PDMA_TEST_LENGTH] __attribute__((aligned(512)));
+static uint8_t g_u8Rx_Buffer[PDMA_TEST_LENGTH] __attribute__((aligned(512)));
 
 volatile uint32_t u32IsTestOver = 0;
 
@@ -129,7 +129,7 @@ int main(void)
  *
  * @details     The DMA default IRQ.
  */
-void PDMA1_IRQHandler(void)
+void PDMA2_IRQHandler(void)
 {
     uint32_t status = PDMA_GET_INT_STATUS(PDMA);
 
@@ -198,6 +198,9 @@ void UART_PDMATest()
     while(1)
     {
         PDMA_Init();
+
+        UART1->FIFO |= (0x3 << 1);
+        while(UART1->FIFO & (0x3 << 1));
 
         UART1->INTEN = UART_INTEN_RLSIEN_Msk; // Enable Receive Line interrupt
         NVIC_EnableIRQ(UART1_IRQn);
