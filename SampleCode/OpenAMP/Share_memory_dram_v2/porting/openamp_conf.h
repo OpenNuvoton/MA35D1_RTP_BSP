@@ -37,7 +37,7 @@ static uint32_t Shere_Memory__[Share_Memory_Size];
 #define SHM_SIZE                (size_t)Share_Memory_Size
 #define SHM_TX_RX_SIZE          (size_t)(Share_Memory_Size/2)
 #define SHM_RX_START_ADDRESS    SHM_START_ADDRESS
-#define SHM_TX_START_ADDRESS    SHM_RX_START_ADDRESS+SHM_TX_RX_SIZE
+#define SHM_TX_START_ADDRESS    (SHM_RX_START_ADDRESS+SHM_TX_RX_SIZE)
 
 #else
 #define Share_Memory_Size /*128*2*/0x4000*2
@@ -47,7 +47,7 @@ static uint32_t Shere_Memory__[Share_Memory_Size];
 #define SHM_SIZE                (size_t)Share_Memory_Size
 #define SHM_TX_RX_SIZE          (size_t)(Share_Memory_Size/2)
 #define SHM_RX_START_ADDRESS    SHM_START_ADDRESS
-#define SHM_TX_START_ADDRESS    SHM_RX_START_ADDRESS+SHM_TX_RX_SIZE
+#define SHM_TX_START_ADDRESS    (SHM_RX_START_ADDRESS+SHM_TX_RX_SIZE)
 #endif
 
 #define VRING_RX_STR_ADDR        -1
