@@ -13,8 +13,6 @@
 #define COMMAND_RECEIVE_A35_MSG 0x80
 #define COMMAND_RETURN_ACK 0x81
 
-#define RPMSG_V2_ARCH
-
 #define RX_NO_MSG           1
 #define RX_NEW_MSG          2
 #define RX_BUF_FREE         3

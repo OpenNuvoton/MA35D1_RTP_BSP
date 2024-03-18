@@ -3,7 +3,17 @@
  *
  * @brief    Demonstrate OpenAMP share memory control.
  *
- * @copyright (C) 2020 Nuvoton Technology Corp. All rights reserved.
+ *           This project supports rpmsg v1 or v2 by utilizing SRAM or DRAM as
+ *           shared memory. Users are able to configure it in openamp_conf.h.
+ *           Default settings is rpmsg v1 with shared memory in SRAM
+ *
+ *           Note:
+ *                1. This project is compatible with MA35D1 Linux driver and
+ *                   is "NOT" designed for non-OS.
+ *                2. If recursive read/write is necessary in your application,
+ *                   it is highly recommended to use the v2 architecture.
+ *
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 #include <stdio.h>
 #include "NuMicro.h"
@@ -42,12 +52,22 @@
 #define SERVER_SEQ_OFFSET 4
 #define CLIENT_SEQ_OFFSET 8
 
-static uint32_t tx_server_seq = 0, rx_client_seq = 0; // M4 as server
-static uint32_t rx_server_seq = 0, tx_client_seq = 0; // M4 as client
+uint32_t tx_server_seq = 0, rx_client_seq = 0; // M4 as server
+uint32_t rx_server_seq = 0, tx_client_seq = 0; // M4 as client
 volatile uint32_t status_flag = 0;
 volatile uint32_t rpmsg_wnd = 1;
 
-#define tx_rx_size     Share_Memory_Size/2 // 0x80 ~ 0x4000
+#define tx_rx_size     Share_Memory_Size/2
+#ifndef RPMSG_DDR_BUF
+  #if (tx_rx_size > 0x80)
+    #error Maximum memory size for SRAM is 0x80 bytes
+  #endif
+#else
+  #if (tx_rx_size < 0x80) || (tx_rx_size > 0x4000)
+    #error Memory size for DRAM should be between 0x80 and 0x4000 bytes
+  #endif
+#endif
+
 uint8_t received_rpmsg[tx_rx_size];
 uint8_t transmit_rpmsg[tx_rx_size];
 
@@ -104,9 +124,7 @@ void receive_rxdata(uint8_t *data, int len)
 int32_t main (void)
 {
     struct rpmsg_endpoint resmgr_ept;
-    int ret, seq_diff = 0;
-    int len = 112;
-    uint32_t subCmd[4];
+    int ret;
 
     /* Init System, IP clock and multi-function I/O
        In the end of SYS_Init() will issue SYS_LockReg()
@@ -119,9 +137,16 @@ int32_t main (void)
     UART_Open(UART16, 115200);
 
     printf("\nThis sample code demonstrate OpenAMP share memory function\n");
+    printf("RPMSG version : v%d\n", RPMSG_VERSION);
+    printf("Shared memory starts at %s 0x%08x, size 0x%04x\n",
+        (SHM_START_ADDRESS > 0x80000000ul) ? "DRAM" : "SRAM", SHM_START_ADDRESS, Share_Memory_Size);
 
     MA35D1_OpenAMP_Init(RPMSG_REMOTE, NULL);
     OPENAMP_create_endpoint(&resmgr_ept, "rpmsg-sample", RPMSG_ADDR_ANY, rx_callback, NULL);
+
+#ifdef RPMSG_V2_ARCH
+    int len = 112;
+    uint32_t subCmd[4];
 
     while(1)
     {
@@ -138,7 +163,7 @@ int32_t main (void)
         memset(subCmd, 0, sizeof(subCmd));
 
         // Update ack seq from client
-        seq_diff = abs((int)(tx_server_seq - rx_client_seq));
+        int seq_diff = abs((int)(tx_server_seq - rx_client_seq));
 
         // Check for A35 keeping up before send something
         if(seq_diff < rpmsg_wnd)
@@ -183,6 +208,29 @@ int32_t main (void)
         if(status_flag & SUBCMD_EXIT)
 			break;
     }
+
+#else
+
+    do {
+			OPENAMP_check_for_message(&resmgr_ept);
+		} while (status_flag != SUBCMD_START);
+
+    for (int i = 0; i < tx_rx_size; i++)
+        transmit_rpmsg[i] = i;
+
+    ret = OPENAMP_send_data(&resmgr_ept, transmit_rpmsg, 5);
+    if (ret < 0)
+        printf("Failed to send message\r\n");
+    else
+        printf("\n Transfer %d bytes data to A35 \n", ret);
+
+    while (1)
+    {
+        if (OPENAMP_check_TxAck(&resmgr_ept) == 1)
+            break;
+    }
+#endif /* End of RPMSG_V2_ARCH */
+
     printf("\n Test END !!\n");
 
     while(1);
@@ -190,13 +238,11 @@ int32_t main (void)
 
 static int rx_callback(struct rpmsg_endpoint *rp_chnl, void *data, size_t len, uint32_t src, void *priv)
 {
-    uint32_t *u32Command = (uint32_t *)data;
-    uint32_t subcmd;
-
-    if(*u32Command == COMMAND_RECEIVE_A35_MSG)
+    if(*(uint32_t *)data == COMMAND_RECEIVE_A35_MSG)
     {
+#ifdef RPMSG_V2_ARCH
         memcpy((void *)received_rpmsg, (const void *)src, len > sizeof(received_rpmsg) ? sizeof(received_rpmsg) : (len < SUBCMD_LEN ? SUBCMD_LEN : len));
-        subcmd = *(uint32_t *)received_rpmsg & SUBCMD_DIGITS;
+        uint32_t subcmd = *(uint32_t *)received_rpmsg & SUBCMD_DIGITS;
 
         if(subcmd & SUBCMD_START)
         {
@@ -238,6 +284,18 @@ static int rx_callback(struct rpmsg_endpoint *rp_chnl, void *data, size_t len, u
             //status_flag |= SUBCMD_SEQACK;
             // compare with tx_server_seq later
         }
+
+#else
+
+        memcpy((void *)received_rpmsg, (const void *)src, len > sizeof(received_rpmsg) ? sizeof(received_rpmsg) : (len < SUBCMD_LEN ? SUBCMD_LEN : len));
+
+		printf("\n Receive %d bytes data from A35: \n", len);
+		for(int i = 0; i < len; i++)
+		{
+			printf(" 0x%x \n", received_rpmsg[i]);
+		}
+        status_flag = SUBCMD_START;
+#endif /* End of RPMSG_V2_ARCH */
     }
     else
     {

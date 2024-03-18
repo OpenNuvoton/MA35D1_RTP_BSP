@@ -19,8 +19,23 @@
 
 #include "NuMicro.h"
 
-#define MAILBOX_WHC_IF_ENABLED
+//#define RPMSG_DDR_BUF  /* Enable if you want to use DRAM as shared memory */
+//#define RPMSG_V2_ARCH  /* Enable if you want to use rpmsg v2 arch */
 
+#ifdef RPMSG_DDR_BUF
+  #define Share_Memory_Size 0x4000*2   /* Shared memory in DRAM could be 0x80 ~ 0x4000 bytes */
+#else
+  #undef Share_Memory_Size
+  #define Share_Memory_Size 0x80*2     /* Shared memory in SRAM is fixed to 0x80 bytes */
+#endif
+
+#ifdef RPMSG_V2_ARCH
+  #define RPMSG_VERSION 2
+#else
+  #define RPMSG_VERSION 1
+#endif
+
+#define MAILBOX_WHC_IF_ENABLED
 
 #ifdef MAILBOX_WHC_IF_ENABLED
 #include "mbox_whc.h"
@@ -28,27 +43,17 @@
 #define mbox_ch 2
 #endif /* MAILBOX_WHC_IF_ENABLED */
 
-#if defined(__CC_ARM) || (defined(__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050))
-
-#define Share_Memory_Size /*128*2*/0x4000*2
 static uint32_t Shere_Memory__[Share_Memory_Size];
 
-#define SHM_START_ADDRESS       (metal_phys_addr_t)(0x80080000/*0x2401ff00*/)
-#define SHM_SIZE                (size_t)Share_Memory_Size
-#define SHM_TX_RX_SIZE          (size_t)(Share_Memory_Size/2)
-#define SHM_RX_START_ADDRESS    SHM_START_ADDRESS
-#define SHM_TX_START_ADDRESS    (SHM_RX_START_ADDRESS+SHM_TX_RX_SIZE)
-
+#ifdef RPMSG_DDR_BUF
+  #define SHM_START_ADDRESS       (metal_phys_addr_t)(0x80080000)
 #else
-#define Share_Memory_Size /*128*2*/0x4000*2
-static uint32_t Shere_Memory__[Share_Memory_Size];
-
-#define SHM_START_ADDRESS       (metal_phys_addr_t)(0x80080000/*0x2401ff00*/)
+  #define SHM_START_ADDRESS       (metal_phys_addr_t)(0x2401ff00)
+#endif
 #define SHM_SIZE                (size_t)Share_Memory_Size
 #define SHM_TX_RX_SIZE          (size_t)(Share_Memory_Size/2)
 #define SHM_RX_START_ADDRESS    SHM_START_ADDRESS
 #define SHM_TX_START_ADDRESS    (SHM_RX_START_ADDRESS+SHM_TX_RX_SIZE)
-#endif
 
 #define VRING_RX_STR_ADDR        -1
 #define VRING_TX_STR_ADDR        -1

@@ -2,7 +2,7 @@
 
 <workspace>
   <project>
-    <path>$WS_DIR$\Share_memory_dram_v2.ewp</path>
+    <path>$WS_DIR$\rpmsg_rtp.ewp</path>
   </project>
   <batchBuild/>
 </workspace>
