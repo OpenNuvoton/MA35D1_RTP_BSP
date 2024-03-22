@@ -267,9 +267,9 @@ static int rx_callback(struct rpmsg_endpoint *rp_chnl, void *data, size_t len, u
             if(tx_client_seq%1000 == 0)
             {
                 printf("seq #%d\n", tx_client_seq);
-                receive_rxdata(received_rpmsg + SUBCMD_LEN, len - SUBCMD_LEN);
             }
 #endif
+            receive_rxdata(received_rpmsg + SUBCMD_LEN, len - SUBCMD_LEN);
             // send ack later
         }
 
