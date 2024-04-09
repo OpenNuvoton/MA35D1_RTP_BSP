@@ -41,7 +41,7 @@ static uint32_t I2S_GetSourceClockFreq(I2S_T *i2s)
         u32Freq = CLK_GetPLLClockFreq(APLL);
         break;
 
-    case CLK_CLKSEL4_I2S0SEL_SYSCLK1:
+    case CLK_CLKSEL4_I2S0SEL_SYSCLK1_DIV2:
         u32Freq = CLK_GetSYSCLK1Freq() / 2;
         break;
 
