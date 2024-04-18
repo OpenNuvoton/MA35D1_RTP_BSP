@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>Share_memory_sdram</name>
+	<name>Share_Memory_SDRAM</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -72,7 +72,7 @@
 	</linkedResources>
 	<filteredResources>
 		<filter>
-			<id>1694417091152</id>
+			<id>0</id>
 			<name>Library/Library</name>
 			<type>5</type>
 			<matcher>
@@ -81,7 +81,7 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1694417091159</id>
+			<id>0</id>
 			<name>Library/Library</name>
 			<type>5</type>
 			<matcher>
@@ -90,7 +90,7 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1694417091165</id>
+			<id>0</id>
 			<name>Library/Library</name>
 			<type>5</type>
 			<matcher>
@@ -99,7 +99,7 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1694417091171</id>
+			<id>0</id>
 			<name>Library/Library</name>
 			<type>5</type>
 			<matcher>
@@ -108,7 +108,7 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1694417091177</id>
+			<id>0</id>
 			<name>Library/Library</name>
 			<type>5</type>
 			<matcher>
@@ -117,7 +117,7 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1694421602003</id>
+			<id>0</id>
 			<name>ThirdParty/AMP</name>
 			<type>9</type>
 			<matcher>
@@ -126,7 +126,7 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1694421602009</id>
+			<id>0</id>
 			<name>ThirdParty/AMP</name>
 			<type>9</type>
 			<matcher>
@@ -135,7 +135,7 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1694421622472</id>
+			<id>1713402560906</id>
 			<name>ThirdParty/AMP/libmetal</name>
 			<type>9</type>
 			<matcher>
@@ -144,7 +144,7 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1694421821713</id>
+			<id>1713402470035</id>
 			<name>ThirdParty/AMP/open-amp</name>
 			<type>9</type>
 			<matcher>
@@ -153,16 +153,7 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1694421690698</id>
-			<name>ThirdParty/AMP/libmetal/lib</name>
-			<type>9</type>
-			<matcher>
-				<id>org.eclipse.ui.ide.multiFilter</id>
-				<arguments>1.0-name-matches-false-false-system</arguments>
-			</matcher>
-		</filter>
-		<filter>
-			<id>1694421690705</id>
+			<id>1713403354607</id>
 			<name>ThirdParty/AMP/libmetal/lib</name>
 			<type>5</type>
 			<matcher>
@@ -171,7 +162,7 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1694421690712</id>
+			<id>1713403354614</id>
 			<name>ThirdParty/AMP/libmetal/lib</name>
 			<type>5</type>
 			<matcher>
@@ -180,7 +171,7 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1694421690719</id>
+			<id>1713403354621</id>
 			<name>ThirdParty/AMP/libmetal/lib</name>
 			<type>5</type>
 			<matcher>
@@ -189,16 +180,7 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1694421690726</id>
-			<name>ThirdParty/AMP/libmetal/lib</name>
-			<type>5</type>
-			<matcher>
-				<id>org.eclipse.ui.ide.multiFilter</id>
-				<arguments>1.0-name-matches-false-false-log_.c</arguments>
-			</matcher>
-		</filter>
-		<filter>
-			<id>1694421690732</id>
+			<id>1713403354628</id>
 			<name>ThirdParty/AMP/libmetal/lib</name>
 			<type>5</type>
 			<matcher>
@@ -207,7 +189,25 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1694421857711</id>
+			<id>1713403354635</id>
+			<name>ThirdParty/AMP/libmetal/lib</name>
+			<type>9</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-name-matches-false-false-system</arguments>
+			</matcher>
+		</filter>
+		<filter>
+			<id>1713403354642</id>
+			<name>ThirdParty/AMP/libmetal/lib</name>
+			<type>5</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-name-matches-false-false-log_.c</arguments>
+			</matcher>
+		</filter>
+		<filter>
+			<id>1713403807479</id>
 			<name>ThirdParty/AMP/open-amp/lib</name>
 			<type>9</type>
 			<matcher>
@@ -216,7 +216,7 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1694421857719</id>
+			<id>1713403807502</id>
 			<name>ThirdParty/AMP/open-amp/lib</name>
 			<type>9</type>
 			<matcher>
@@ -225,7 +225,7 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1694421857725</id>
+			<id>1713403807522</id>
 			<name>ThirdParty/AMP/open-amp/lib</name>
 			<type>9</type>
 			<matcher>
@@ -234,7 +234,7 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1694421713492</id>
+			<id>1713403502128</id>
 			<name>ThirdParty/AMP/libmetal/lib/system</name>
 			<type>9</type>
 			<matcher>
@@ -243,7 +243,52 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1694421887493</id>
+			<id>1713403502135</id>
+			<name>ThirdParty/AMP/libmetal/lib/system</name>
+			<type>5</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-name-matches-false-false-device.c</arguments>
+			</matcher>
+		</filter>
+		<filter>
+			<id>1713403502142</id>
+			<name>ThirdParty/AMP/libmetal/lib/system</name>
+			<type>5</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-name-matches-false-false-init.c</arguments>
+			</matcher>
+		</filter>
+		<filter>
+			<id>1713403502149</id>
+			<name>ThirdParty/AMP/libmetal/lib/system</name>
+			<type>5</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-name-matches-false-false-io.c</arguments>
+			</matcher>
+		</filter>
+		<filter>
+			<id>1713403502157</id>
+			<name>ThirdParty/AMP/libmetal/lib/system</name>
+			<type>5</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-name-matches-false-false-shmem.c</arguments>
+			</matcher>
+		</filter>
+		<filter>
+			<id>1713403502163</id>
+			<name>ThirdParty/AMP/libmetal/lib/system</name>
+			<type>5</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-name-matches-false-false-time.c</arguments>
+			</matcher>
+		</filter>
+		<filter>
+			<id>1713403830093</id>
 			<name>ThirdParty/AMP/open-amp/lib/remoteproc</name>
 			<type>5</type>
 			<matcher>
@@ -252,7 +297,7 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1694421786894</id>
+			<id>1713403621466</id>
 			<name>ThirdParty/AMP/libmetal/lib/system/generic</name>
 			<type>9</type>
 			<matcher>
@@ -261,7 +306,7 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1694421786902</id>
+			<id>1713403621478</id>
 			<name>ThirdParty/AMP/libmetal/lib/system/generic</name>
 			<type>5</type>
 			<matcher>
@@ -270,7 +315,7 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1694421786908</id>
+			<id>1713403621486</id>
 			<name>ThirdParty/AMP/libmetal/lib/system/generic</name>
 			<type>5</type>
 			<matcher>
@@ -279,7 +324,7 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1694421786915</id>
+			<id>1713403621495</id>
 			<name>ThirdParty/AMP/libmetal/lib/system/generic</name>
 			<type>5</type>
 			<matcher>
@@ -288,7 +333,7 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1694421786923</id>
+			<id>1713403621501</id>
 			<name>ThirdParty/AMP/libmetal/lib/system/generic</name>
 			<type>5</type>
 			<matcher>
@@ -297,12 +342,21 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1694421786932</id>
+			<id>1713403621508</id>
 			<name>ThirdParty/AMP/libmetal/lib/system/generic</name>
 			<type>5</type>
 			<matcher>
 				<id>org.eclipse.ui.ide.multiFilter</id>
 				<arguments>1.0-name-matches-false-false-time.c</arguments>
+			</matcher>
+		</filter>
+		<filter>
+			<id>1713403639878</id>
+			<name>ThirdParty/AMP/libmetal/lib/system/generic/cortexm</name>
+			<type>5</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-name-matches-false-false-sys_.c</arguments>
 			</matcher>
 		</filter>
 	</filteredResources>
@@ -318,6 +372,18 @@
 		<variable>
 			<name>copy_PARENT12</name>
 			<value>$%7Bcopy_PARENT%7D/SampleCode/OpenAMP/Share_Memory_SDRAM</value>
+		</variable>
+		<variable>
+			<name>copy_PARENT123</name>
+			<value>$%7BPARENT-4-PROJECT_LOC%7D/Project/A35/MA35D1/Git/RTP</value>
+		</variable>
+		<variable>
+			<name>copy_PARENT1234</name>
+			<value>$%7Bcopy_PARENT123%7D/SampleCode/OpenAMP/Share_Memory_SDRAM</value>
+		</variable>
+		<variable>
+			<name>copy_PARENT12345</name>
+			<value>$%7Bcopy_PARENT1234%7D</value>
 		</variable>
 	</variableList>
 </projectDescription>
