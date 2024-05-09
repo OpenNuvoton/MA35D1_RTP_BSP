@@ -52,10 +52,26 @@
 #define SERVER_SEQ_OFFSET 4
 #define CLIENT_SEQ_OFFSET 8
 
-uint32_t tx_server_seq = 0, rx_client_seq = 0; // M4 as server
-uint32_t rx_server_seq = 0, tx_client_seq = 0; // M4 as client
-volatile uint32_t status_flag = 0;
+typedef int (*rpmsg_tx_cb_t)(unsigned char *, int *);
+typedef void (*rpmsg_rx_cb_t)(unsigned char *, int);
+
 volatile uint32_t rpmsg_wnd = 1;
+
+struct rtp_rpmsg {
+	unsigned int ack_ready;
+	// A35 as server
+	unsigned int tx_server_seq;
+	unsigned int rx_client_seq;
+	// A35 as client
+	unsigned int rx_server_seq;
+	unsigned int tx_client_seq;
+	volatile unsigned int status_flag;
+
+	unsigned int subCmd[4];
+	int tx_en;
+    rpmsg_tx_cb_t tx_cb;
+	rpmsg_rx_cb_t rx_cb;
+};
 
 #define tx_rx_size     Share_Memory_Size/2
 #ifndef RPMSG_DDR_BUF
@@ -68,6 +84,7 @@ volatile uint32_t rpmsg_wnd = 1;
   #endif
 #endif
 
+struct rtp_rpmsg rpmsg;
 uint8_t received_rpmsg[tx_rx_size];
 uint8_t transmit_rpmsg[tx_rx_size];
 
@@ -99,7 +116,14 @@ void SYS_Init(void)
     SYS_LockReg();
 }
 
-void prepare_txdata(uint8_t *data, int *len)
+/**
+ * @brief Send data RTP -> A35
+ *
+ * @param data
+ * @param len payload only
+ * @return int
+ */
+int rpmsg_tx_cb(uint8_t *data, int *len)
 {
     int i;
     *len = tx_rx_size - SUBCMD_LEN;
@@ -107,9 +131,17 @@ void prepare_txdata(uint8_t *data, int *len)
     {
         data[i] = i;
     }
+
+    return *len;
 }
 
-void receive_rxdata(uint8_t *data, int len)
+/**
+ * @brief Receive data A35 -> RTP
+ *
+ * @param data
+ * @param len payload only
+ */
+void rpmsg_rx_cb(uint8_t *data, int len)
 {
 #if (RPMSG_DEBUG_LEVEL > 1)
     printf("\n Receive %d bytes data from A35: \n", len);
@@ -119,6 +151,106 @@ void receive_rxdata(uint8_t *data, int len)
     }
     printf("\n");
 #endif
+}
+
+int ma35_rpmsg_open(struct rtp_rpmsg *rpmsg, struct rpmsg_endpoint *resmgr_ept,
+                    rpmsg_rx_cb_t rxcb, rpmsg_tx_cb_t txcb)
+{
+    MA35D1_OpenAMP_Init(RPMSG_REMOTE, NULL);
+    OPENAMP_create_endpoint(resmgr_ept, "rpmsg-sample", RPMSG_ADDR_ANY, rx_callback, NULL);
+
+    memset(rpmsg, 0, sizeof(rpmsg));
+    rpmsg->rx_cb = rxcb;
+    rpmsg->tx_cb = txcb;
+
+    return 0;
+}
+
+int ma35_rpmsg_prepare(struct rpmsg_endpoint *resmgr_ept, struct rtp_rpmsg *rpmsg)
+{
+    while(1)
+    {
+        OPENAMP_check_for_message(resmgr_ept);
+
+        if(rpmsg->status_flag & SUBCMD_SEQACK)
+            rpmsg->status_flag &= ~SUBCMD_SEQACK;
+        if(rpmsg->status_flag & SUBCMD_START)
+            break;
+    }
+
+    memset(rpmsg->subCmd, 0, sizeof(rpmsg->subCmd));
+
+    return 0;
+}
+
+int rpmsg_ack_process(struct rpmsg_endpoint *resmgr_ept, struct rtp_rpmsg *rpmsg, int len)
+{
+    int ret;
+
+    if(rpmsg->status_flag & SUBCMD_SEQ)
+    {
+        rpmsg->subCmd[0] |= SUBCMD_SEQACK;
+        rpmsg->subCmd[2] |= rpmsg->tx_client_seq & SEQ_DIGITS;
+
+        rpmsg->status_flag &= ~SUBCMD_SEQ;
+    }
+
+    if(rpmsg->subCmd[0] & SUBCMD_DIGITS) // SEQ or ACK
+    {
+        memcpy((void *)transmit_rpmsg, (void *)rpmsg->subCmd, SUBCMD_LEN);
+
+        while(!WHC_IS_TX_READY(WHC0, mbox_ch));
+        ret = OPENAMP_send_data(resmgr_ept, transmit_rpmsg, len);
+        if (ret < 0)
+        {
+            printf("Failed to send message\r\n");
+        }
+#if (RPMSG_DEBUG_LEVEL > 0)
+        if(rpmsg->tx_server_seq%1000 == 0 && rpmsg->tx_server_seq)
+            printf("Send #%d\n", rpmsg->subCmd[1]);
+#endif
+        while(1)
+        {
+            if(OPENAMP_check_TxAck(resmgr_ept) == 1)
+                break;
+        }
+    }
+    return 0;
+}
+
+int ma35_rpmsg_send(struct rpmsg_endpoint *resmgr_ept, struct rtp_rpmsg *rpmsg, int *len)
+{
+    // Update ack seq from client
+    int seq_diff = abs((int)(rpmsg->tx_server_seq - rpmsg->rx_client_seq));
+
+    // Check for A35 keeping up before send something
+    if(seq_diff < rpmsg_wnd)
+    {
+        // CMD set
+        rpmsg->subCmd[0] |= SUBCMD_SEQ;
+        rpmsg->subCmd[1] |= ++rpmsg->tx_server_seq & SEQ_DIGITS;
+        rpmsg->tx_cb(transmit_rpmsg + SUBCMD_LEN, len);
+        *len += SUBCMD_LEN;
+    }
+
+    rpmsg_ack_process(resmgr_ept, rpmsg, *len);
+
+    rpmsg->tx_en = 1;
+
+    return 0;
+}
+
+int ma35_rpmsg_cmd_handler(struct rpmsg_endpoint *resmgr_ept, struct rtp_rpmsg *rpmsg)
+{
+    if(rpmsg->tx_en)
+        rpmsg->tx_en = 0;
+    else
+        rpmsg_ack_process(resmgr_ept, rpmsg, SUBCMD_LEN);
+
+    if(rpmsg->status_flag & SUBCMD_EXIT)
+		return -1;
+
+    return 0;
 }
 
 int32_t main (void)
@@ -141,79 +273,28 @@ int32_t main (void)
     printf("Shared memory starts at %s 0x%08x, size 0x%04x\n",
         (SHM_START_ADDRESS > 0x80000000ul) ? "DRAM" : "SRAM", SHM_START_ADDRESS, Share_Memory_Size);
 
-    MA35D1_OpenAMP_Init(RPMSG_REMOTE, NULL);
-    OPENAMP_create_endpoint(&resmgr_ept, "rpmsg-sample", RPMSG_ADDR_ANY, rx_callback, NULL);
+    ma35_rpmsg_open(&rpmsg, &resmgr_ept, rpmsg_rx_cb, rpmsg_tx_cb);
 
 #ifdef RPMSG_V2_ARCH
-    int len = 112;
-    uint32_t subCmd[4];
+    int len;
 
     while(1)
     {
-        while(1)
-        {
-            OPENAMP_check_for_message(&resmgr_ept);
+        ma35_rpmsg_prepare(&resmgr_ept, &rpmsg);
 
-            if(status_flag & SUBCMD_SEQACK)
-                status_flag &= ~SUBCMD_SEQACK;
-            if(status_flag & SUBCMD_START)
-                break;
-        }
+        ma35_rpmsg_send(&resmgr_ept, &rpmsg, &len);
 
-        memset(subCmd, 0, sizeof(subCmd));
+        ret = ma35_rpmsg_cmd_handler(&resmgr_ept, &rpmsg);
 
-        // Update ack seq from client
-        int seq_diff = abs((int)(tx_server_seq - rx_client_seq));
-
-        // Check for A35 keeping up before send something
-        if(seq_diff < rpmsg_wnd)
-        {
-            // CMD set
-            subCmd[0] |= SUBCMD_SEQ;
-            subCmd[1] |= ++tx_server_seq & SEQ_DIGITS;
-            prepare_txdata(transmit_rpmsg + SUBCMD_LEN, &len);
-            len += SUBCMD_LEN;
-        }
-
-        // Received data from A35, attach an ack
-        if(status_flag & SUBCMD_SEQ)
-        {
-            subCmd[0] |= SUBCMD_SEQACK;
-            subCmd[2] |= tx_client_seq & SEQ_DIGITS;
-
-            status_flag &= ~SUBCMD_SEQ;
-        }
-
-        if(subCmd[0] & SUBCMD_DIGITS) // SEQ or ACK
-        {
-            memcpy((void *)transmit_rpmsg, (void *)subCmd, SUBCMD_LEN);
-
-            while(!WHC_IS_TX_READY(WHC0, mbox_ch));
-            ret = OPENAMP_send_data(&resmgr_ept, transmit_rpmsg, SUBCMD_LEN + len);
-            if (ret < 0)
-            {
-                printf("Failed to send message\r\n");
-            }
-#if (RPMSG_DEBUG_LEVEL > 0)
-            if(tx_server_seq%1000 == 0)
-                printf("Send #%d\n", subCmd[1]);
-#endif
-            while(1)
-            {
-                if(OPENAMP_check_TxAck(&resmgr_ept) == 1)
-                    break;
-            }
-        }
-
-        if(status_flag & SUBCMD_EXIT)
-			break;
+        if (ret)
+            break;
     }
 
 #else
 
     do {
 			OPENAMP_check_for_message(&resmgr_ept);
-		} while (status_flag != SUBCMD_START);
+		} while (rpmsg.status_flag != SUBCMD_START);
 
     for (int i = 0; i < tx_rx_size; i++)
         transmit_rpmsg[i] = i;
@@ -246,7 +327,7 @@ static int rx_callback(struct rpmsg_endpoint *rp_chnl, void *data, size_t len, u
 
         if(subcmd & SUBCMD_START)
         {
-            status_flag |= SUBCMD_START;
+            rpmsg.status_flag |= SUBCMD_START;
             if(rpmsg_wnd != *(uint32_t *)(received_rpmsg + SUBCMD_LEN))
             {
                 rpmsg_wnd = *(uint32_t *)(received_rpmsg + SUBCMD_LEN);
@@ -254,32 +335,32 @@ static int rx_callback(struct rpmsg_endpoint *rp_chnl, void *data, size_t len, u
             }
         }
         else if(subcmd & SUBCMD_SUSPEND)
-            status_flag &= ~SUBCMD_START;
+            rpmsg.status_flag &= ~SUBCMD_START;
         else if(subcmd & SUBCMD_EXIT)
-            status_flag |= SUBCMD_EXIT;
+            rpmsg.status_flag |= SUBCMD_EXIT;
 
         if(subcmd & SUBCMD_SEQ)
         {
-            rx_server_seq = *(uint32_t *)(received_rpmsg + SERVER_SEQ_OFFSET) & SEQ_DIGITS;
-            tx_client_seq = rx_server_seq;
-            status_flag |= SUBCMD_SEQ;
+            rpmsg.rx_server_seq = *(uint32_t *)(received_rpmsg + SERVER_SEQ_OFFSET) & SEQ_DIGITS;
+            rpmsg.tx_client_seq = rpmsg.rx_server_seq;
+            rpmsg.status_flag |= SUBCMD_SEQ;
 #if (RPMSG_DEBUG_LEVEL > 0)
-            if(tx_client_seq%1000 == 0)
+            if(rpmsg.tx_client_seq%1000 == 0 && rpmsg.tx_client_seq)
             {
-                printf("seq #%d\n", tx_client_seq);
+                printf("seq #%d\n", rpmsg.tx_client_seq);
             }
 #endif
-            receive_rxdata(received_rpmsg + SUBCMD_LEN, len - SUBCMD_LEN);
+            rpmsg.rx_cb(received_rpmsg + SUBCMD_LEN, len - SUBCMD_LEN);
             // send ack later
         }
 
         if(subcmd & SUBCMD_SEQACK)
         {
-            status_flag |= SUBCMD_SEQACK;
-            rx_client_seq = *(uint32_t *)(received_rpmsg + CLIENT_SEQ_OFFSET) & SEQ_DIGITS;
+            rpmsg.status_flag |= SUBCMD_SEQACK;
+            rpmsg.rx_client_seq = *(uint32_t *)(received_rpmsg + CLIENT_SEQ_OFFSET) & SEQ_DIGITS;
 #if (RPMSG_DEBUG_LEVEL > 0)
-            if(rx_client_seq%1000 == 0)
-                printf("seqack #%d\n", rx_client_seq);
+            if(rpmsg.rx_client_seq%1000 == 0 && rpmsg.rx_client_seq)
+                printf("seqack #%d\n", rpmsg.rx_client_seq);
 #endif
             //status_flag |= SUBCMD_SEQACK;
             // compare with tx_server_seq later
@@ -294,7 +375,7 @@ static int rx_callback(struct rpmsg_endpoint *rp_chnl, void *data, size_t len, u
 		{
 			printf(" 0x%x \n", received_rpmsg[i]);
 		}
-        status_flag = SUBCMD_START;
+        rpmsg.status_flag = SUBCMD_START;
 #endif /* End of RPMSG_V2_ARCH */
     }
     else
