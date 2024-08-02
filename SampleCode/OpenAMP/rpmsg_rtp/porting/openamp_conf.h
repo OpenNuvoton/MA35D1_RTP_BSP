@@ -21,12 +21,15 @@
 
 //#define RPMSG_DDR_BUF  /* Enable if you want to use DRAM as shared memory */
 //#define RPMSG_V2_ARCH  /* Enable if you want to use rpmsg v2 arch */
+#define TXRX_FREE_RUN  0
 
 #ifdef RPMSG_DDR_BUF
   #define Share_Memory_Size 0x4000*2   /* Shared memory in DRAM could be 0x80 ~ 0x4000 bytes */
+  #define ACK_TIMER_HZ        10
 #else
   #undef Share_Memory_Size
   #define Share_Memory_Size 0x80*2     /* Shared memory in SRAM is fixed to 0x80 bytes */
+  #define ACK_TIMER_HZ        100
 #endif
 
 #ifdef RPMSG_V2_ARCH
@@ -42,8 +45,6 @@
 
 #define mbox_ch 2
 #endif /* MAILBOX_WHC_IF_ENABLED */
-
-static uint32_t Shere_Memory__[Share_Memory_Size];
 
 #ifdef RPMSG_DDR_BUF
   #define SHM_START_ADDRESS       (metal_phys_addr_t)(0x80080000)

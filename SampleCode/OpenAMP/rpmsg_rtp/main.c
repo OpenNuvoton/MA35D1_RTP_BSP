@@ -12,6 +12,9 @@
  *                   is "NOT" designed for non-OS.
  *                2. If recursive read/write is necessary in your application,
  *                   it is highly recommended to use the v2 architecture.
+ *                3. The sample provides two modes: (a) Both cores send data
+ *                   through a periodic timer, and (b) Free run mode, which
+ *                   can be switched through "TXRX_FREE_RUN".
  *
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
@@ -69,6 +72,7 @@ struct rtp_rpmsg {
 
 	unsigned int subCmd[4];
 	int tx_en;
+    int tx_trigger;
     rpmsg_tx_cb_t tx_cb;
 	rpmsg_rx_cb_t rx_cb;
 };
@@ -111,6 +115,12 @@ void SYS_Init(void)
     /* Set multi-function pins for Debug UART RXD and TXD */
     SYS->GPK_MFPL &= ~(SYS_GPK_MFPL_PK2MFP_Msk | SYS_GPK_MFPL_PK3MFP_Msk);
     SYS->GPK_MFPL |= SYS_GPK_MFPL_PK2MFP_UART16_RXD | SYS_GPK_MFPL_PK3MFP_UART16_TXD;
+
+#if (TXRX_FREE_RUN == 0)
+    /* set systick */
+    CLK_EnableSysTick(CLK_CLKSEL0_RTPSTSEL_HXT, 24000000/ACK_TIMER_HZ);
+    NVIC_EnableIRQ(SysTick_IRQn);
+#endif
 
     /* Lock protected registers */
     SYS_LockReg();
@@ -168,17 +178,15 @@ int ma35_rpmsg_open(struct rtp_rpmsg *rpmsg, struct rpmsg_endpoint *resmgr_ept,
 
 int ma35_rpmsg_prepare(struct rpmsg_endpoint *resmgr_ept, struct rtp_rpmsg *rpmsg)
 {
-    while(1)
-    {
+    do {
         OPENAMP_check_for_message(resmgr_ept);
-
-        if(rpmsg->status_flag & SUBCMD_SEQACK)
-            rpmsg->status_flag &= ~SUBCMD_SEQACK;
-        if(rpmsg->status_flag & SUBCMD_START)
-            break;
-    }
-
-    memset(rpmsg->subCmd, 0, sizeof(rpmsg->subCmd));
+        if(rpmsg->status_flag & SUBCMD_EXIT) {
+            SYS_UnlockReg();
+            CLK_DisableSysTick();
+            SYS_LockReg();
+		    return -1;
+        }
+    } while(!(rpmsg->status_flag & SUBCMD_START));
 
     return 0;
 }
@@ -190,7 +198,7 @@ int rpmsg_ack_process(struct rpmsg_endpoint *resmgr_ept, struct rtp_rpmsg *rpmsg
     if(rpmsg->status_flag & SUBCMD_SEQ)
     {
         rpmsg->subCmd[0] |= SUBCMD_SEQACK;
-        rpmsg->subCmd[2] |= rpmsg->tx_client_seq & SEQ_DIGITS;
+        rpmsg->subCmd[2] = rpmsg->tx_client_seq & SEQ_DIGITS;
 
         rpmsg->status_flag &= ~SUBCMD_SEQ;
     }
@@ -205,10 +213,7 @@ int rpmsg_ack_process(struct rpmsg_endpoint *resmgr_ept, struct rtp_rpmsg *rpmsg
         {
             printf("Failed to send message\r\n");
         }
-#if (RPMSG_DEBUG_LEVEL > 0)
-        if(rpmsg->tx_server_seq%1000 == 0 && rpmsg->tx_server_seq)
-            printf("Send #%d\n", rpmsg->subCmd[1]);
-#endif
+
         while(1)
         {
             if(OPENAMP_check_TxAck(resmgr_ept) == 1)
@@ -218,17 +223,71 @@ int rpmsg_ack_process(struct rpmsg_endpoint *resmgr_ept, struct rtp_rpmsg *rpmsg
     return 0;
 }
 
+/**
+ * @return 0 : start tx, else : busy
+ */
+int rpmsg_tx_trigger()
+{
+    if(rpmsg.tx_trigger)
+        return -1;
+    rpmsg.tx_trigger = 1;
+    return 0;
+}
+
+int rpmsg_reset()
+{
+    rpmsg.tx_server_seq = rpmsg.tx_client_seq = 0;
+    rpmsg.rx_server_seq = rpmsg.rx_client_seq = 0;
+    rpmsg.status_flag = 0;
+    memset(rpmsg.subCmd, 0, sizeof(rpmsg.subCmd));
+    CLK_EnableSysTick(CLK_CLKSEL0_RTPSTSEL_HXT, 24000000/ACK_TIMER_HZ);
+
+    return 0;
+}
+
+/**
+ * @return 1 : send finished, else : busy
+ */
+int rpmsg_tx_acked()
+{
+    return (rpmsg.tx_server_seq == rpmsg.rx_client_seq) && (rpmsg.tx_trigger == 0);
+}
+
+void SysTick_Handler()
+{
+    rpmsg.tx_trigger = 1;
+}
+
 int ma35_rpmsg_send(struct rpmsg_endpoint *resmgr_ept, struct rtp_rpmsg *rpmsg, int *len)
 {
-    // Update ack seq from client
-    int seq_diff = abs((int)(rpmsg->tx_server_seq - rpmsg->rx_client_seq));
+    int txlen;
 
-    // Check for A35 keeping up before send something
-    if(seq_diff < rpmsg_wnd)
+    if(!(rpmsg->status_flag & SUBCMD_START))
+        return 0;
+
+    if(!rpmsg->tx_trigger)
     {
-        // CMD set
+        if(rpmsg->status_flag & SUBCMD_SEQ)
+        {
+            if(rpmsg->tx_server_seq != rpmsg->rx_client_seq)
+                txlen = tx_rx_size;
+            else
+                txlen = SUBCMD_LEN;
+            rpmsg_ack_process(resmgr_ept, rpmsg, txlen);
+        }
+
+        return 0;
+    }
+
+    // CMD set
+    if(rpmsg->tx_server_seq != rpmsg->rx_client_seq)
+    {
+        *len = SUBCMD_LEN;
+    }
+    else
+    {
         rpmsg->subCmd[0] |= SUBCMD_SEQ;
-        rpmsg->subCmd[1] |= ++rpmsg->tx_server_seq & SEQ_DIGITS;
+        rpmsg->subCmd[1] = ++rpmsg->tx_server_seq & SEQ_DIGITS;
         rpmsg->tx_cb(transmit_rpmsg + SUBCMD_LEN, len);
         *len += SUBCMD_LEN;
     }
@@ -236,6 +295,12 @@ int ma35_rpmsg_send(struct rpmsg_endpoint *resmgr_ept, struct rtp_rpmsg *rpmsg, 
     rpmsg_ack_process(resmgr_ept, rpmsg, *len);
 
     rpmsg->tx_en = 1;
+    rpmsg->tx_trigger = 0;
+
+#if (RPMSG_DEBUG_LEVEL > 0)
+        if(rpmsg->tx_server_seq%(ACK_TIMER_HZ*10) == 0 && rpmsg->tx_server_seq)
+            printf("Send #%d\n", rpmsg->subCmd[1]);
+#endif
 
     return 0;
 }
@@ -256,7 +321,6 @@ int ma35_rpmsg_cmd_handler(struct rpmsg_endpoint *resmgr_ept, struct rtp_rpmsg *
 int32_t main (void)
 {
     struct rpmsg_endpoint resmgr_ept;
-    int ret;
 
     /* Init System, IP clock and multi-function I/O
        In the end of SYS_Init() will issue SYS_LockReg()
@@ -281,13 +345,10 @@ int32_t main (void)
     while(1)
     {
         ma35_rpmsg_prepare(&resmgr_ept, &rpmsg);
-
+#if (TXRX_FREE_RUN == 1)
+        rpmsg.tx_trigger = 1;
+#endif
         ma35_rpmsg_send(&resmgr_ept, &rpmsg, &len);
-
-        ret = ma35_rpmsg_cmd_handler(&resmgr_ept, &rpmsg);
-
-        if (ret)
-            break;
     }
 
 #else
@@ -310,15 +371,17 @@ int32_t main (void)
         if (OPENAMP_check_TxAck(&resmgr_ept) == 1)
             break;
     }
-#endif /* End of RPMSG_V2_ARCH */
 
     printf("\n Test END !!\n");
 
     while(1);
+#endif /* End of RPMSG_V2_ARCH */
 }
 
 static int rx_callback(struct rpmsg_endpoint *rp_chnl, void *data, size_t len, uint32_t src, void *priv)
 {
+    static int lastseq = -1;
+
     if(*(uint32_t *)data == COMMAND_RECEIVE_A35_MSG)
     {
 #ifdef RPMSG_V2_ARCH
@@ -327,6 +390,7 @@ static int rx_callback(struct rpmsg_endpoint *rp_chnl, void *data, size_t len, u
 
         if(subcmd & SUBCMD_START)
         {
+            rpmsg_reset();
             rpmsg.status_flag |= SUBCMD_START;
             if(rpmsg_wnd != *(uint32_t *)(received_rpmsg + SUBCMD_LEN))
             {
@@ -343,14 +407,18 @@ static int rx_callback(struct rpmsg_endpoint *rp_chnl, void *data, size_t len, u
         {
             rpmsg.rx_server_seq = *(uint32_t *)(received_rpmsg + SERVER_SEQ_OFFSET) & SEQ_DIGITS;
             rpmsg.tx_client_seq = rpmsg.rx_server_seq;
-            rpmsg.status_flag |= SUBCMD_SEQ;
-#if (RPMSG_DEBUG_LEVEL > 0)
-            if(rpmsg.tx_client_seq%1000 == 0 && rpmsg.tx_client_seq)
+            if(lastseq != rpmsg.rx_server_seq)
             {
-                printf("seq #%d\n", rpmsg.tx_client_seq);
-            }
+                rpmsg.status_flag |= SUBCMD_SEQ;
+#if (RPMSG_DEBUG_LEVEL > 0)
+                if(rpmsg.tx_client_seq%(ACK_TIMER_HZ*10) == 0 && rpmsg.tx_client_seq)
+                {
+                    printf("ack #%d\n", rpmsg.tx_client_seq);
+                }
 #endif
-            rpmsg.rx_cb(received_rpmsg + SUBCMD_LEN, len - SUBCMD_LEN);
+                rpmsg.rx_cb(received_rpmsg + SUBCMD_LEN, len - SUBCMD_LEN);
+                lastseq = rpmsg.rx_server_seq;
+            }
             // send ack later
         }
 
@@ -358,12 +426,6 @@ static int rx_callback(struct rpmsg_endpoint *rp_chnl, void *data, size_t len, u
         {
             rpmsg.status_flag |= SUBCMD_SEQACK;
             rpmsg.rx_client_seq = *(uint32_t *)(received_rpmsg + CLIENT_SEQ_OFFSET) & SEQ_DIGITS;
-#if (RPMSG_DEBUG_LEVEL > 0)
-            if(rpmsg.rx_client_seq%1000 == 0 && rpmsg.rx_client_seq)
-                printf("seqack #%d\n", rpmsg.rx_client_seq);
-#endif
-            //status_flag |= SUBCMD_SEQACK;
-            // compare with tx_server_seq later
         }
 
 #else
