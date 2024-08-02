@@ -352,6 +352,7 @@ int32_t main (void)
     }
 
 #else
+    int ret;
 
     do {
 			OPENAMP_check_for_message(&resmgr_ept);
@@ -429,7 +430,7 @@ static int rx_callback(struct rpmsg_endpoint *rp_chnl, void *data, size_t len, u
         }
 
 #else
-
+        (void)lastseq;
         memcpy((void *)received_rpmsg, (const void *)src, len > sizeof(received_rpmsg) ? sizeof(received_rpmsg) : (len < SUBCMD_LEN ? SUBCMD_LEN : len));
 
 		printf("\n Receive %d bytes data from A35: \n", len);
