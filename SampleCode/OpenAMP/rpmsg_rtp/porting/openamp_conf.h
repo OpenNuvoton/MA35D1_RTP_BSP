@@ -47,7 +47,7 @@
 #endif /* MAILBOX_WHC_IF_ENABLED */
 
 #ifdef RPMSG_DDR_BUF
-  #define SHM_START_ADDRESS       (metal_phys_addr_t)(0x80080000)
+  #define SHM_START_ADDRESS       (metal_phys_addr_t)(0x84000000)
 #else
   #define SHM_START_ADDRESS       (metal_phys_addr_t)(0x2401ff00)
 #endif
