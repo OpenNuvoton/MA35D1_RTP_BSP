@@ -3,7 +3,7 @@
  * @brief    CMSIS Cortex-M4 Core Device Startup File
  *
  * SPDX-License-Identifier: Apache-2.0
- * @copyright (C) 2020 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2024 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 
 
@@ -322,6 +322,23 @@ Default_Handler:
 	b	.
 	.size	Default_Handler, . - Default_Handler
 
+	.align 2
+    .thumb_func
+    .weak HardFault_Handler
+    .type HardFault_Handler, % function
+
+HardFault_Handler:
+    .extern ProcessHardFault
+    MOV     R0, LR
+    MRS     R1, MSP
+    MRS     R2, PSP
+    LDR     R3, =ProcessHardFault
+    BLX     R3
+    BX      R0
+    b    .
+
+    .size   HardFault_Handler, . - HardFault_Handler
+
 /*    Macro to define default handlers. Default handler
  *    will be weak symbol and just dead loops. They can be
  *    overwritten by other handlers */
@@ -331,7 +348,7 @@ Default_Handler:
 	.endm
 
 	def_irq_handler	NMI_Handler
-	def_irq_handler	HardFault_Handler
+	/*def_irq_handler	HardFault_Handler*/
 	def_irq_handler	MemManage_Handler
 	def_irq_handler	BusFault_Handler
 	def_irq_handler	UsageFault_Handler

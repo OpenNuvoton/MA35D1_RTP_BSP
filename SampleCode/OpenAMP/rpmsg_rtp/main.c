@@ -169,7 +169,7 @@ int ma35_rpmsg_open(struct rtp_rpmsg *rpmsg, struct rpmsg_endpoint *resmgr_ept,
     MA35D1_OpenAMP_Init(RPMSG_REMOTE, NULL);
     OPENAMP_create_endpoint(resmgr_ept, "rpmsg-sample", RPMSG_ADDR_ANY, rx_callback, NULL);
 
-    memset(rpmsg, 0, sizeof(rpmsg));
+    memset(rpmsg, 0, sizeof(*rpmsg));
     rpmsg->rx_cb = rxcb;
     rpmsg->tx_cb = txcb;
 
@@ -335,7 +335,7 @@ int32_t main (void)
     printf("\nThis sample code demonstrate OpenAMP share memory function\n");
     printf("RPMSG version : v%d\n", RPMSG_VERSION);
     printf("Shared memory starts at %s 0x%08x, size 0x%04x\n",
-        (SHM_START_ADDRESS > 0x80000000ul) ? "DRAM" : "SRAM", SHM_START_ADDRESS, Share_Memory_Size);
+        (SHM_START_ADDRESS > 0x80000000ul) ? "DRAM" : "SRAM", (uint32_t)SHM_START_ADDRESS, Share_Memory_Size);
 
     ma35_rpmsg_open(&rpmsg, &resmgr_ept, rpmsg_rx_cb, rpmsg_tx_cb);
 

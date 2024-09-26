@@ -70,7 +70,7 @@ int32_t main (void)
     UART_Open(UART16, 115200);
 
     printf("\nThis sample code demonstrate OpenAMP share memory function (RTP M4)\n\n");
-    printf("Share Memory Address (SDRAM): 0x%08x\n", SHM_START_ADDRESS);
+    printf("Share Memory Address (SDRAM): 0x%08x\n", (uint32_t)SHM_START_ADDRESS);
     printf("TX/RX Buffer Size (Byte)    : %d\n\n", SHM_TX_RX_SIZE);
 
     /* Init M4 Tx data */
