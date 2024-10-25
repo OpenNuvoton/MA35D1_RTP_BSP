@@ -213,12 +213,6 @@ int rpmsg_ack_process(struct rpmsg_endpoint *resmgr_ept, struct rtp_rpmsg *rpmsg
         {
             printf("Failed to send message\r\n");
         }
-
-        while(1)
-        {
-            if(OPENAMP_check_TxAck(resmgr_ept) == 1)
-                break;
-        }
     }
     return 0;
 }
@@ -262,7 +256,7 @@ int ma35_rpmsg_send(struct rpmsg_endpoint *resmgr_ept, struct rtp_rpmsg *rpmsg, 
 {
     int txlen;
 
-    if(!(rpmsg->status_flag & SUBCMD_START))
+    if(!(rpmsg->status_flag & SUBCMD_START) || !OPENAMP_check_TxAck(resmgr_ept))
         return 0;
 
     if(!rpmsg->tx_trigger)
