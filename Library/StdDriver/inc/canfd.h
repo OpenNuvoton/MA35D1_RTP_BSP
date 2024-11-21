@@ -344,8 +344,8 @@ typedef struct
 /* Accept Non-matching Frames (GFC Register) */
 typedef enum
 {
-    eCANFD_ACC_NON_MATCH_FRM_RX_FIFO0 = 0x0,  /*!< Accept Non-Masking Frames in Rx FIFO 0. */
-    eCANFD_ACC_NON_MATCH_FRM_RX_FIFO1 = 0x1,  /*!< Accept Non-Masking Frames in Rx FIFO 1. */
+    eCANFD_ACC_NON_MATCH_FRM_RX_FIFO0 = 0x0,  /*!< Accept Non-Matching Frames in Rx FIFO 0. */
+    eCANFD_ACC_NON_MATCH_FRM_RX_FIFO1 = 0x1,  /*!< Accept Non-Matching Frames in Rx FIFO 1. */
     eCANFD_REJ_NON_MATCH_FRM   = 0x3          /*!< Reject Non-Matching Frames. */
 } E_CANFD_ACC_NON_MATCH_FRM;
 
