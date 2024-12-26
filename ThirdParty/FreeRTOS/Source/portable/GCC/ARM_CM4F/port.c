@@ -411,10 +411,12 @@ void vPortEnterCritical( void )
 	functions that end in "FromISR" can be used in an interrupt.  Only assert if
 	the critical nesting count is 1 to protect against recursive calls if the
 	assert function also uses a critical section. */
+#ifndef configCritical_Section_In_Int
 	if( uxCriticalNesting == 1 )
 	{
 		configASSERT( ( portNVIC_INT_CTRL_REG & portVECTACTIVE_MASK ) == 0 );
 	}
+#endif
 }
 /*-----------------------------------------------------------*/
 
