@@ -45,6 +45,12 @@ extern "C"
 #define I2C_GCMODE_ENABLE           1    /*!< Enable  I2C GC Mode                                                         \hideinitializer */
 #define I2C_GCMODE_DISABLE          0    /*!< Disable I2C GC Mode                                                         \hideinitializer */
 
+/*---------------------------------------------------------------------------------------------------------*/
+/* I2C Define Error Code                                                                                   */
+/*---------------------------------------------------------------------------------------------------------*/
+#define I2C_TIMEOUT     SystemCoreClock  /*!< I2C time-out counter (1 second time-out)                                    \hideinitializer */
+#define I2C_ERR_TIMEOUT (-2L)            /*!< I2C operation abort due to timeout error                                    \hideinitializer */
+
 /*@}*/ /* end of group I2C_EXPORTED_CONSTANTS */
 
 /** @addtogroup I2C_EXPORTED_FUNCTIONS I2C Exported Functions
