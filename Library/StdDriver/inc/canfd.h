@@ -406,30 +406,35 @@ __STATIC_INLINE uint32_t CANFD_ReadReg(uint32_t u32RegAddr)
     uint32_t u32TimeOutCnt = 0;
     uint32_t u32IRQ_state = __get_PRIMASK();
 
-    // disable all interrupt
-    __set_PRIMASK(1);
-
-    u32ReadReg = inpw((uint32_t *)u32RegAddr);
-
-    while(u32TimeOutCnt < CANFD_REG_READ_TIME)
+    if((inpw((uint32_t *)(SYS_BASE + 0x1F0)) & 0xf000000) == 0x0)
     {
-        u32ReadReg_1 = inpw((uint32_t *)u32RegAddr);
+        // disable all interrupt
+        __set_PRIMASK(1);
 
-        if(u32ReadReg_1 == u32ReadReg)
+        u32ReadReg = inpw((uint32_t *)u32RegAddr);
+
+        while(u32TimeOutCnt < CANFD_REG_READ_TIME)
         {
-            u32TimeOutCnt++;
+            u32ReadReg_1 = inpw((uint32_t *)u32RegAddr);
+
+            if(u32ReadReg_1 == u32ReadReg)
+            {
+                u32TimeOutCnt++;
+            }
+            else
+            {
+                u32ReadReg = u32ReadReg_1;
+                u32TimeOutCnt = 0;
+            }
         }
-        else
-        {
-            u32ReadReg = u32ReadReg_1;
-            u32TimeOutCnt = 0;
-        }
+
+        // enable interrupt
+        __set_PRIMASK(u32IRQ_state);
     }
+    else
+        u32ReadReg = inpw((uint32_t *)u32RegAddr);
 
-    // enable interrupt
-    __set_PRIMASK(u32IRQ_state);
-
-    return u32ReadReg;
+        return u32ReadReg;
 }
 
 void CANFD_Open(CANFD_T *canfd, CANFD_FD_T *psCanfdStr);
