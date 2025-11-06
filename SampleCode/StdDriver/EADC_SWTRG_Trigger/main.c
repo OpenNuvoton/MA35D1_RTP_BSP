@@ -46,16 +46,14 @@ void SYS_Init(void)
     /* Set GPK multi-function pins for UART16 RXD and TXD */
     SYS->GPK_MFPL &= ~(SYS_GPK_MFPL_PK2MFP_Msk | SYS_GPK_MFPL_PK3MFP_Msk);
     SYS->GPK_MFPL |= (SYS_GPK_MFPL_PK2MFP_UART16_RXD | SYS_GPK_MFPL_PK3MFP_UART16_TXD);
-    /* Set PB.0 ~ PB.3 to input mode */
-    PB->MODE &= ~(GPIO_MODE_MODE0_Msk | GPIO_MODE_MODE1_Msk | GPIO_MODE_MODE2_Msk | GPIO_MODE_MODE3_Msk);
-    /* Configure the GPB0 - GPB3 ADC analog input pins.  */
-    SYS->GPB_MFPL &= ~(SYS_GPB_MFPL_PB0MFP_Msk | SYS_GPB_MFPL_PB1MFP_Msk |
-                       SYS_GPB_MFPL_PB2MFP_Msk | SYS_GPB_MFPL_PB3MFP_Msk);
-    SYS->GPB_MFPL |= (SYS_GPB_MFPL_PB0MFP_EADC0_CH0 | SYS_GPB_MFPL_PB1MFP_EADC0_CH1 |
-                      SYS_GPB_MFPL_PB2MFP_EADC0_CH2 | SYS_GPB_MFPL_PB3MFP_EADC0_CH3);
+    /* Set PB.2, PB.6 to input mode */
+    PB->MODE &= ~(GPIO_MODE_MODE2_Msk | GPIO_MODE_MODE6_Msk);
+    /* Configure the GPB2, GPB6 ADC analog input pins.  */
+    SYS->GPB_MFPL &= ~(SYS_GPB_MFPL_PB2MFP_Msk | SYS_GPB_MFPL_PB6MFP_Msk);
+    SYS->GPB_MFPL |= (SYS_GPB_MFPL_PB2MFP_EADC0_CH2 | SYS_GPB_MFPL_PB6MFP_EADC0_CH6);
 
-    /* Disable the GPB0 - GPB3 digital input path to avoid the leakage current. */
-    GPIO_DISABLE_DIGITAL_PATH(PB, BIT3|BIT2|BIT1|BIT0);
+    /* Disable the GPB2, GPB6 digital input path to avoid the leakage current. */
+    GPIO_DISABLE_DIGITAL_PATH(PB, BIT6|BIT2);
 }
 
 void UART0_Init()
@@ -79,7 +77,7 @@ void EADC_FunctionTest()
     {
         printf("Select input mode:\n");
         printf("  [1] Single end input (channel 2 only)\n");
-        printf("  [2] Differential input (channel pair 1 only)\n");
+        printf("  [2] Differential input (channel pair 2 only)\n");
         printf("  Other keys: exit single mode test\n");
         u8Option = getchar();
         if(u8Option == '1')
@@ -141,7 +139,7 @@ void EADC_FunctionTest()
 
             /* Get the conversion result of the sample module 0 */
             i32ConversionData = EADC_GET_CONV_DATA(EADC0, 0);
-            printf("Conversion result of channel pair 1: 0x%X (%d)\n\n", i32ConversionData, i32ConversionData);
+            printf("Conversion result of channel pair 2: 0x%X (%d)\n\n", i32ConversionData, i32ConversionData);
         }
         else
             return ;
