@@ -32,10 +32,12 @@ void SYS_Init(void)
     CLK_EnableModuleClock(ADC_MODULE);
     CLK_EnableModuleClock(GPB_MODULE);
     CLK_EnableModuleClock(UART16_MODULE);
+    CLK_EnableModuleClock(TMR2_MODULE);
 
     /* Select IP clock source */
     CLK_SetModuleClock(ADC_MODULE, 0, CLK_CLKDIV4_ADC(900));  // Set ADC clock rate to 200kHz
     CLK_SetModuleClock(UART16_MODULE, CLK_CLKSEL3_UART16SEL_HXT, CLK_CLKDIV3_UART16(1));
+    CLK_SetModuleClock(TMR2_MODULE, CLK_CLKSEL1_TMR2SEL_HXT, 0);
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
@@ -91,6 +93,8 @@ int32_t main (void)
         // Trigger ADC conversion if it is idle
         if(!u32Busy)
         {
+            /* Delay 10 us for contiguous conversion */
+            TIMER_Delay(TIMER2, 10);
             u32Busy = 1;
             ADC_START_CONV(ADC0);
         }
