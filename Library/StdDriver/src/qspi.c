@@ -3,7 +3,7 @@
  * @brief    QSPI driver source file
  *
  * SPDX-License-Identifier: Apache-2.0
- * @copyright (C) 2020 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 #include "NuMicro.h"
 
@@ -45,7 +45,7 @@ uint32_t QSPI_Open(QSPI_T *qspi,
                    uint32_t u32DataWidth,
                    uint32_t u32BusClock)
 {
-    uint32_t u32ClkSrc = 0U, u32Div, u32HCLKFreq, u32RetValue=0U;
+    uint32_t u32ClkSrc = 0U, u32Div, u32APB0PCLKFreq, u32RetValue=0U;
 
     if(u32DataWidth == 32U)
     {
@@ -53,7 +53,7 @@ uint32_t QSPI_Open(QSPI_T *qspi,
     }
 
     /* Get system clock frequency */
-    u32HCLKFreq = CLK_GetSYSCLK0Freq();
+    u32APB0PCLKFreq = CLK_GetSYSCLK1Freq();
 
     if(u32MasterSlave == QSPI_MASTER)
     {
@@ -63,34 +63,34 @@ uint32_t QSPI_Open(QSPI_T *qspi,
         /* Default setting: MSB first, disable unit transfer interrupt, SP_CYCLE = 0. */
         qspi->CTL = u32MasterSlave | (u32DataWidth << QSPI_CTL_DWIDTH_Pos) | (u32QSPIMode) | QSPI_CTL_SPIEN_Msk;
 
-        if(u32BusClock >= u32HCLKFreq)
+        if(u32BusClock >= u32APB0PCLKFreq)
         {
             /* Select PCLK as the clock source of QSPI */
-            CLK->CLKSEL4 = (CLK->CLKSEL4 & (~CLK_CLKSEL4_QSPI1SEL_Msk)) | CLK_CLKSEL4_QSPI1SEL_PCLK0;
+            CLK->CLKSEL4 = (CLK->CLKSEL4 & (~CLK_CLKSEL4_QSPI0SEL_Msk)) | CLK_CLKSEL4_QSPI0SEL_PCLK0;
         }
 
         /* Check clock source of QSPI */
-        if((CLK->CLKSEL4 & CLK_CLKSEL4_QSPI1SEL_APLL) == CLK_CLKSEL4_QSPI1SEL_APLL)
+        if((CLK->CLKSEL4 & CLK_CLKSEL4_QSPI0SEL_APLL) == CLK_CLKSEL4_QSPI0SEL_APLL)
         {
             u32ClkSrc = CLK_GetPLLClockFreq(APLL); /* Clock source is APLL */
         }
-        else if((CLK->CLKSEL4 & CLK_CLKSEL4_QSPI1SEL_Msk) == CLK_CLKSEL4_QSPI1SEL_PCLK0)
+        else if((CLK->CLKSEL4 & CLK_CLKSEL4_QSPI0SEL_Msk) == CLK_CLKSEL4_QSPI0SEL_PCLK0)
         {
             /* Clock source is PCLK0 */
             u32ClkSrc = CLK_GetPCLK0Freq();
         }
 
-        if(u32BusClock >= u32HCLKFreq)
+        if(u32BusClock >= u32APB0PCLKFreq)
         {
-            /* Set DIVIDER = 0 */
-            qspi->CLKDIV = 0U;
+            /* Set DIVIDER = 1 */
+            qspi->CLKDIV = 1U;
             /* Return master peripheral clock rate */
             u32RetValue = u32ClkSrc;
         }
         else if(u32BusClock >= u32ClkSrc)
         {
-            /* Set DIVIDER = 0 */
-            qspi->CLKDIV = 0U;
+            /* Set DIVIDER = 1 */
+            qspi->CLKDIV = 1U;
             /* Return master peripheral clock rate */
             u32RetValue = u32ClkSrc;
         }
@@ -127,11 +127,11 @@ uint32_t QSPI_Open(QSPI_T *qspi,
         /* Default setting: MSB first, disable unit transfer interrupt, SP_CYCLE = 0. */
         qspi->CTL = u32MasterSlave | (u32DataWidth << QSPI_CTL_DWIDTH_Pos) | (u32QSPIMode) | QSPI_CTL_SPIEN_Msk;
 
-        /* Set DIVIDER = 0 */
-        qspi->CLKDIV = 0U;
+        /* Set DIVIDER = 1 */
+        qspi->CLKDIV = 1U;
 
         /* Select PCLK as the clock source of QSPI */
-        CLK->CLKSEL4 = (CLK->CLKSEL4 & (~CLK_CLKSEL4_QSPI1SEL_Msk)) | CLK_CLKSEL4_QSPI1SEL_PCLK0;
+        CLK->CLKSEL4 = (CLK->CLKSEL4 & (~CLK_CLKSEL4_QSPI0SEL_Msk)) | CLK_CLKSEL4_QSPI0SEL_PCLK0;
         /* Return slave peripheral clock rate */
         u32RetValue = CLK_GetPCLK0Freq();
     }
@@ -142,20 +142,18 @@ uint32_t QSPI_Open(QSPI_T *qspi,
 /**
   * @brief  Disable QSPI controller.
   * @param[in]  qspi The pointer of the specified QSPI module.
-  * @return None
   * @details This function will reset QSPI controller.
   */
 void QSPI_Close(QSPI_T *qspi)
 {
     /* Reset QSPI */
-    SYS->IPRST2 |= SYS_IPRST2_QSPI1RST_Msk;
-    SYS->IPRST2 &= ~SYS_IPRST2_QSPI1RST_Msk;
+    SYS->IPRST1 |= SYS_IPRST1_QSPI0RST_Msk;
+    SYS->IPRST1 &= ~SYS_IPRST1_QSPI0RST_Msk;
 }
 
 /**
   * @brief  Clear RX FIFO buffer.
   * @param[in]  qspi The pointer of the specified QSPI module.
-  * @return None
   * @details This function will clear QSPI RX FIFO buffer. The RXEMPTY (QSPI_STATUS[8]) will be set to 1.
   */
 void QSPI_ClearRxFIFO(QSPI_T *qspi)
@@ -166,7 +164,6 @@ void QSPI_ClearRxFIFO(QSPI_T *qspi)
 /**
   * @brief  Clear TX FIFO buffer.
   * @param[in]  qspi The pointer of the specified QSPI module.
-  * @return None
   * @details This function will clear QSPI TX FIFO buffer. The TXEMPTY (QSPI_STATUS[16]) will be set to 1.
   * @note The TX shift register will not be cleared.
   */
@@ -178,7 +175,6 @@ void QSPI_ClearTxFIFO(QSPI_T *qspi)
 /**
   * @brief  Disable the automatic slave selection function.
   * @param[in]  qspi The pointer of the specified QSPI module.
-  * @return None
   * @details This function will disable the automatic slave selection function and set slave selection signal to inactive state.
   */
 void QSPI_DisableAutoSS(QSPI_T *qspi)
@@ -191,7 +187,6 @@ void QSPI_DisableAutoSS(QSPI_T *qspi)
   * @param[in]  qspi The pointer of the specified QSPI module.
   * @param[in]  u32SSPinMask Specifies slave selection pins. (QSPI_SS)
   * @param[in]  u32ActiveLevel Specifies the active level of slave selection signal. (QSPI_SS_ACTIVE_HIGH, QSPI_SS_ACTIVE_LOW)
-  * @return None
   * @details This function will enable the automatic slave selection function. Only available in Master mode.
   *          The slave selection pin and the active level will be set in this function.
   */
@@ -214,44 +209,40 @@ void QSPI_EnableAutoSS(QSPI_T *qspi, uint32_t u32SSPinMask, uint32_t u32ActiveLe
   */
 uint32_t QSPI_SetBusClock(QSPI_T *qspi, uint32_t u32BusClock)
 {
-    uint32_t u32ClkSrc, u32HCLKFreq;
+    uint32_t u32ClkSrc, u32APB0PCLKFreq;
     uint32_t u32Div, u32RetValue;
 
     /* Get system clock frequency */
-    u32HCLKFreq = CLK_GetSYSCLK0Freq();
+    u32APB0PCLKFreq = CLK_GetSYSCLK1Freq();
 
-    if(u32BusClock >= u32HCLKFreq)
+    if(u32BusClock >= u32APB0PCLKFreq)
     {
         /* Select PCLK as the clock source of QSPI */
-        CLK->CLKSEL4 = (CLK->CLKSEL4 & (~CLK_CLKSEL4_QSPI1SEL_Msk)) | CLK_CLKSEL4_QSPI1SEL_PCLK0;
+        CLK->CLKSEL4 = (CLK->CLKSEL4 & (~CLK_CLKSEL4_QSPI0SEL_Msk)) | CLK_CLKSEL4_QSPI0SEL_PCLK0;
     }
 
     /* Check clock source of QSPI */
-    if((CLK->CLKSEL4 & CLK_CLKSEL4_QSPI1SEL_APLL) == CLK_CLKSEL4_QSPI1SEL_APLL)
+    if((CLK->CLKSEL4 & CLK_CLKSEL4_QSPI0SEL_APLL) == CLK_CLKSEL4_QSPI0SEL_APLL)
     {
         u32ClkSrc = CLK_GetPLLClockFreq(APLL); /* Clock source is APLL */
     }
-    else if((CLK->CLKSEL4 & CLK_CLKSEL4_QSPI1SEL_Msk) == CLK_CLKSEL4_QSPI1SEL_PCLK0)
+    else if((CLK->CLKSEL4 & CLK_CLKSEL4_QSPI0SEL_Msk) == CLK_CLKSEL4_QSPI0SEL_PCLK0)
     {
         /* Clock source is PCLK0 */
         u32ClkSrc = CLK_GetPCLK0Freq();
     }
-    else
-    {
-        u32ClkSrc = __HIRC; /* Clock source is HIRC */
-    }
 
-    if(u32BusClock >= u32HCLKFreq)
+    if(u32BusClock >= u32APB0PCLKFreq)
     {
-        /* Set DIVIDER = 0 */
-        qspi->CLKDIV = 0U;
+        /* Set DIVIDER = 1 */
+        qspi->CLKDIV = 1U;
         /* Return master peripheral clock rate */
         u32RetValue = u32ClkSrc;
     }
     else if(u32BusClock >= u32ClkSrc)
     {
-        /* Set DIVIDER = 0 */
-        qspi->CLKDIV = 0U;
+        /* Set DIVIDER = 1 */
+        qspi->CLKDIV = 1U;
         /* Return master peripheral clock rate */
         u32RetValue = u32ClkSrc;
     }
@@ -288,7 +279,6 @@ uint32_t QSPI_SetBusClock(QSPI_T *qspi, uint32_t u32BusClock)
   * @param[in]  qspi The pointer of the specified QSPI module.
   * @param[in]  u32TxThreshold Decides the TX FIFO threshold. It could be 0 ~ 7.
   * @param[in]  u32RxThreshold Decides the RX FIFO threshold. It could be 0 ~ 7.
-  * @return None
   * @details Set TX FIFO threshold and RX FIFO threshold configurations.
   */
 void QSPI_SetFIFO(QSPI_T *qspi, uint32_t u32TxThreshold, uint32_t u32RxThreshold)
@@ -314,18 +304,14 @@ uint32_t QSPI_GetBusClock(QSPI_T *qspi)
 
     /* Check clock source of QSPI */
    {
-        if((CLK->CLKSEL4 & CLK_CLKSEL4_QSPI1SEL_APLL) == CLK_CLKSEL4_QSPI1SEL_APLL)
+        if((CLK->CLKSEL4 & CLK_CLKSEL4_QSPI0SEL_APLL) == CLK_CLKSEL4_QSPI0SEL_APLL)
         {
             u32ClkSrc = CLK_GetPLLClockFreq(APLL); /* Clock source is APLL */
         }
-        else if((CLK->CLKSEL4 & CLK_CLKSEL4_QSPI1SEL_Msk) == CLK_CLKSEL4_QSPI1SEL_PCLK0)
+        else if((CLK->CLKSEL4 & CLK_CLKSEL4_QSPI0SEL_Msk) == CLK_CLKSEL4_QSPI0SEL_PCLK0)
         {
             /* Clock source is PCLK0 */
             u32ClkSrc = CLK_GetPCLK0Freq();
-        }
-        else
-        {
-            u32ClkSrc = __HIRC; /* Clock source is HIRC */
         }
     }
 
@@ -350,7 +336,6 @@ uint32_t QSPI_GetBusClock(QSPI_T *qspi)
   *                       - \ref QSPI_FIFO_RXOV_INT_MASK
   *                       - \ref QSPI_FIFO_RXTO_INT_MASK
   *
-  * @return None
   * @details Enable QSPI related interrupts specified by u32Mask parameter.
   */
 void QSPI_EnableInt(QSPI_T *qspi, uint32_t u32Mask)
@@ -433,7 +418,6 @@ void QSPI_EnableInt(QSPI_T *qspi, uint32_t u32Mask)
   *                       - \ref QSPI_FIFO_RXOV_INT_MASK
   *                       - \ref QSPI_FIFO_RXTO_INT_MASK
   *
-  * @return None
   * @details Disable QSPI related interrupts specified by u32Mask parameter.
   */
 void QSPI_DisableInt(QSPI_T *qspi, uint32_t u32Mask)
@@ -611,7 +595,6 @@ uint32_t QSPI_GetIntFlag(QSPI_T *qspi, uint32_t u32Mask)
   *                       - \ref QSPI_FIFO_RXOV_INT_MASK
   *                       - \ref QSPI_FIFO_RXTO_INT_MASK
   *
-  * @return None
   * @details Clear QSPI related interrupt flags specified by u32Mask parameter.
   */
 void QSPI_ClearIntFlag(QSPI_T *qspi, uint32_t u32Mask)
@@ -740,9 +723,9 @@ uint32_t QSPI_GetStatus(QSPI_T *qspi, uint32_t u32Mask)
 
 
 
-/*@}*/ /* end of group QSPI_EXPORTED_FUNCTIONS */
+/*! @}*/ /* end of group QSPI_EXPORTED_FUNCTIONS */
 
-/*@}*/ /* end of group QSPI_Driver */
+/*! @}*/ /* end of group QSPI_Driver */
 
-/*@}*/ /* end of group Standard_Driver */
+/*! @}*/ /* end of group Standard_Driver */
 
