@@ -44,7 +44,7 @@ extern uint32_t PllClock;            /*!< PLL Output Clock Frequency           *
  * @brief  Setup the micro controller system.
  *         Initialize the System and update the SystemCoreClock variable.
  */
-extern void SystemInit (void);
+void SystemInit (void);
 
 /**
  * Update SystemCoreClock variable
@@ -55,7 +55,7 @@ extern void SystemInit (void);
  * @brief  Updates the SystemCoreClock with current core Clock
  *         retrieved from cpu registers.
  */
-extern void SystemCoreClockUpdate (void);
+void SystemCoreClockUpdate (void);
 
 #ifdef __cplusplus
 }
