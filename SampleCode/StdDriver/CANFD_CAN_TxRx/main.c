@@ -14,6 +14,7 @@
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
+volatile uint32_t  g_u32BusOffRecoveryCounter = 0;
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Define functions prototype                                                                              */
@@ -22,6 +23,8 @@ int32_t main(void);
 void SYS_Init(void);
 void CAN_Init(void);
 void CAN_TxRxTest(void);
+uint8_t CAN_BusOffRecovery(void);
+uint8_t CAN_CheckBusOffStatus(void);
 
 void SYS_Init(void)
 {
@@ -41,7 +44,7 @@ void SYS_Init(void)
     /* Set PK multi-function pins for Debug UART RXD and TXD */
     SYS->GPK_MFPL &= ~(SYS_GPK_MFPL_PK2MFP_Msk | SYS_GPK_MFPL_PK3MFP_Msk);
     SYS->GPK_MFPL |= SYS_GPK_MFPL_PK2MFP_UART16_RXD | SYS_GPK_MFPL_PK3MFP_UART16_TXD;
-    /* Set PK multi-function pins for CANFD0 RXD and TXD */
+    /* Set PI multi-function pins for CANFD0 RXD and TXD */
     SYS->GPI_MFPL &= ~(SYS_GPI_MFPL_PI2MFP_Msk | SYS_GPI_MFPL_PI3MFP_Msk);
     SYS->GPI_MFPL |= SYS_GPI_MFPL_PI2MFP_CAN0_RXD | SYS_GPI_MFPL_PI3MFP_CAN0_TXD;
 }
@@ -56,8 +59,8 @@ void CAN_Init(void)
     printf("+---------------------------------------------------------------+\n");
     printf("|     Pin Configure                                             |\n");
     printf("+---------------------------------------------------------------+\n");
-    printf("|  CAN0_TXD(PC5)                         CAN_TXD(Any board)     |\n");
-    printf("|  CAN0_RXD(PC4)                         CAN_RXD(Any board)     |\n");
+    printf("|  CAN0_TXD(PI3)                         CAN_TXD(Any board)     |\n");
+    printf("|  CAN0_RXD(PI2)                         CAN_RXD(Any board)     |\n");
     printf("|          |-----------| CANBUS  |-----------|                  |\n");
     printf("|  ------> |           |<------->|           |<------           |\n");
     printf("|  CAN0_TX |   CAN     |  CAN_H  |    CAN    |CAN_TX            |\n");
@@ -96,6 +99,87 @@ void CAN_Init(void)
     CANFD_RunToNormal(CANFD0, TRUE);
 }
 
+/*---------------------------------------------------------------------------------------------------------*/
+/*                                 CAN Bus-Off Status Check Function                                       */
+/*---------------------------------------------------------------------------------------------------------*/
+uint8_t CAN_CheckBusOffStatus(void)
+{
+    uint32_t u32IntStatus;
+
+    /* Read interrupt status register */
+    u32IntStatus = CANFD0->IR;
+
+    /* Check Bus-Off status */
+    if (u32IntStatus & CANFD_IR_BO_Msk)
+    {
+        if (CANFD0->PSR & CANFD_PSR_BO_Msk)
+        {
+            printf("Bus-Off detected!\n");
+        }
+
+        /* Clear Bus-Off interrupt flag */
+        CANFD_ClearStatusFlag(CANFD0, CANFD_IR_BO_Msk);
+        /* Bus-Off detected */
+        return 1;
+    }
+
+    /* Check Error Warning status */
+    if (u32IntStatus & CANFD_IR_EW_Msk)
+    {
+        printf("Error warning flag is set.\n");
+        CANFD_ClearStatusFlag(CANFD0, CANFD_IR_EW_Msk);
+    }
+
+    /* Check Error Passive status */
+    if (u32IntStatus & CANFD_IR_EP_Msk)
+    {
+        printf("Error passive flag is set.\n");
+        CANFD_ClearStatusFlag(CANFD0, CANFD_IR_EP_Msk);
+    }
+
+    /* No Bus-Off detected */
+    return 0;
+}
+
+
+/*---------------------------------------------------------------------------------------------------------*/
+/*                                 CAN Bus-Off Recovery Function                                           */
+/*---------------------------------------------------------------------------------------------------------*/
+uint8_t CAN_BusOffRecovery(void)
+{
+    printf("Starting CAN Bus-Off recovery sequence...\n");
+
+    /* CAN FD0 run to initial mode */
+    CANFD_RunToNormal(CANFD0, FALSE);
+
+    /* Cancel all transmit requests */
+    CANFD0->TXBCR = 0xFFFFFFFF;
+
+    /* Clear all interrupt flag */
+    CANFD_ClearStatusFlag(CANFD0, 0xFFFFFFFF);
+
+    /* CAN FD0 run to normal mode */
+    CANFD_RunToNormal(CANFD0, TRUE);
+
+    /* 50ms delay after recovery process */
+    CLK_SysTickDelay(50000);
+
+    /* Check if recovery was successful by verifying Bus-Off status */
+    if (CANFD0->PSR & CANFD_PSR_BO_Msk)
+    {
+        /* Still in Bus-Off state, recovery failed */
+        printf("CAN Bus-Off recovery failed. Still in Bus-Off state.\n");
+        /* Recovery failed */
+        return 0;
+    }
+    else
+    {
+        g_u32BusOffRecoveryCounter++;
+        printf("CAN Bus-Off recovery completed. Recovery count: %u\n", g_u32BusOffRecoveryCounter);
+        /* Recovery successful */
+        return 1;
+    }
+}
 
 /*---------------------------------------------------------------------------------------------------------*/
 /*  CAN Function Test                                                                                     */
@@ -122,6 +206,7 @@ void CAN_TxRxTest(void)
     printf("|    the other is slave(CAN receiver). Master will send 6 messages with    |\n");
     printf("|    different sizes of data and ID to the slave. Slave will check if      |\n");
     printf("|    received data is correct after getting 6 messages data.               |\n");
+	printf("|    Bus-Off recovery feature is enabled for error handling.               |\n");
     printf("|  Please select Master or Slave test                                      |\n");
     printf("|  [0] Master(CAN transmitter)    [1] Slave(CAN receiver)                  |\n");
     printf("+--------------------------------------------------------------------------+\n\n");
@@ -132,7 +217,21 @@ void CAN_TxRxTest(void)
         /* Send 6 messages with different ID and data size */
         for (u8TxTestNum = 0; u8TxTestNum < 6 ; u8TxTestNum++)
         {
-            printf("CAN Bus Transmitter :\n");
+			/* Check if CAN is in Bus-Off state before transmitting */
+			if (CAN_CheckBusOffStatus())
+			{
+				printf("CAN is in Bus-Off state. Starting recovery process...\n");
+
+				if (CAN_BusOffRecovery())
+				{
+					printf("Bus-Off recovery successful. Proceeding with transmission.\n");
+				}
+				else
+				{
+					printf("Bus-Off recovery failed. Skipping transmission.\n");
+					continue; /* Skip this transmission and try next */
+				}
+			}
 
             /* Set the ID Number */
             if (u8TxTestNum == 0)      sTxMsgFrame.u32Id = 0x111;
@@ -165,14 +264,37 @@ void CAN_TxRxTest(void)
             else
                 printf("Send to transmit message 0x%08x (29-bit)\n", sTxMsgFrame.u32Id);
 
+            printf("Data Message : ");
+
+            for (u8Cnt = 0; u8Cnt < sTxMsgFrame.u32DLC; u8Cnt++)
+            {
+                sTxMsgFrame.au8Data[u8Cnt] = u8Cnt + u8TxTestNum;
+                printf("%02d,", sTxMsgFrame.au8Data[u8Cnt]);
+            }
+
+            printf("\n\n");
+
             /* use message buffer 0 */
             if (CANFD_TransmitTxMsg(CANFD0, 0, &sTxMsgFrame) != 1)
             {
                 printf("Failed to transmit message\n");
+                /* Check if failure was due to bus-off condition */
+                if (CAN_CheckBusOffStatus())
+                {
+                    printf("Transmission failed due to Bus-Off condition.\n");
+                }
+            }
+            else
+            {
+                printf("Message transmitted successfully.\n");
             }
         }
 
         printf("\n Transmit Done\n");
+        if (g_u32BusOffRecoveryCounter > 0)
+        {
+            printf("Total Bus-Off recovery cycles: %u\n", g_u32BusOffRecoveryCounter);
+        }
     }
     else
     {
@@ -272,6 +394,10 @@ void CAN_TxRxTest(void)
         } while (u8RxTestNum < 6);
 
         printf("\n Receive OK & Check OK\n");
+        if (g_u32BusOffRecoveryCounter > 0)
+        {
+            printf("Total Bus-Off recovery cycles: %u\n", g_u32BusOffRecoveryCounter);
+        }
     }
 }
 
